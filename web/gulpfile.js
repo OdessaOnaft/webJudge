@@ -33,8 +33,10 @@ gulp.task('serve',['watch', 'inject'], function(){
 
 gulp.task('html', function() {
   return gulp.src('src/**/*.html')
+    .pipe(wiredep({directory: 'bower_components'}))
     .pipe(htmlmin({collapseWhitespace: true}))
     .pipe(gulp.dest('dist'))
+    .pipe(browserSync.reload({ stream: true }));
 });
 
 gulp.task('babel', () => {
@@ -45,7 +47,8 @@ gulp.task('babel', () => {
 		}))
 		.pipe(concat('index.js'))
 		.pipe(sourcemaps.write('.'))
-		.pipe(gulp.dest('dist'));
+		.pipe(gulp.dest('dist'))
+        .pipe(browserSync.reload({ stream: true }));
 });
 
 gulp.task('watch',['inject'], function () {
