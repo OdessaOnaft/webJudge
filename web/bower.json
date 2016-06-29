@@ -1,0 +1,23 @@
+{
+  "name": "notifyapp",
+  "homepage": "https://github.com/proydenko94/notifyapp",
+  "authors": [
+    "proydenko94 <proydenko94@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.7",
+    "jquery": "^3.0.0",
+    "jquery-mobile": "^1.4.5",
+    "angular-ui-router": "^0.3.1"
+  }
+}
