@@ -1,4 +1,35 @@
-* {
-	margin: 0;
-	padding: 0;
+.wrapper {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+}
+header.main-header {
+  height: 60px;
+  background: #c9dada;
+  ul.links {
+    position: absolute;
+    right: 0;
+    top: 0;
+    li {
+      display: inline-block;
+      margin-right: 40px;
+      line-height: 60px;
+      &:last-child {
+        margin-right: 0;
+      }
+      a {
+        text-shadow: none;
+      }
+    }
+  }
+}
+footer.main-footer {
+  height: 60px;
+  background: #c9dada;
+  width: 100%;
+}
+.main-container {
+  padding: 40px 0;
+  min-height: calc(~"100vh - 120px");
 }

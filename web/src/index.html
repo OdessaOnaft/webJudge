@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="notifyapp" ng-controller="mainController">
 <head>
-	<meta charset="UTF-8">
-	<title>notify APP</title>
+    <meta charset="UTF-8">
+    <title>notify APP</title>
     <base href="/">
+    <link rel="stylesheet" href="assets/init.css">
     <!-- bower:css -->
     <!-- endbower -->
 
-	<link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
-	<h1>hi2232</h1>
-    
-    <div class="ui-view"></div>
+
+    <header class="main-header" ng-include="'html/header.html'"></header>
+    <div class="ui-view main-container"></div>
+    <footer class="main-footer" ng-include="'html/footer.html'"></footer>
+
     <!-- bower:js -->
     <!-- endbower -->
     
 
     <script src="index.js"></script>
-	<!-- inject:js -->
-  	<!-- endinject -->
+    <!-- inject:js -->
+    <!-- endinject -->
 </body>
 </html>
