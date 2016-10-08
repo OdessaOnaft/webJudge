@@ -40,8 +40,7 @@ gulp.task('serve',['watch', 'inject', 'assets'], function(){
         },
 
     });
-});
-
+}); 
 gulp.task('html', function() {
   return gulp.src('src/**/*.html')
     .pipe(wiredep({directory: 'bower_components'}))
