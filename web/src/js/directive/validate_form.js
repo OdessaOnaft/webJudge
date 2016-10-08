@@ -1,5 +1,5 @@
 app
-  .factory('$validators', ($state, $modal, $analytics) => {
+  .factory('$validators', () => {
     var validators = {
       positiveNumber: (value)=> {
         return _.isNumber(value) && value>0
@@ -47,9 +47,11 @@ app
           });
         }
         var badFields = $(element).find(".invalid-model")
-        for(var el in badFields){
+        console.log(badFields, typeof badFields)
+        badFields.forEach(el=>{
+          console.log(el)
           $(el).addClass("error")
-        }
+        })
 
         if(badFields.length){
           console.log("bad validation", badFields);

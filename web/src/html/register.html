@@ -3,4 +3,39 @@
     <li class="breadcrumb-item"><a href="" ui-sref="main">На главную</a></li>
   </ul>
   <h2>Регистрация</h2>
+  <div class="form"  check-form="user.isSubmitted" on-validation-ok='register'>
+    <table>
+      <tr>
+        <td>ФИО:</td>
+        <td>
+          <input type="text" ng-model="user.name" is-required validator>
+        </td>
+      </tr>
+      <tr>
+        <td>Email:</td>
+        <td>
+          <input type="text" ng-model="user.email" is-required validator>
+        </td>
+      </tr>
+      <tr>
+        <td>Пароль:</td>
+        <td>
+          <input type="text" ng-model="user.password" is-required validator>
+        </td>
+      </tr>
+      <tr>
+        <td>Номер телефона:</td>
+        <td>
+          <input type="tel" ng-model="user.phone" is-required validator>
+        </td>
+      </tr>
+      <tr>
+        <td>Дата рождения:</td>
+        <td>
+          <input type="text" ng-model="user.date" ui-date is-required validator>
+        </td>
+      </tr>
+    </table>
+    <button ng-click="submitRegister()" class="default">Регистрация</button>
+  </div>
 </div>
