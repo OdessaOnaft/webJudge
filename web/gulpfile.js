@@ -56,6 +56,7 @@ gulp.task('babel', () => {
 			presets: ['es2015']
 		}))
 		.pipe(concat('index.js'))
+    .pipe(angularFilesort())
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('dist'))
         .pipe(browserSync.reload({ stream: true }));

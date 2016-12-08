@@ -47,8 +47,8 @@ app
           });
         }
         var badFields = $(element).find(".invalid-model")
-        console.log(badFields, typeof badFields)
-        badFields.forEach(el=>{
+        console.log(badFields, badFields.length)
+        _.each(badFields,el=>{
           console.log(el)
           $(el).addClass("error")
         })

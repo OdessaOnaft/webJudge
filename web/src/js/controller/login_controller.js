@@ -7,6 +7,14 @@ app
         $scope.user.isSubmitted = true;
       })
     }
+    $scope.dateOptions = {
+      dateFormat: "dd.mm.yy",
+      maxDate: 0,
+      changeYear: true
+    }
+    $scope.register = ()=>{
+      console.log('register.ok')
+    }
   })
   .controller("loginController", ($scope, $rootScope, $state)=>{
   })

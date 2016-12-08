@@ -1,4 +1,4 @@
-var app = angular.module("notifyapp", ['ui.router']);
+var app = angular.module("notifyapp", ['ui.router', 'ui.date']);
 app
 	.config(['$locationProvider', '$stateProvider', '$urlRouterProvider',
 	  ($locationProvider, $stateProvider, $urlRouterProvider) =>{
