@@ -1,5 +1,7 @@
 var app = angular.module("notifyapp", ['ui.router', 'ui.date']);
-app
+	app.run(['$state', '$rootScope',  ($state, $rootScope )=>{
+
+	}])
 	.config(['$locationProvider', '$stateProvider', '$urlRouterProvider',
 	  ($locationProvider, $stateProvider, $urlRouterProvider) =>{
 	    $locationProvider.html5Mode(true) 

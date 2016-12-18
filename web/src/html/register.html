@@ -1,41 +1,41 @@
 <div class="wrapper">
   <ul class="breadcrumb">
-    <li class="breadcrumb-item"><a href="" ui-sref="main">На главную</a></li>
+    <li class="breadcrumb-item"><a href="" ui-sref="main">{{translate("homePage")}}</a></li>
   </ul>
-  <h2>Регистрация</h2>
+  <h2>{{translate("register")}}</h2>
   <div class="form"  check-form="user.isSubmitted" on-validation-ok='register' >
     <table>
       <tr>
-        <td>{{translate("name")}}</td>
+        <td>{{translate("name")}}:</td>
         <td>
-          <input type="text" ng-model="user.name" is-required validator placeholder="Enter your name">
+          <input type="text" ng-model="user.name" is-required validator placeholder="{{translate('namePlaceholder')}}">
         </td>
       </tr>
       <tr>
-        <td>Email:</td>
+        <td>{{translate("email")}}:</td>
         <td>
-          <input type="text" ng-model="user.email" is-required validator="email">
+          <input type="text" ng-model="user.email" is-required validator="email" placeholder="{{translate('emailPlaceholder')}}">
         </td>
       </tr>
       <tr>
-        <td>Пароль:</td>
+        <td>{{translate("password")}}:</td>
         <td>
-          <input type="password" ng-model="user.password" is-required validator>
+          <input type="password" ng-model="user.password" is-required validator placeholder="{{translate('passwordPlaceholder')}}">
         </td>
       </tr>
       <tr>
-        <td>Номер телефона:</td>
+        <td>{{translate("phone")}}:</td>
         <td>
-          <input type="tel" ng-model="user.phone" is-required validator="phoneNumber">
+          <input type="tel" ng-model="user.phone" is-required validator="phoneNumber" placeholder="{{translate('phonePlaceholder')}}">
         </td>
       </tr>
       <tr>
-        <td>Дата рождения:</td>
+        <td>{{translate("birthday")}}:</td>
         <td>
-          <input type="text" ng-model="user.date" ui-date="dateOptions" is-required validator>
+          <input type="text" ng-model="user.date" ui-date="dateOptions" is-required validator placeholder="{{translate('birthdayPlaceholder')}}">
         </td>
       </tr>
     </table>
-    <button ng-click="submitRegister()" class="default">Регистрация</button>
+    <button ng-click="submitRegister()" class="default">{{translate("register")}}</button>
   </div>
 </div>

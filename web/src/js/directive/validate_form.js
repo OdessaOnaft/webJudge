@@ -1,4 +1,4 @@
-app
+angular.module("notifyapp")
   .factory('$validators', () => {
     var validators = {
       positiveNumber: (value)=> {
@@ -49,7 +49,6 @@ app
         var badFields = $(element).find(".invalid-model")
         console.log(badFields, badFields.length)
         _.each(badFields,el=>{
-          console.log(el)
           $(el).addClass("error")
         })
 

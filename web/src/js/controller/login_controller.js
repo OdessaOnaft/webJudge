@@ -1,4 +1,4 @@
-app
+angular.module("notifyapp")
   .controller("registerController", ($scope, $rootScope, $state, $timeout)=>{
     $scope.user={}
     $scope.submitRegister = ()=>{

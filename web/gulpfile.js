@@ -11,6 +11,7 @@ var watch = require('gulp-watch');
 var babel = require('gulp-babel');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
+var inject = require('gulp-inject');
 var angularFilesort = require('gulp-angular-filesort');
 var htmlmin = require('gulp-htmlmin');
 var clean = require('gulp-clean');
@@ -55,8 +56,8 @@ gulp.task('babel', () => {
 		.pipe(babel({
 			presets: ['es2015']
 		}))
-		.pipe(concat('index.js'))
     .pipe(angularFilesort())
+		.pipe(concat('index.js'))
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('dist'))
         .pipe(browserSync.reload({ stream: true }));
