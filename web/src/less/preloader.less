@@ -1,0 +1,34 @@
+@buttonSpinnerDiameter: 24px;
+@buttonSpinnerStrokeWidth: 3px;
+@buttonSpinnerStrokeColor: #666;
+@buttonSpinnerOpacity: .8;
+@buttonSpinnerStrokeStyle: solid; // solid, dashed, dotted
+@buttonSpinnerSpeed: .7s;
+
+.button-preloader {
+  border: @buttonSpinnerStrokeWidth @buttonSpinnerStrokeStyle @buttonSpinnerStrokeColor;
+  border-top-color: rgba(0, 0, 0, 0);
+  border-left-color: rgba(0, 0, 0, 0);
+  width: @buttonSpinnerDiameter - (@buttonSpinnerStrokeWidth * 2);
+  height: @buttonSpinnerDiameter - (@buttonSpinnerStrokeWidth * 2);
+  opacity: @buttonSpinnerOpacity;
+  border-radius: 50%;
+  animation: buttonSpinner @buttonSpinnerSpeed infinite linear;
+  -webkit-animation: buttonSpinner @buttonSpinnerSpeed infinite linear;
+  margin: 0 auto;
+  display: block;
+  &.ng-hide-add.ng-hide-add-active {
+    display: none !important;
+  }
+}
+
+
+@keyframes buttonSpinner {
+    from { transform: rotate(0deg)   }
+    to   { transform: rotate(360deg) }
+}
+
+@-webkit-keyframes buttonSpinner {
+    from { -webkit-transform: rotate(0deg)   }
+    to   { -webkit-transform: rotate(360deg) }
+}

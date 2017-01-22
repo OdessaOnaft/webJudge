@@ -1,0 +1,25 @@
+<div class="wrapper">
+  <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="" ui-sref="main">{{translate("homePage")}}</a></li>
+  </ul>
+  <h2>Вход</h2>
+  <div class="form"  check-form="user.isSubmitted" on-validation-ok='register' >
+    <table>
+      
+      <tr>
+        <td>{{translate("email")}}:</td>
+        <td>
+          <input type="text" ng-model="user.email" is-required validator="email" placeholder="{{translate('emailPlaceholder')}}" on-enter-press="login()">
+        </td>
+      </tr>
+      <tr>
+        <td>{{translate("password")}}:</td>
+        <td>
+          <input type="password" ng-model="user.password" is-required validator placeholder="{{translate('passwordPlaceholder')}}" on-enter-press="login()">
+        </td>
+      </tr>
+    </table>
+    <p class="error" ng-if="user.error">Вы указали неверный логин или пароль</p>
+    <button ng-click="login()" class="default">Войти</button>
+  </div>
+</div>

@@ -3,6 +3,15 @@
   margin: 0;
   padding: 0;
   font-size: 13px;
+  box-sizing: border-box;
+}
+a {
+  text-shadow: none;
+  cursor: pointer;
+  text-decoration: none;
+  &:hover {
+    text-decoration: none;
+  }
 }
 ul {
   list-style: none;
@@ -46,4 +55,8 @@ p.error {
 input.error, div.error, button.error {
   background: #ffdfdf;
   border: 1px solid #ff7b7b;
+}
+
+.ng-leave {
+  display: none !important;
 }

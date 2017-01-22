@@ -1,5 +1,5 @@
 angular.module("notifyapp")
-  .controller("registerController", ($scope, $rootScope, $state, $timeout)=>{
+  .controller("registerController", ($scope, $rootScope, $state, $timeout, $server)=>{
     $scope.user={}
     $scope.submitRegister = ()=>{
       $scope.user.isSubmitted = false;
@@ -16,5 +16,23 @@ angular.module("notifyapp")
       console.log('register.ok')
     }
   })
-  .controller("loginController", ($scope, $rootScope, $state)=>{
+  .controller("loginController", ($scope, $rootScope, $state, $server)=>{
+    $scope.user={}
+    $scope.login = ()=>{
+      $scope.user.error = "";
+      $server.login($scope.user, (err,data)=>{
+        $scope.$apply(()=>{
+          if(err===undefined && !err) {
+            if(!data) {
+              data = {token: 'hihiohiho'}
+            }
+            localStorage.token = data.token
+            $state.go("cabinet")
+          } else {
+            $scope.user.error = "Неверный логин или пароль"
+          }
+        })
+        
+      })
+    }
   })

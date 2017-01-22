@@ -1,16 +1,13 @@
-<div class="wrapper">
-  <ul class="breadcrumb">
-    <li class="breadcrumb-item"><a href="" ui-sref="main">{{translate("homePage")}}</a></li>
-  </ul>
-  <h2>{{translate("register")}}</h2>
-  <div class="form"  check-form="user.isSubmitted" on-validation-ok='register' >
+<div class="profile">
+  <h2>{{translate("profile")}}</h2>
+  <div class="form"  check-form="user.isSubmitted" on-validation-ok='editProfile' >
     <table>
-     <!--  <tr>
+      <tr>
         <td>{{translate("name")}}:</td>
         <td>
           <input type="text" ng-model="user.name" is-required validator placeholder="{{translate('namePlaceholder')}}">
         </td>
-      </tr> -->
+      </tr>
       <tr>
         <td>{{translate("email")}}:</td>
         <td>
@@ -23,7 +20,7 @@
           <input type="password" ng-model="user.password" is-required validator placeholder="{{translate('passwordPlaceholder')}}">
         </td>
       </tr>
-     <!--  <tr>
+      <tr>
         <td>{{translate("phone")}}:</td>
         <td>
           <input type="tel" ng-model="user.phone" is-required validator="phoneNumber" placeholder="{{translate('phonePlaceholder')}}">
@@ -34,8 +31,11 @@
         <td>
           <input type="text" ng-model="user.date" ui-date="dateOptions" is-required validator placeholder="{{translate('birthdayPlaceholder')}}">
         </td>
-      </tr> -->
+      </tr>
     </table>
-    <button ng-click="submitRegister()" class="default">{{translate("register")}}</button>
+    <button ng-click="submitProfile()" class="default">
+      <span ng-if="!user.profileSubmitPreloader">{{translate("save")}}</span>
+      <span ng-if="user.profileSubmitPreloader" class="button-preloader"></span>
+    </button>
   </div>
 </div>

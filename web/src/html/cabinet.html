@@ -1,0 +1,13 @@
+<div class="wrapper cabinet">
+  <div class="left-menu">
+    <ul>
+      <li ui-sref=".profile"><a>Мой профиль</a></li>
+      <li ui-sref=".news"><a>Новости</a></li>
+      <li ui-sref=".problems"><a>Задачи</a></li>
+      <li ui-sref=".solutions"><a>Мои решения</a></li>
+      <li ui-sref=".groups"><a>Мои группы</a></li>
+      <li ui-sref=".admin" ng-if="user.scope=='admin'"><a>Администрирование</a></li>
+    </ul>
+  </div><!--
+  --><div class="cabinet-inner" ui-view></div>
+</div>

@@ -13,7 +13,10 @@ angular.module("notifyapp")
       emailPlaceholder: "Enter your email",
       passwordPlaceholder: "Enter your password",
       phonePlaceholder: "Enter your phone number",
-      birthdayPlaceholder: "Enter your birthday"
+      birthdayPlaceholder: "Enter your birthday",
+      profile: "Profile",
+      save: "Save",
+      logout: "Logout"
     }
     return words
 

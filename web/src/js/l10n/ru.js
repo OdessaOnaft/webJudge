@@ -13,7 +13,10 @@ angular.module("notifyapp")
       emailPlaceholder: "Введите ваш электронный адрес",
       passwordPlaceholder: "Введите ваш пароль",
       phonePlaceholder: "Введите ваш номер телефона",
-      birthdayPlaceholder: "Выберите вашу дату рождения"
+      birthdayPlaceholder: "Выберите вашу дату рождения",
+      profile: "Профиль",
+      save: "Сохранить",
+      logout: "Выйти"
     }
     return words
 

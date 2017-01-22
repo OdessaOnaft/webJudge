@@ -17,9 +17,71 @@
           padding: 0;
           &:first-child {
             padding-top: 10px;
+            width: 100%;
           }
         }
       }
+    }
+  }
+  .main-container {
+    margin-top: 60px;
+    padding-top: 20px;
+  }
+  header.main-header {
+    position: fixed;
+    width: 100%;
+    z-index: 2;
+    ul.links {
+      display: none;
+    }
+    img#menu-img {
+      display: block;
+      position: absolute;
+      right: 20px;
+      top: 15px;
+    }
+    ul.links-mobile {
+      display: block;
+      background: #565656;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+      padding: 0;
+      li {
+        cursor: pointer;
+        padding: 10px 20px;
+        border-bottom: 1px solid #fff;
+        &:hover {
+          background: #898989;
+        }
+        a {
+          color: #fff;
+        }
+      }
+    }
+  }
+  .cabinet.wrapper {
+    padding-right: 0;
+    .left-menu {
+      display: block;
+      width: 100%;
+      ul {
+        margin-bottom: 0;
+        li {
+          padding: 20px 20px;
+          border-bottom: 1px solid #787878;
+          &:last-child {
+            border-bottom: 1px solid #787878;
+          }
+        }
+      }
+    }
+    .cabinet-inner {
+      margin-left: 0;
+      display: block;
+      width: 100%;
     }
   }
 }
