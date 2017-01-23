@@ -1,6 +1,7 @@
 web/node_modules/
 web/bower_components/
 /backend/node_modules/
+/database/node_modules/
 /backend/config.js
 /.idea
 /.idea/*
