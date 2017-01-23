@@ -1,0 +1,54 @@
+module.exports = function(_, mainPg){
+    return {
+        logout: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.userId
+                    ];
+                    return mainPg('SELECT * FROM student_logout($1);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        getProfile: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.userId
+                    ];
+                    return mainPg('SELECT * FROM student_get_profile($1);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        submitProfile: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.userId,
+                        inputData.name,
+                        inputData.birthday,
+                        inputData.phone,
+                        inputData.note,
+                        inputData.modifiedScope
+                    ];
+                    return mainPg('SELECT * FROM student_submit_profile($1,$2,$3,$4,$5,$6);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        }
+    }
+};
