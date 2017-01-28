@@ -2,3 +2,8 @@ web/node_modules/
 web/bower_components/
 web/dist/
 web/build/
+/backend/node_modules/
+/database/node_modules/
+/backend/config.js
+/.idea
+/.idea/*
