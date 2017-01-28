@@ -1,4 +1,4 @@
-var app = angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate']);
+var app = angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize']);
 	app.run(['$state', '$rootScope', '$location',  ($state, $rootScope, $location)=>{
 		var path = $location.path()
     if(path[path.length-1] != '/'){
@@ -9,6 +9,8 @@ var app = angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate']);
 	  ($locationProvider, $stateProvider, $urlRouterProvider) =>{
 	    $locationProvider.html5Mode(true) 
 	    $urlRouterProvider.when('','/')
+	    $urlRouterProvider.when('/cabinet/problem/','/cabinet/problems/')
+	    
 	    $urlRouterProvider.otherwise("/404/");
 	    $stateProvider
 	      .state('404', {
@@ -50,6 +52,11 @@ var app = angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate']);
 	        url:'problems/',
 	        templateUrl: "/html/problems.html",
 	        controller: "problemsController"
+		    })
+		    .state('cabinet.problem', {
+	        url:'problem/{id}/',
+	        templateUrl: "/html/problem.html",
+	        controller: "problemController"
 		    })
 		    .state('cabinet.solutions', {
 	        url:'solutions/',

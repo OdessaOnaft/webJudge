@@ -42,3 +42,83 @@
     min-height: calc(~"100vh - 200px");
   }
 }
+
+
+.problems {
+  table.problems-table {
+    thead {
+      th {
+        text-align: left;
+      }
+    }
+    tbody {
+      tr {
+        td {
+          border: 1px solid #787878;
+          padding: 5px 10px;
+          cursor: pointer;
+        }
+        &:nth-child(odd) {
+          td {
+            background: #cacaca;
+            color: #000;
+          }
+        }
+      }
+    }
+  }
+}
+.problem {
+  p.title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 20px;
+  }
+  .wrapper-problem {
+    width: 500px;
+  }
+  .solve {
+    margin-top: 30px;
+    width: 100%;
+    textarea {
+      width: 100%;
+      resize: none;
+      height: 400px;
+      outline: none;
+      padding: 10px;
+      color: red;
+      background: #c5ffc7;
+    }
+  }
+  .processing {
+    button {
+      display: inline-block;
+    }
+    p {
+      display: inline-block;
+      margin-left: 30px;
+    }
+  }
+  .samples {
+    width: 100%;
+    margin-top: 30px;
+    border: 1px solid #787878;
+    table {
+      tr {
+        td {
+          padding: 5px 10px ;
+          vertical-align: top;
+          border-bottom: 1px solid #787878;
+          &:first-child {
+            border-right: 1px solid #787878;
+          }
+        }
+        &:last-child {
+          td {
+            border-bottom: none;
+          }
+        }
+      }
+    }
+  }
+}

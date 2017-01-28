@@ -10,6 +10,13 @@ angular.module("notifyapp")
       delete localStorage.token;
       $state.go("main");
     }
+    $scope.nTimes = (n)=>{
+      var a = [];
+      for(var i=0;i<n;i++) {
+        a.push(i)
+      }
+      return a;
+    }
     
   })
   .controller("homeController", ($scope, $rootScope, $state)=>{

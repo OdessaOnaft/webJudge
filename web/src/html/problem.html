@@ -1,0 +1,43 @@
+<div class="problem">
+  <h1>{{problem.title}}</h1>
+  
+  <h3 ng-bind-html="problem.description"></h3>
+
+
+  <p class="title">Input</p>
+  <p ng-bind-html="problem.input"></p>
+
+  <p class="title">Output</p>
+  <p ng-bind-html="problem.output"></p>
+
+  <div class="wrapper-problem">
+    <div class="samples">
+      <table>
+        <tr ng-repeat="sample in problem.samples">
+          <td>
+            <p ng-repeat="line in sample.input">
+              {{line}}
+            </p>
+          </td>
+          <td>
+            <p ng-repeat="line in sample.output">
+                {{line}}
+              </p>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="solve">
+      <textarea placeholder="Исходный код программы вставить сюда" ng-model="solve.source"></textarea>
+      
+      <div class="processing">
+        <button class="default" ng-click="submit()">
+          <span ng-if="!solve.profileSubmitPreloader">{{translate("submit")}}</span>
+          <span ng-if="solve.profileSubmitPreloader" class="button-preloader"></span>
+        </button>
+        <p class="progress">submiting....</p>
+      </div>
+    </div>
+  </div>
+</div>
