@@ -26,7 +26,7 @@ $$ language plpgsql
 CALLED ON NULL INPUT;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function guest_register(varchar, varchar) returns bigint as
+create or replace function guest_register(varchar, varchar) returns TABLE(user_id bigint)as
 $$
 declare
   result bigint;
@@ -39,7 +39,7 @@ begin
   VALUES
     ($2, crypt($1, gen_salt('bf', 8)));
   SELECT lastval() INTO result;
-  return result;
+  return QUERY SELECT result;
 end;
 $$ language plpgsql
 CALLED ON NULL INPUT;

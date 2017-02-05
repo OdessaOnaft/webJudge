@@ -20,6 +20,7 @@ module.exports = function(_, conf, database){
     
     var api = {
         guest: guest,
+        student: student,
         teacher: teacher,
         admin: admin
     };
