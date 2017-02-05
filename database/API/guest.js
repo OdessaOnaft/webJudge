@@ -64,7 +64,8 @@ module.exports = function(_, mainPg, fs){
                     if (data.scope != 'student' && data.scope != 'guest'){
                         if (data.scope != 'teacher' || resultData.userId == data.userId) {
                             var tasks = fs.readFileSync(`./problems/${resultData.problemId}.prb`);
-                            resultData.tasks = JSON.parse(tasks);
+                            resultData.samples = JSON.parse(tasks);
+                            resultData.outputSource = fs.readFileSync(`./problems_prog/${data.problemId}.dat`);
                         }
                     }
                     delete resultData.userId;

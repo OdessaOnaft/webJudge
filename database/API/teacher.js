@@ -42,7 +42,7 @@ module.exports = function(_, mainPg, fs){
                         inputData.memoryLimit || 67108864,
                         _.map(inputData.description,(v)=>JSON.stringify(v)),
                         JSON.stringify(inputData.samples.slice(0, inputData.publicCount)),
-                        inputData.outputType || 'file',
+                        inputData.outputType || 'program',
                         inputData.samples.length,
                         inputData.input,
                         inputData.output
@@ -57,6 +57,7 @@ module.exports = function(_, mainPg, fs){
                     });
                     var writeProblem = JSON.stringify(data.samples);
                     fs.writeFileSync(`./problems/${data.problemId}.prb`, writeProblem);
+                    fs.writeFileSync(`./problems_prog/${data.problemId}.dat`, data.outputSource);
                     callback(null, resultData);
                 })
                 .catch(err=>{
