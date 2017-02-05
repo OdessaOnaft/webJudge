@@ -128,7 +128,7 @@ begin
             s.message,
             s.lang
         FROM solutions s
-        WHERE s.id = $2;
+        WHERE s.id = $1;
 end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------

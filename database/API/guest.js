@@ -109,11 +109,11 @@ module.exports = function(_, mainPg, fs){
                     return mainPg('SELECT * FROM guest_get_solution_tests($1);', args);
                 })
                 .then(resultData=>{
-                    result.solution = resultData;
+                    result.tests = resultData;
                     if (data.scope != 'guest' && data.userId == result.userId){
-                        data.source = fs.readFileSync(`./solutions/${result.solutionId}.sol`);
+                        data.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`);
                     }
-                    callback(null, resultData);
+                    callback(null, result);
                 })
                 .catch(err=>{
                     callback(err, null);
