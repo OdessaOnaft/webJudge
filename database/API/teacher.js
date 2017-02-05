@@ -15,7 +15,7 @@ module.exports = function(_, mainPg, fs){
                         inputData.input || '',
                         inputData.output || ''
                     ];
-                    return mainPg('SELECT * FROM teacher_add_problem($1, $2, $3, $4, $5, $6, $7, $8);', args);
+                    return mainPg('SELECT * FROM teacher_add_problem($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);', args);
                 })
                 .then(resultData=>{
                     resultData = resultData[0];
@@ -47,7 +47,7 @@ module.exports = function(_, mainPg, fs){
                         inputData.input || '',
                         inputData.output || ''
                     ];
-                    return mainPg('SELECT * FROM teacher_edit_problem($1, $2, $3, $4, $5, $6, $7, $8, $9);', args);
+                    return mainPg('SELECT * FROM teacher_edit_problem($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);', args);
                 })
                 .then(resultData=>{
                     resultData = resultData[0];
