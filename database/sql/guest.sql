@@ -147,7 +147,7 @@ begin
             st.num,
             st.message
         FROM solution_tests st
-        WHERE st.solution_id = $2
+        WHERE st.solution_id = $1
         ORDER BY st.num ASC;
 end;
 $$ language plpgsql;

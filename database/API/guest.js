@@ -109,7 +109,7 @@ module.exports = function(_, mainPg, fs){
                     return mainPg('SELECT * FROM guest_get_solution_tests($1);', args);
                 })
                 .then(resultData=>{
-                    result.tests = resultData;
+                    result.solution = resultData;
                     if (data.scope != 'guest' && data.userId == result.userId){
                         data.source = fs.readFileSync(`./solutions/${result.solutionId}.sol`);
                     }
