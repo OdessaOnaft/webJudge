@@ -14,7 +14,6 @@ module.exports = function(_, remote){
                         callback(err);
                     } else {
                         session.userPriviledge = session.scope;
-                        session.adminId = session.id;
                         callback(err, session);
                     }
                 });

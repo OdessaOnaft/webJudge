@@ -2,9 +2,9 @@ module.exports = function(_, conf, Database){
     function ok(callback){
         return function(err, data){
             if(err){
-                callback(err);
+                callback(err, null);
             } else {
-                callback(null);
+                callback(null, data);
             }
         }
     }

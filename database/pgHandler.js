@@ -4,10 +4,12 @@ module.exports = function(_, pg, connStr, humps){
             pg.connect(connStr, function (err, client, done) {
                 try {
                     client.query(sql, args, function (err, result) {
-                        if (err)
-                            throw err;
                         done();
-                        resolve(humps.camelizeKeys(result.rows));
+                        if (err){
+                            reject(err);
+                        } else {
+                            resolve(humps.camelizeKeys(result.rows));
+                        }
                     });
                 }
                 catch (e) {

@@ -1,4 +1,4 @@
-module.exports = function(_, mainPg){
+module.exports = function(_, mainPg, fs){
     return {
         logout: function (data, callback) {
             Promise.resolve(data)
@@ -45,6 +45,25 @@ module.exports = function(_, mainPg){
                 })
                 .then(resultData=>{
                     callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        submitSolution: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.userId,
+                        inputData.problemId,
+                        inputData.lang
+                    ];
+                    return mainPg('SELECT * FROM student_submit_solution($1,$2,$3);', args);
+                })
+                .then(resultData=>{
+                    resultData = resultData[0];
+                    fs.writeFileSync(`./solutions/${resultData.solutionId}.sol`, data.solution);
+                    callback(null, resultData);
                 })
                 .catch(err=>{
                     callback(err, null);

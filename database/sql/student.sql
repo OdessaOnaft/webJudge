@@ -42,3 +42,26 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
+create or replace function student_submit_solution(bigint, bigint, varchar) returns TABLE(solution_id bigint) as
+$$
+<<fn>>
+declare
+    solution_id bigint;
+    tests_pos bigint := 1;
+    tests_count bigint;
+begin
+    INSERT INTO solutions(user_id, problem_id, lang) VALUES ($1, $2, $3);
+    SELECT lastval() INTO fn.solution_id;
+    SELECT p.tests_count INTO fn.tests_count FROM problems p WHERE p.id = $2;
+    LOOP
+        INSERT INTO solution_tests (solution_id, status, num) VALUES (fn.solution_id, 'waiting', tests_pos);
+        tests_pos := tests_pos + 1;
+        IF fn.tests_pos > fn.tests_count THEN
+            EXIT;
+        END IF;
+    END LOOP;
+    RETURN QUERY SELECT fn.solution_id;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------

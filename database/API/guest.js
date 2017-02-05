@@ -1,4 +1,4 @@
-module.exports = function(_, mainPg){
+module.exports = function(_, mainPg, fs){
     return {
         restoreSession: function (data, callback) {
             Promise.resolve(data)
@@ -44,6 +44,90 @@ module.exports = function(_, mainPg){
                 })
                 .then(resultData=>{
                     callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        getProblem: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.problemId,
+                        inputData.lang || 'en'
+                    ];
+                    return mainPg('SELECT * FROM guest_get_problem($1, $2);', args);
+                })
+                .then(resultData=>{
+                    resultData = resultData[0];
+                    if (data.scope != 'student' && data.scope != 'guest'){
+                        if (data.scope != 'teacher' || resultData.userId == data.userId) {
+                            var tasks = fs.readFileSync(`./problems/${resultData.problemId}.prb`);
+                            resultData.tasks = JSON.parse(tasks);
+                        }
+                    }
+                    delete resultData.userId;
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        getProblems: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.skip || 0,
+                        inputData.limit || 100000,
+                        inputData.lang || 'en'
+                    ];
+                    return mainPg('SELECT * FROM guest_get_problems($1, $2, $3);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        getSolution: function (data, callback) {
+            var result = null;
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.solutionId
+                    ];
+                    return mainPg('SELECT * FROM guest_get_solution($1);', args);
+                })
+                .then(inputData=>{
+                    result = inputData[0];
+                    var args = [
+                        inputData.solutionId
+                    ];
+                    return mainPg('SELECT * FROM guest_get_solution_tests($1);', args);
+                })
+                .then(resultData=>{
+                    result.tests = resultData;
+                    if (data.scope != 'guest' && data.userId == result.userId){
+                        data.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`);
+                    }
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        getSolutionsQueue: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.skip || 0,
+                        inputData.limit || 100000
+                    ];
+                    return mainPg('SELECT * FROM guest_get_solutions_queue($1,$2);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData);
                 })
                 .catch(err=>{
                     callback(err, null);

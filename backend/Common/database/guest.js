@@ -14,7 +14,6 @@ module.exports = function(_, remote){
                         callback(err);
                     } else {
                         session.userPriviledge = session.scope;
-                        session.adminId = session.id;
                         callback(err, session);
                     }
                 });
@@ -26,7 +25,11 @@ module.exports = function(_, remote){
 
     [
         'register',
-        'login'
+        'login',
+        'getProblem',
+        'getProblems',
+        'getSolution',
+        'getSolutionsQueue'
     ].forEach(function(name){
         remoteAPI[name] = remote(name);
     });

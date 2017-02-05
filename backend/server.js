@@ -17,7 +17,7 @@ var _ = require('underscore'),
     },
 
     api = require('./api.js'),
-    API = require('./API/index.js')(_, database),
+    API = require('./API/index.js')(_, conf, database),
     scopeAPI = api(_, API.restoreSession, API.api, API.validators);
 
 
@@ -39,17 +39,18 @@ app.use(bodyParser.json({
     limit: '50mb'
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(function(err, req, res) {
+app.use(function(err, req, res, next) {
+    //console.error(err.stack);
     if(err){
-        res.status(400).json({
-            err: {
-                message: 'Unknown error'
-            }
-        });
+        res.end(JSON.stringify({
+                err: {
+                    message: 'Unknown error'
+                }
+            })+'\n');
     } else {
-        res.status(400).json({
-            err: null
-        });
+        res.end(JSON.stringify({
+                err: null
+            })+'\n');
     }
 });
 
@@ -65,9 +66,9 @@ function getHandler(currApi){
             });
         });
         requestDomain.run(function(){
-            var methodName = req.url.split('/')[3];
+            var methodName = req.url.split('/')[2];
             if(methodName==='login')
-                req.cookies.sessionId = null;
+                req.body.cookies.sessionId = null;
             if(!_.isObject(req.body)){
                 res.status(400).json({
                         err: {
@@ -76,7 +77,7 @@ function getHandler(currApi){
                     });
                 return;
             }
-            currApi.call(req.cookies.sessionId, methodName, req.body, function(err, data, warning){
+            currApi.call(req.body.cookies.sessionId, methodName, req.body, function(err, data, warning){
                 if(err)
                     console.log(err, err.stack);
                 res.status(err?400:200).json({

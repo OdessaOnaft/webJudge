@@ -3,7 +3,9 @@
         var errors = {
             'Invalid token': 1,
             'User with this email already exists': 2,
-            'Incorrect login or/and password': 3
+            'Incorrect login or/and password': 3,
+            'Wrong answer': 4,
+            'Timeout': 5
         };
         if (_.isUndefined(errors[err.message])){
             return {

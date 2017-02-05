@@ -12,10 +12,11 @@ var http = require('http'),
 
     errorHandler = require('./errorHandler.js')(_),
     mainPg = require('./pgHandler.js')(_, pg, conf.database.pgConnectionString, humps),
-    guest = require('./API/guest.js')(_, mainPg),
-    student = require('./API/student.js')(_, mainPg),
-    teacher = require('./API/teacher.js')(_, mainPg),
-    admin = require('./API/admin.js')(_, mainPg);
+    guest = require('./API/guest.js')(_, mainPg, fs),
+    student = require('./API/student.js')(_, mainPg, fs),
+    teacher = require('./API/teacher.js')(_, mainPg, fs),
+    admin = require('./API/admin.js')(_, mainPg),
+    system = require('./API/system.js')(_, mainPg, fs);
 
 /*
     bcrypt = require('bcryptjs'),
@@ -31,17 +32,17 @@ pg.defaults.poolSize = 80;
 var app = express();
 app.use(bodyParser.json());
 app.use(cors());
-app.use(function (err, req, res, next) {
-    if (err) {
-        res.status(400).json({
-            err: {
-                message: 'Unknown error'
-            }
-        });
+app.use(function(err, req, res, next) {
+    if(err){
+        res.end(JSON.stringify({
+                err: {
+                    message: 'Unknown error'
+                }
+            })+'\n');
     } else {
-        res.status(400).json({
-            err: null
-        });
+        res.end(JSON.stringify({
+                err: null
+            })+'\n');
     }
 });
 
@@ -51,7 +52,7 @@ function handler(apiName) {
         try {
             var serverAuthToken = req.header("Authorization");
             var start = _.now();
-            if (serverAuthToken !== 'oUjCVL50F1loNGSRMq9H3hs2AyW4t1d10C5Ef8cN') {
+            if (serverAuthToken !== conf.database.secret) {
                 res.status(400).json({
                         err: {
                             message: 'Invalid server auth token'
@@ -117,6 +118,7 @@ app.post('/guest/*', handler('guest'));
 app.post('/student/*', handler('student'));
 app.post('/teacher/*', handler('teacher'));
 app.post('/admin/*', handler('admin'));
+app.post('/system/*', handler('system'));
 
 http.createServer(app).listen(8081);
 

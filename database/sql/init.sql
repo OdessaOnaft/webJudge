@@ -64,3 +64,54 @@ CREATE TABLE "users_token" (
 	CONSTRAINT users_token_pk PRIMARY KEY (id),
 	CONSTRAINT users_token_fk0 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+CREATE TABLE "locale_strings" (
+	"id" bigserial NOT NULL,
+	"lang" varchar NOT NULL,
+	"value" varchar NOT NULL,
+	"related_id" bigint NOT NULL,
+	"related_type" varchar NOT NULL,
+	CONSTRAINT locale_strings_pk PRIMARY KEY (id)
+);
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+CREATE TABLE "problems" (
+	"id" bigserial NOT NULL,
+	"user_id" bigint NOT NULL,
+	"created" bigint NOT NULL DEFAULT current_milliseconds(),
+	"time_limit" bigint NOT NULL,
+	"memory_limit" bigint NOT NULL,
+	"tests" varchar NOT NULL,
+	"output_type" varchar NOT NULL DEFAULT 'file',
+	"tests_count" bigint NOT NULL,
+	CONSTRAINT problems_pk PRIMARY KEY (id),
+	CONSTRAINT problems_fk0 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+CREATE TABLE "solutions" (
+	"id" bigserial NOT NULL,
+	"user_id" bigint NOT NULL,
+	"problem_id" bigint NOT NULL,
+	"created" bigint NOT NULL DEFAULT current_milliseconds(),
+	"status" varchar NOT NULL DEFAULT 'waiting',
+	"message" varchar,
+	"lang" varchar NOT NULL,
+	CONSTRAINT solutions_pk PRIMARY KEY (id),
+	CONSTRAINT solutions_fk0 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+CREATE TABLE "solution_tests" (
+	"id" bigserial NOT NULL,
+	"solution_id" bigint NOT NULL,
+	"created" bigint NOT NULL DEFAULT current_milliseconds(),
+	"status" varchar NOT NULL,
+	"exec_time" bigint,
+	"exec_memory" bigint,
+	"num" bigint NOT NULL,
+	"message" varchar,
+	CONSTRAINT solution_tests_pk PRIMARY KEY (id),
+	CONSTRAINT solution_tests_fk0 FOREIGN KEY (solution_id) REFERENCES solutions(id) ON DELETE CASCADE
+);
