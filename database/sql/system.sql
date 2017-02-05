@@ -43,7 +43,7 @@ begin
             s.status,
             s.lang
         FROM solutions s
-        WHERE s.id = $2;
+        WHERE s.id = $1;
 end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ begin
             st.status,
             st.num
         FROM solution_tests st
-        WHERE st.solution_id = $2
+        WHERE st.solution_id = $1
         ORDER BY st.num ASC;
 end;
 $$ language plpgsql;

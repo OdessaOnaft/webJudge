@@ -196,6 +196,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                                 reject(err);
                             else{
                                 globalData.solution = data;
+
                                 resolve(data);
                             }
                         });
@@ -204,7 +205,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                 .then((data)=>{
                     return new Promise((resolve, reject)=>{
                         systemDB.getProblem({
-                            problemId: data.solution.problemId
+                            problemId: globalData.solution.problemId
                         }, (err, data)=>{
                             if (err)
                                 reject(err);

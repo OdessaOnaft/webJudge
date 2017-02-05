@@ -71,7 +71,7 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function student_get_my_solutions(bigint, bigint, bigint) returns TABLE(solution_id bigint) as
+create or replace function student_get_my_solutions(bigint, bigint, bigint) returns TABLE(solution_id bigint, problem_id bigint, created bigint, status varchar, lang varchar) as
 $$
 begin
     RETURN QUERY
