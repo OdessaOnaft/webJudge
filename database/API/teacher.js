@@ -6,11 +6,11 @@ module.exports = function(_, mainPg, fs){
                     var args = [
                         inputData.userId,
                         _.map(inputData.name,(v)=>JSON.stringify(v)),
-                        inputData.timeLimit,
-                        inputData.memoryLimit,
+                        inputData.timeLimit || 1000,
+                        inputData.memoryLimit || 67108864,
                         _.map(inputData.description,(v)=>JSON.stringify(v)),
                         inputData.tests,
-                        inputData.outputType,
+                        inputData.outputType || 'file',
                         inputData.tasks.length
                     ];
                     return mainPg('SELECT * FROM teacher_add_problem($1, $2, $3, $4, $5, $6, $7, $8);', args);
