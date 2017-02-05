@@ -56,13 +56,13 @@ module.exports = function(_, mainPg, fs){
                     var args = [
                         inputData.userId,
                         inputData.problemId,
-                        inputData.lang
+                        inputData.lang || 'cpp'
                     ];
                     return mainPg('SELECT * FROM student_submit_solution($1,$2,$3);', args);
                 })
                 .then(resultData=>{
                     resultData = resultData[0];
-                    fs.writeFileSync(`./solutions/${resultData.solutionId}.sol`, data.solution);
+                    fs.writeFileSync(`./solutions/${resultData.solutionId}.sol`, data.source);
                     callback(null, resultData);
                 })
                 .catch(err=>{
