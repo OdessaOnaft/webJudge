@@ -94,7 +94,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                 }
             });
         },
-        runTasks: (data, cb)=>{
+        runTasks: (data)=>{
             return new Promise((resolve, reject)=>{
                 async.mapLimit(data.tasks, 1, (task, cb)=>{
                     var cb2 = cb;
@@ -242,8 +242,15 @@ module.exports = function(_, fs, async, executer, systemDB){
                 })
                 .catch(err=>{
                     fs.unlinkSync(`./${globalData.fileName}`);
+                    var payload = {
+                        solutionId: globalData.solutionId,
+                        status: 'error',
+                        message: err.message || err.stdout
+                    };
                     console.log(err);
-                    cb(null, null);
+                    api.setSolutionResult(payload, (err, data4)=>{
+                        cb(null, null);
+                    });
                 })
         }
     };

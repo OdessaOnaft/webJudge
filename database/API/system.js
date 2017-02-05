@@ -28,8 +28,8 @@ module.exports = function(_, mainPg, fs){
                     return mainPg('SELECT * FROM system_get_solution($1);', args);
                 })
                 .then(resultData=>{
-                    result = resultData[0]; 
-                    result.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`);
+                    result = resultData[0];
+                    result.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`).toString();
                     callback(null, result);
                 })
                 .catch(err=>{
