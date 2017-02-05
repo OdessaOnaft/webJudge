@@ -9,19 +9,21 @@ module.exports = function(_, mainPg, fs){
                         inputData.timeLimit || 1000,
                         inputData.memoryLimit || 67108864,
                         _.map(inputData.description,(v)=>JSON.stringify(v)),
-                        inputData.tests,
+                        JSON.stringify(inputData.samples.slice(0, inputData.publicCount)),
                         inputData.outputType || 'file',
-                        inputData.tasks.length
+                        inputData.samples.length,
+                        inputData.input,
+                        inputData.output
                     ];
                     return mainPg('SELECT * FROM teacher_add_problem($1, $2, $3, $4, $5, $6, $7, $8);', args);
                 })
                 .then(resultData=>{
                     resultData = resultData[0];
-                    data.tasks = _.map(data.tasks, (v, k)=>{
+                    data.samples = _.map(data.samples, (v, k)=>{
                         v.num = +k+1;
                         return v;
                     });
-                    var writeProblem = JSON.stringify(data.tasks);
+                    var writeProblem = JSON.stringify(data.samples);
                     fs.writeFileSync(`./problems/${resultData.problemId}.prb`, writeProblem);
                     callback(null, resultData);
                 })
@@ -39,19 +41,21 @@ module.exports = function(_, mainPg, fs){
                         inputData.timeLimit || 1000,
                         inputData.memoryLimit || 67108864,
                         _.map(inputData.description,(v)=>JSON.stringify(v)),
-                        inputData.tests,
+                        JSON.stringify(inputData.samples.slice(0, inputData.publicCount)),
                         inputData.outputType || 'file',
-                        inputData.tasks.length
+                        inputData.samples.length,
+                        inputData.input,
+                        inputData.output
                     ];
                     return mainPg('SELECT * FROM teacher_edit_problem($1, $2, $3, $4, $5, $6, $7, $8, $9);', args);
                 })
                 .then(resultData=>{
                     resultData = resultData[0];
-                    data.tasks = _.map(data.tasks, (v, k)=>{
+                    data.samples = _.map(data.samples, (v, k)=>{
                         v.num = +k+1;
                         return v;
                     });
-                    var writeProblem = JSON.stringify(data.tasks);
+                    var writeProblem = JSON.stringify(data.samples);
                     fs.writeFileSync(`./problems/${data.problemId}.prb`, writeProblem);
                     callback(null, resultData);
                 })

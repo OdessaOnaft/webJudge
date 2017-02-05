@@ -60,6 +60,7 @@ module.exports = function(_, mainPg, fs){
                 })
                 .then(resultData=>{
                     resultData = resultData[0];
+                    resultData.samples = JSON.parse(resultData.samples);
                     if (data.scope != 'student' && data.scope != 'guest'){
                         if (data.scope != 'teacher' || resultData.userId == data.userId) {
                             var tasks = fs.readFileSync(`./problems/${resultData.problemId}.prb`);

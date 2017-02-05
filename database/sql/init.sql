@@ -85,6 +85,8 @@ CREATE TABLE "problems" (
 	"tests" varchar NOT NULL,
 	"output_type" varchar NOT NULL DEFAULT 'file',
 	"tests_count" bigint NOT NULL,
+	"input" varchar NOT NULL,
+	"output" varchar NOT NULL,
 	CONSTRAINT problems_pk PRIMARY KEY (id),
 	CONSTRAINT problems_fk0 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

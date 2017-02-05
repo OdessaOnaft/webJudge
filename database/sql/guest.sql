@@ -74,7 +74,7 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function guest_get_problem(bigint, varchar) returns TABLE (problem_id bigint, name varchar, created bigint, time_limit bigint, memory_limit bigint, description varchar, tests varchar, output_type varchar, user_id bigint) as
+create or replace function guest_get_problem(bigint, varchar) returns TABLE (problem_id bigint, name varchar, created bigint, time_limit bigint, memory_limit bigint, description varchar, samples varchar, output_type varchar, user_id bigint, input varchar, output varchar) as
 $$
 begin
     return query
