@@ -13,14 +13,16 @@ var _ = require('underscore'),
         guest: require('../Common/database/guest.js')(_, remote(`${conf.database.url}/guest/`, conf.database.secret)),
         student: require('../Common/database/student.js')(_, remote(`${conf.database.url}/student/`, conf.database.secret)),
         teacher: require('../Common/database/teacher.js')(_, remote(`${conf.database.url}/teacher/`, conf.database.secret)),
-        admin: require('../Common/database/admin.js')(_, remote(`${conf.database.url}/admin/`, conf.database.secret))
+        admin: require('../Common/database/admin.js')(_, remote(`${conf.database.url}/admin/`, conf.database.secret)),
+        system: require('../Common/database/system.js')(_, remote(`${conf.database.url}/system/`, conf.database.secret))
     },
     spawn = require('child_process').spawn,
     exec = require('child_process').exec,
     async = require('async'),
     fs = require('fs'),
     executer = require('./executer.js')(spawn, exec),
-    API = require('./executeAPI.js')(_, fs, async, executer);
+    API = require('./executeAPI.js')(_, fs, async, executer, database.system),
+    solutionsQueue = require('./solutionsQueue.js')(_, async, database.system, API);
 
 
 
