@@ -55,6 +55,10 @@ module.exports = function(_, fs, async, executer, systemDB){
                     fs.unlinkSync(`./${filename}.cpp`);
                     if (err || data.code){
                         data.err = err;
+                        if (err)
+                            data.err = err;
+                        if (data.code)
+                            data.err = data.stderr;
                         reject(data);
                     } else {
                         resolve({
