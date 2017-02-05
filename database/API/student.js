@@ -68,6 +68,25 @@ module.exports = function(_, mainPg, fs){
                 .catch(err=>{
                     callback(err, null);
                 });
+
+        },
+        getMySolutions: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.userId,
+                        inputData.skip || 0,
+                        inputData.limit || 100000
+                    ];
+                    return mainPg('SELECT * FROM student_get_my_solutions($1,$2,$3);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+
         }
     }
 };

@@ -23,6 +23,9 @@ module.exports = function(_, conf, Database){
         submitSolution: (session, data, callback)=>{
             data.userId = session.userId;
             Database.submitSolution(data, ok(callback));
+        },
+        getMySolutions: (session, data, callback)=>{
+            Database.getMySolutions(_.pick(session, ['userId']), ok(callback));
         }
     }
 };
