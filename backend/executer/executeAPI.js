@@ -246,7 +246,8 @@ module.exports = function(_, fs, async, executer, systemDB){
                     cb(null, null);
                 })
                 .catch(err=>{
-                    fs.unlinkSync(`./${globalData.fileName}`);
+                    if (fs.existsSync(`./${globalData.fileName}`))
+                        fs.unlinkSync(`./${globalData.fileName}`);
                     var payload = {
                         solutionId: globalData.solutionId,
                         status: 'error',
