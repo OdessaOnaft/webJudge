@@ -25,6 +25,7 @@ module.exports = function(_, mainPg, fs){
                     });
                     var writeProblem = JSON.stringify(data.samples);
                     fs.writeFileSync(`./problems/${resultData.problemId}.prb`, writeProblem);
+                    fs.writeFileSync(`./problems_prog/${resultData.problemId}.dat`, data.outputSource);
                     callback(null, resultData);
                 })
                 .catch(err=>{
