@@ -14,10 +14,11 @@ module.exports = function(_, conf, Database, executeAPI){
             data.userId = session.userId;
             if (data.outputType != 'file') {
                 executeAPI.generateOutFilesForProblem({
-                    lang: data.lang,
+                    lang: data.lang || 'cpp',
                     tasks: data.samples,
                     source: data.outputSource
                 }, (err, data2)=> {
+                    console.log(err, data);
                     data.samples = data2;
                     Database.addProblem(data, ok(callback));
                 })
