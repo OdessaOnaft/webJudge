@@ -15,10 +15,10 @@ module.exports = function(_, conf, Database, executeAPI){
             if (data.outputType != 'file') {
                 executeAPI.generateOutFilesForProblem({
                     lang: data.lang,
-                    tasks: data.tasks,
+                    tasks: data.samples,
                     source: data.outputSource
                 }, (err, data2)=> {
-                    data.tasks = data2;
+                    data.samples = data2;
                     Database.addProblem(data, ok(callback));
                 })
             } else {
