@@ -53,6 +53,11 @@ var app = angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngS
 	        templateUrl: "/html/problems.html",
 	        controller: "problemsController"
 		    })
+		    .state('cabinet.addProblem', {
+	        url:'add-problem/{id}/',
+	        templateUrl: "/html/add_problem.html",
+	        controller: "addProblemController"
+		    })
 		    .state('cabinet.problem', {
 	        url:'problem/{id}/',
 	        templateUrl: "/html/problem.html",
@@ -62,6 +67,11 @@ var app = angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngS
 	        url:'solutions/',
 	        templateUrl: "/html/solutions.html",
 	        controller: "solutionsController"
+		    })
+		    .state('cabinet.solution', {
+	        url:'solution/{id}/',
+	        templateUrl: "/html/solution.html",
+	        controller: "solutionController"
 		    })
 		    .state('cabinet.admin', {
 	        url:'admin/',

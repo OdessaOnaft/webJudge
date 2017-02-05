@@ -16,7 +16,27 @@ angular.module("notifyapp")
       birthdayPlaceholder: "Выберите вашу дату рождения",
       profile: "Профиль",
       save: "Сохранить",
-      logout: "Выйти"
+      logout: "Выйти",
+      student: 'Студент',
+      teacher: 'Учитель',
+      admin: 'Админ',
+      on_moderation: "На подтверждении",
+      editProblem: "Редактировать эту задачу",
+      addProblem: "Добавить задачу",
+      problemName: "Название задачи",
+      problemNamePlaceholder: "Введите название задачи",
+      problemDescription: "Условие задачи",
+      problemDescriptionPlaceholder: "Введите условие задачи",
+      timeLimit: "Лимит времени",
+      timelimitPlaceholder: "Укажите лимит времети (мс)",
+      memoryLimit: "Лимит памяти",
+      memoryLimitPlaceholder: "Укажите лимит памяти (Мбайт)",
+      tests: "Тесты",
+      solution: "Решение",
+      testId: "Тест №",
+      status: "Статус",
+      execTime: "Время выполнения",
+      execMemory: "Затрачено памяти"
     }
     return words
 

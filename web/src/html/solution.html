@@ -1,0 +1,20 @@
+<div class="solution" ng-show="!$root.preloader">
+  <div class="form">
+    <table class="border">
+      <thead>
+        <th>{{translate('testId')}}</th>
+        <th>{{translate('status')}}</th>
+        <th>{{translate('execTime')}}</th>
+        <th>{{translate('execMemory')}}</th>
+      </thead>
+      <tbody>
+        <tr ng-repeat="test in solution.tests track by $index" ui-sref="^.solution({solutionId: solution.solutionId})">
+          <td>{{$index+1}}</td>
+          <td>{{test.status}}</td>
+          <td>{{test.execTime}} ms</td>
+          <td>{{floor(test.execMemory/1024)}} kb</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

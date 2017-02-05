@@ -1,34 +1,30 @@
-<div class="problem">
+<div class="problem" ng-show="!$root.preloader">
   <h1>{{problem.title}}</h1>
-  
-  <h3 ng-bind-html="problem.description"></h3>
+  <button class="default" ui-sref="^.addProblem({id: solve.problemId})" ng-if="user.scope=='admin'">{{translate('editProblem')}}</button>
+  <div ng-bind-html="problem.description"></div>
 
-
-  <p class="title">Input</p>
-  <p ng-bind-html="problem.input"></p>
-
-  <p class="title">Output</p>
-  <p ng-bind-html="problem.output"></p>
 
   <div class="wrapper-problem">
     <div class="samples">
       <table>
         <tr ng-repeat="sample in problem.samples">
           <td>
-            <p ng-repeat="line in sample.input">
-              {{line}}
+            <p>
+              {{sample.input}}
             </p>
           </td>
           <td>
-            <p ng-repeat="line in sample.output">
-                {{line}}
+            <p >
+                {{sample.output}}
               </p>
           </td>
         </tr>
       </table>
-    </div>
 
+    </div>
+    <a ng-click="showAllSamples()" class="blue show-tests">{{translate('showAllTests')}}</a>
     <div class="solve">
+      <input type="file" ng-file-model="solve.sourceFile" style="margin-bottom: 10px;">
       <textarea placeholder="Исходный код программы вставить сюда" ng-model="solve.source"></textarea>
       
       <div class="processing">
@@ -38,6 +34,24 @@
         </button>
         <p class="progress">submiting....</p>
       </div>
+    </div>
+    <div class="solutions" ng-if="solutions.length">
+      <table>
+        <thead>
+          <th>{{translate('solutionId')}}</th>
+          <th>{{translate('created')}}</th>
+          <th>{{translate('lang')}}</th>
+          <th>{{translate('status')}}</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="solution in solutions" ui-sref="^.solution({id: solution.solutionId})">
+            <td>{{solution.solutionId}}</td>
+            <td>{{dateFormat(solution.created)}}</td>
+            <td>{{solution.lang}}</td>
+            <td>{{solution.status}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

@@ -1,12 +1,49 @@
 .form {
 
   table {
+    thead {
+      th {
+        text-align: left;
+      }
+    }
+    &.border {
+      td, th {
+        border: 1px solid #787878;
+        padding: 3px 5px;
+      }
+      tr:nth-child(odd) {
+        td {
+          background: #bebebe;
+        }
+      }
+    }
     tr {
       td {
+        text-align: left;
         &:first-child {
           width: 200px;
+          vertical-align: top;
         }
         padding: 10px 0;
+        div.input-wrapper {
+          label {
+            margin-left: 20px;
+            vertical-align: top;
+            display: inline-block;
+          }
+          input[type="radio"] {
+            position: relative;
+            top: 4px;
+          }
+        }
+        textarea {
+          width: 400px;
+          height: 200px;
+        }
+        input[type="file"] {
+          display: block;
+          margin-bottom: 10px;
+        }
       }
     }
   }

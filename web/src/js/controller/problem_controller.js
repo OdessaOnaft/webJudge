@@ -1,37 +1,76 @@
 angular.module("notifyapp")
-  .controller("problemController", ($scope, $rootScope, $state, $server)=>{
-    console.log($state.params)
-    $scope.solve = {}
-
-    $scope.problem = {
-      title: "Задача о кроликах",
-      description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores, incidunt.",
-      input: "дается 3 числа n,m,k",
-      output: "вывести n чисел - ответ к задаче",
-      samples: [
-        {
-          input: [
-            "5 4 3",
-            "2 4 1 2",
-            "2 4 8 2",
-            "2 3 1 6"
-          ],
-          output: [
-            "7 7 5 4 3"
-          ]
-        },
-        {
-          input: [
-            "2 4 3",
-            "2 4 1 2"
-          ],
-          output: [
-            "7 7"
-          ]
-        },
-      ]
-    }
+  .controller("problemController", ($scope, $rootScope, $state, $server, $window)=>{
+    $scope.solve = {problemId: $state.params.id, lang: "cpp"}
+    $scope.problem = {}
     $scope.submit = ()=>{
-      console.log($scope.solve)
+      $scope.obj = JSON.parse(JSON.stringify($scope.solve))
+      delete $scope.obj.sourceFile
+      $scope.obj.source = $window.btoa($scope.obj.source)
+      $server.submitSolution($scope.obj, (err,data)=>{
+        $scope.$apply(()=>{
+          if(!err) {
+
+          } else {
+
+          }
+        })
+      })
     }
+    $scope.$watch("solve.sourceFile.base64", (val)=>{
+      if(val){
+        $scope.solve.source = $window.atob(val)
+      }
+    })
+    $rootScope.$watch("lang", (val)=>{
+      $scope.getProblem()
+    })
+    $scope.showAllSamples = ()=>{
+      $scope.problem.samples = $scope.problem.allSamples
+    }
+    $scope.getProblem = ()=>{
+      $rootScope.preloader = true
+      $server.getProblem({problemId: $state.params.id, lang: $rootScope.lang}, (err,data)=>{
+        $rootScope.$apply(()=>{
+          $rootScope.preloader = false
+        })
+        $scope.$apply(()=>{
+          if(!err) {
+            $scope.problem = data
+            $scope.problem.allSamples = data.samples
+            $scope.problem.samples = []
+            _.each($scope.problem.allSamples, (el, i)=>{
+              el.input = $window.atob(el.input)
+              el.output = $window.atob(el.output)
+              if(i<2) {
+                $scope.problem.samples.push(el)
+              }
+            })
+
+          } else {
+
+          }
+        })
+        
+      })
+    }
+    $scope.getProblem()
+
+    $scope.getMySolutions = ()=>{
+      $server.getMySolutions({problemId: $state.params.id, skip: 0, limit: 4242}, (err,data)=>{
+        $scope.$apply(()=>{
+          if(!err) {
+            $scope.solutions = []
+            _.each(data, (v)=>{
+              if(v.problemId == $state.params.id) {
+                $scope.solutions.push(v)
+                $server.getSolution(v, (err,data)=>{})
+              }
+            })
+          } else {
+
+          }
+        })
+      })
+    }
+    $scope.getMySolutions()
   })

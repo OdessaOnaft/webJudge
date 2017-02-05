@@ -8,13 +8,15 @@ angular.module("notifyapp")
       }
       $server.checkSession({}, (err,data)=>{
 
-        if(!data)data = {}
-        if(!err) {
-          $scope.user.role = data.role;
-        } else {
-          delete localStorage.token;
-          $state.go("main");
-        }
+        $scope.$apply(()=>{
+          if(!err) {
+            $scope.user = data;
+          } else {
+            delete localStorage.token;
+            $state.go("main");
+          }
+        })
+        
       })
     }
     $scope.checkSession()

@@ -8,18 +8,18 @@
           <input type="text" ng-model="user.name" is-required validator placeholder="{{translate('namePlaceholder')}}">
         </td>
       </tr>
-      <tr>
+<!--       <tr>
         <td>{{translate("email")}}:</td>
         <td>
           <input type="text" ng-model="user.email" is-required validator="email" placeholder="{{translate('emailPlaceholder')}}">
         </td>
-      </tr>
-      <tr>
+      </tr> -->
+     <!--  <tr>
         <td>{{translate("password")}}:</td>
         <td>
           <input type="password" ng-model="user.password" is-required validator placeholder="{{translate('passwordPlaceholder')}}">
         </td>
-      </tr>
+      </tr> -->
       <tr>
         <td>{{translate("phone")}}:</td>
         <td>
@@ -29,7 +29,18 @@
       <tr>
         <td>{{translate("birthday")}}:</td>
         <td>
-          <input type="text" ng-model="user.date" ui-date="dateOptions" is-required validator placeholder="{{translate('birthdayPlaceholder')}}">
+          <input type="text" ng-model="user.birthday" ui-date="dateOptions" is-required validator placeholder="{{translate('birthdayPlaceholder')}}">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>Роль:</p>
+          <p>({{translate(user.scope)}})</p>
+        </td>
+        <td>
+           <div class="input-wrapper"><input type="radio" id="1" ng-model="user.modifiedScope" value="student"><label for="1">{{translate('student')}} <span class="light" ng-if="user.modifiedScopeStart == 'student'">({{translate('on_moderation')}})</span></label></div>
+           <div class="input-wrapper"><input type="radio" id="2" ng-model="user.modifiedScope" value="teacher"><label for="2">{{translate('teacher')}} <span class="light" ng-if="user.modifiedScopeStart == 'teacher'">({{translate('on_moderation')}})</span></label></div>
+           <div class="input-wrapper"><input type="radio" id="3" ng-model="user.modifiedScope" value="admin"><label for="3">{{translate('admin')}} <span class="light" ng-if="user.modifiedScopeStart == 'admin'">({{translate('on_moderation')}})</span></label></div>
         </td>
       </tr>
     </table>
@@ -37,5 +48,6 @@
       <span ng-if="!user.profileSubmitPreloader">{{translate("save")}}</span>
       <span ng-if="user.profileSubmitPreloader" class="button-preloader"></span>
     </button>
+    <p class="error" ng-if="user.error" style="margin-top: 10px;">{{user.error}}</p>
   </div>
 </div>

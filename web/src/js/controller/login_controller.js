@@ -1,5 +1,6 @@
 angular.module("notifyapp")
   .controller("registerController", ($scope, $rootScope, $state, $timeout, $server)=>{
+    delete localStorage.token
     $scope.user={}
     $scope.submitRegister = ()=>{
       $scope.user.isSubmitted = false;
@@ -13,19 +14,29 @@ angular.module("notifyapp")
       changeYear: true
     }
     $scope.register = ()=>{
-      console.log('register.ok')
+      $server.register($scope.user, (err,data)=>{
+        if(!err) {
+          $server.login($scope.user, (err,data)=>{
+            $scope.$apply(()=>{
+              if(!err) {
+                localStorage.token = data.token
+                $state.go("cabinet")
+              }
+            })
+            
+          })
+        }
+      })
     }
   })
   .controller("loginController", ($scope, $rootScope, $state, $server)=>{
+    delete localStorage.token
     $scope.user={}
     $scope.login = ()=>{
       $scope.user.error = "";
       $server.login($scope.user, (err,data)=>{
         $scope.$apply(()=>{
-          if(err===undefined && !err) {
-            if(!data) {
-              data = {token: 'hihiohiho'}
-            }
+          if(!err) {
             localStorage.token = data.token
             $state.go("cabinet")
           } else {

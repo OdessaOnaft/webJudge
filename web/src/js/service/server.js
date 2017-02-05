@@ -5,19 +5,28 @@ angular.module("notifyapp")
       'register',
       'login',
       'checkSession',
-      'editProfile',
-      'getProfile'
+      'submitProfile',
+      'getProfile',
+      'logout',
+      'addProblem',
+      'getProblem',
+      'getProblems',
+      'submitSolution',
+      'getSolutions',
+      'getMySolutions',
+      'getSolution',
+      'getProblemFull'
     ]
     var addMethod = (methodName)=>{
       api[methodName] = (data, callback)=>{
         var domain = "localhost"
-        if(localStorage.token){
-          data.cookies = {
-            sessionId: localStorage.token
-          }
+        domain = "webjudgeapi.westcentralus.cloudapp.azure.com"
+        
+        data.cookies = {
+          sessionId: localStorage.token
         }
         var request = $.ajax({
-          url: 'https://'+domain+'/call/client/'+methodName,
+          url: 'http://'+domain+'/call/'+methodName,
           method: 'POST',
           contentType: "application/json;charset=utf-8",
           headers: {

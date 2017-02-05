@@ -1,6 +1,6 @@
 angular.module("notifyapp")
   .controller("profileController", ($scope, $rootScope, $state, $server, $timeout)=>{
-    $scope.user={}
+    $scope.user = {}
     $rootScope.preloader = true;
     $scope.submitProfile = ()=>{
       $scope.user.isSubmitted = false;
@@ -15,12 +15,14 @@ angular.module("notifyapp")
     }
     $scope.editProfile = ()=>{
       $scope.user.profileSubmitPreloader = true
-      $server.editProfile($scope.user, (err,data)=>{
+      $server.submitProfile($scope.user, (err,data)=>{
         $scope.$apply(()=>{
           if(!err){
             $scope.user.profileSubmitPreloader = false
+            $scope.getProfile()
           } else {
-            console.log("err", err)
+            $scope.user.profileSubmitPreloader = false
+            $scope.user.error = "Ошибка сервера, перезагрузите страницу"
           }
         })
         
@@ -34,6 +36,7 @@ angular.module("notifyapp")
         $scope.$apply(()=>{
           if(!err) {
             $scope.user = data || $scope.user
+            $scope.user.modifiedScopeStart = $scope.user.modifiedScope
           } else {
             console.log("error", err)
           }

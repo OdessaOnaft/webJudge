@@ -1,4 +1,5 @@
 <div class="problems">
+  <button class="default" ui-sref="^.addProblem" ng-if="user.scope=='admin' || user.scope=='teacher'">Добавить задачу</button>
   <table class="problems-table">
     <thead>
       <th>ID</th>
@@ -7,9 +8,9 @@
       <th>Автор</th>
     </thead>
     <tbody>
-      <tr ng-repeat="problem in problems" ui-sref="cabinet.problem({id: problem.id})">
-        <td>{{problem.id}}</td>
-        <td>{{problem.title}}</td>
+      <tr ng-repeat="problem in problems" ui-sref="cabinet.problem({id: problem.problemId})">
+        <td>{{problem.problemId}}</td>
+        <td>{{problem.name}}</td>
         <td><img src="assets/img/muscles.png" alt="" width="14" height="13" ng-repeat="el in nTimes(problem.difficulty)"></td>
         <td>{{problem.author}}</td>
       </tr>
