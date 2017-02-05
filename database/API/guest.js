@@ -134,6 +134,39 @@ module.exports = function(_, mainPg, fs){
                 .catch(err=>{
                     callback(err, null);
                 });
+        },
+        getNews: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.skip || 0,
+                        inputData.limit || 100000,
+                        inputData.lang
+                    ];
+                    return mainPg('SELECT * FROM guest_get_news_list($1,$2,$3);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        getNewsById: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.newsId,
+                        inputData.lang
+                    ];
+                    return mainPg('SELECT * FROM guest_get_news($1,$2);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
         }
     }
 };

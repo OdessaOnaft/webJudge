@@ -117,3 +117,12 @@ CREATE TABLE "solution_tests" (
 	CONSTRAINT solution_tests_pk PRIMARY KEY (id),
 	CONSTRAINT solution_tests_fk0 FOREIGN KEY (solution_id) REFERENCES solutions(id) ON DELETE CASCADE
 );
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+CREATE TABLE "news" (
+	"id" bigserial NOT NULL,
+	"user_id" bigint NOT NULL,
+	"created" bigint NOT NULL DEFAULT current_milliseconds(),
+	CONSTRAINT news_pk PRIMARY KEY (id),
+	CONSTRAINT news_fk0 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

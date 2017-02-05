@@ -29,6 +29,41 @@ module.exports = function(_, mainPg){
                 .catch(err=>{
                     callback(err, null);
                 });
+        },
+        addNews: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.userId,
+                        _.map(inputData.title,(v)=>JSON.stringify(v)),
+                        _.map(inputData.body,(v)=>JSON.stringify(v))
+                    ];
+                    return mainPg('SELECT * FROM admin_add_news($1,$2,$3);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        editNews: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.userId,
+                        inputData.newsId,
+                        _.map(inputData.title,(v)=>JSON.stringify(v)),
+                        _.map(inputData.body,(v)=>JSON.stringify(v))
+                    ];
+                    return mainPg('SELECT * FROM admin_edit_news($1,$2,$3,$4);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
         }
     }
 };

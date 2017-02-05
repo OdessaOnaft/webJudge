@@ -165,3 +165,41 @@ begin
         LIMIT $2;
 end;
 $$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function guest_get_news(bigint, varchar) returns TABLE (news_id bigint, title varchar, created bigint, body varchar, creator varchar) as
+$$
+begin
+    return query
+        SELECT
+            n.id,
+            COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.lang = $2 AND ls.related_type = 'title'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.related_type = 'title' ORDER BY id LIMIT 1)),
+            n.created,
+            COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.lang = $2 AND ls.related_type = 'body'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.related_type = 'body' ORDER BY id LIMIT 1)),
+            p.tests,
+            p.output_type,
+            u.name
+        FROM news n JOIN users u ON u.id = n.user_id WHERE p.id = $1;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function guest_get_news_list(bigint, bigint, varchar) returns TABLE (news_id bigint, title varchar, created bigint, body varchar, creator varchar) as
+$$
+begin
+    return query
+        SELECT
+            n.id,
+            COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.lang = $3 AND ls.related_type = 'title'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.related_type = 'title' ORDER BY id LIMIT 1)),
+            n.created,
+            COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.lang = $3 AND ls.related_type = 'body'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.related_type = 'body' ORDER BY id LIMIT 1)),
+            p.tests,
+            p.output_type,
+            u.name
+        FROM news n JOIN users u ON u.id = n.user_id
+        OFFSET $1
+        LIMIT $2;
+end;
+$$ language plpgsql;

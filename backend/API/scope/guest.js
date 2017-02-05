@@ -35,6 +35,12 @@ module.exports = function(_, conf, Database){
         },
         getSolutionsQueue: (session, data, callback)=>{
             Database.getSolutionsQueue(data, ok(callback));
+        },
+        getNews: (session, data, callback)=>{
+            Database.getNews(data, ok(callback));
+        },
+        getNewsById: (session, data, callback)=>{
+            Database.getNewsById(data, ok(callback));
         }
     }
 };

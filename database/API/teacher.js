@@ -12,8 +12,8 @@ module.exports = function(_, mainPg, fs){
                         JSON.stringify(inputData.samples.slice(0, inputData.publicCount)),
                         inputData.outputType || 'file',
                         inputData.samples.length,
-                        inputData.input,
-                        inputData.output
+                        inputData.input || '',
+                        inputData.output || ''
                     ];
                     return mainPg('SELECT * FROM teacher_add_problem($1, $2, $3, $4, $5, $6, $7, $8);', args);
                 })
@@ -44,8 +44,8 @@ module.exports = function(_, mainPg, fs){
                         JSON.stringify(inputData.samples.slice(0, inputData.publicCount)),
                         inputData.outputType || 'program',
                         inputData.samples.length,
-                        inputData.input,
-                        inputData.output
+                        inputData.input || '',
+                        inputData.output || ''
                     ];
                     return mainPg('SELECT * FROM teacher_edit_problem($1, $2, $3, $4, $5, $6, $7, $8, $9);', args);
                 })
