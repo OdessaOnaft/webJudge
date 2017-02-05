@@ -16,8 +16,8 @@ module.exports = function(_, fs, async, executer, systemDB){
             Promise.resolve(data)
                 .then((execData)=>{
                     return api.buildSolution({
-                        lang: globalData.solution.lang,
-                        source: globalData.problem.source
+                        lang: globalData.lang || 'cpp',
+                        source: globalData.source
                     });
                 })
                 .then(fileData=>{
