@@ -219,7 +219,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                 .then((execData)=>{
                     return api.buildSolution({
                         lang: globalData.solution.lang,
-                        source: globalData.problem.solution
+                        source: globalData.solution.solution
                     });
                 })
                 .then(fileData=>{

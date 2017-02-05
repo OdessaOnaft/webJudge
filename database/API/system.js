@@ -36,7 +36,7 @@ module.exports = function(_, mainPg, fs){
                 })
                 .then(resultData=>{
                     result.tests = resultData;
-                    data.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`);
+                    result.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`);
                     callback(null, result);
                 })
                 .catch(err=>{
