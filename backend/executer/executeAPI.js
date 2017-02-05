@@ -50,7 +50,7 @@ module.exports = function(_, fs, async, executer, systemDB){
         buildSolution: (data)=>{
             return new Promise((resolve, reject)=>{
                 var filename = makeFileNameToken('cpp');
-                fs.writeFileSync(`./${filename}.cpp`, Buffer.from(data.source, 'base64'));
+                fs.writeFileSync(`./${filename}.cpp`, Buffer.from(data.source, 'base64').toString());
                 executer(`g++ ${filename}.cpp -o ${filename}`, (err, data)=>{
                     fs.unlinkSync(`./${filename}.cpp`);
                     if (err || data.code){
