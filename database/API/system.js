@@ -30,7 +30,7 @@ module.exports = function(_, mainPg, fs){
                 .then(inputData=>{
                     result = inputData[0];
                     var args = [
-                        inputData.solutionId
+                        data.solutionId
                     ];
                     return mainPg('SELECT * FROM system_get_solution_tests($1);', args);
                 })
