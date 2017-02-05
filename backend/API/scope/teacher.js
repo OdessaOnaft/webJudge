@@ -27,7 +27,18 @@ module.exports = function(_, conf, Database, executeAPI){
         },
         editProblem: (session, data, callback)=>{
             data.userId = session.userId;
-            Database.editProblem(data, ok(callback));
+            if (data.outputType != 'file') {
+                executeAPI.generateOutFilesForProblem({
+                    lang: data.lang,
+                    tasks: data.samples,
+                    source: data.outputSource
+                }, (err, data2)=> {
+                    data.samples = data2;
+                    Database.editProblem(data, ok(callback));
+                })
+            } else {
+                Database.editProblem(data, ok(callback));
+            }
         }
     }
 };
