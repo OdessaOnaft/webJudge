@@ -27,7 +27,8 @@ module.exports = function(_, remote){
         'getProfile',
         'submitProfile',
         'logout',
-        'submitSolution'
+        'submitSolution',
+        'getMySolutions'
     ].forEach(function(name){
         remoteAPI[name] = remote(name);
     });

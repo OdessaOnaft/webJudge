@@ -1,7 +1,7 @@
 DELETE FROM pg_proc WHERE proname LIKE 'student\_%';
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function student_get_profile(bigint) returns TABLE (name varchar, birthday varchar,  phone varchar, email varchar, note varchar, modified_scope varchar, created bigint, modified bigint, user_id bigint) as
+create or replace function student_get_profile(bigint) returns TABLE (name varchar, birthday varchar,  phone varchar, email varchar, note varchar, modified_scope varchar, created bigint, modified bigint, user_id bigint, scope varchar) as
 $$
 begin
     return query
@@ -14,9 +14,10 @@ begin
         u.modified_scope,
         u.created,
         u.modified,
-        u.id
+        u.id,
+        s.value
     FROM
-        users u
+        users u JOIN scope s ON s.id = u.scope_id
     WHERE
         u.id = $1;
 end;
@@ -26,7 +27,12 @@ $$ language plpgsql;
 create or replace function student_submit_profile(bigint, varchar, varchar, varchar, varchar, varchar) returns boolean as
 $$
 begin
+    IF ((SELECT s.id FROM scope s WHERE s.value = $6) <= (SELECT scope_id FROM users u WHERE u.id = $1)) THEN
+        UPDATE users SET scope_id = (SELECT s.id FROM scope s WHERE s.value = $6) WHERE id = $1;
+        $6 := null;
+    END IF;
     UPDATE users SET name = $2, birthday = $3, phone = $4, note = $5, modified_scope = $6 WHERE id = $1;
+
     RETURN FOUND;
 end;
 $$ language plpgsql
@@ -61,6 +67,25 @@ begin
         END IF;
     END LOOP;
     RETURN QUERY SELECT fn.solution_id;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function student_get_my_solutions(bigint, bigint, bigint) returns TABLE(solution_id bigint, problem_id bigint, created bigint, status varchar, lang varchar) as
+$$
+begin
+    RETURN QUERY
+        SELECT
+            s.id,
+            s.problem_id,
+            s.created,
+            s.status,
+            s.lang
+        FROM solutions s
+        WHERE s.user_id = $1
+        ORDER BY created DESC
+        OFFSET $2
+        LIMIT $3;
 end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------

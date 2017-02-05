@@ -10,6 +10,17 @@ module.exports = function(_, conf, Database){
     }
 
     return {
-
+        acceptUserScope: (session, data, callback)=>{
+            Database.acceptUserScope(data, ok(callback));
+        },
+        rejectUserScope: (session, data, callback)=>{
+            Database.rejectUserScope(data, ok(callback));
+        },
+        getNews: (session, data, callback)=>{
+            Database.getNews(data, ok(callback));
+        },
+        getNewsById: (session, data, callback)=>{
+            Database.getNewsById(data, ok(callback));
+        }
     }
 };

@@ -43,7 +43,7 @@ begin
             s.status,
             s.lang
         FROM solutions s
-        WHERE s.id = $2;
+        WHERE s.id = $1;
 end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ begin
             st.status,
             st.num
         FROM solution_tests st
-        WHERE st.solution_id = $2
+        WHERE st.solution_id = $1
         ORDER BY st.num ASC;
 end;
 $$ language plpgsql;
@@ -77,7 +77,7 @@ $$ language plpgsql;
 create or replace function system_set_solution_result(bigint, varchar, varchar) returns TABLE(result boolean) as
 $$
 begin
-    UPDATE solution_tests SET status = $3, message = $6 WHERE id = $1;
+    UPDATE solutions SET status = $2, message = $3 WHERE id = $1;
     RETURN QUERY SELECT FOUND;
 end;
 $$ language plpgsql;

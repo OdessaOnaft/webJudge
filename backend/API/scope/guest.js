@@ -17,7 +17,8 @@ module.exports = function(_, conf, Database){
             Database.login(data, ok(callback));
         },
         checkSession: (session, data, callback)=>{
-            Database.restoreSession(data, ok(callback));
+            console.log(data.cookies.sessionId);
+            Database.restoreSession(data.cookies.sessionId, ok(callback));
         },
         getProblem: (session, data, callback)=>{
             data.scope = session.userPriviledge;
@@ -34,6 +35,12 @@ module.exports = function(_, conf, Database){
         },
         getSolutionsQueue: (session, data, callback)=>{
             Database.getSolutionsQueue(data, ok(callback));
+        },
+        getNews: (session, data, callback)=>{
+            Database.getNews(data, ok(callback));
+        },
+        getNewsById: (session, data, callback)=>{
+            Database.getNewsById(data, ok(callback));
         }
     }
 };

@@ -60,10 +60,12 @@ module.exports = function(_, mainPg, fs){
                 })
                 .then(resultData=>{
                     resultData = resultData[0];
+                    resultData.samples = JSON.parse(resultData.samples);
                     if (data.scope != 'student' && data.scope != 'guest'){
                         if (data.scope != 'teacher' || resultData.userId == data.userId) {
                             var tasks = fs.readFileSync(`./problems/${resultData.problemId}.prb`);
-                            resultData.tasks = JSON.parse(tasks);
+                            resultData.samples = JSON.parse(tasks);
+                            resultData.outputSource = fs.readFileSync(`./problems_prog/${data.problemId}.dat`);
                         }
                     }
                     delete resultData.userId;
@@ -102,16 +104,16 @@ module.exports = function(_, mainPg, fs){
                 .then(inputData=>{
                     result = inputData[0];
                     var args = [
-                        inputData.solutionId
+                        data.solutionId
                     ];
                     return mainPg('SELECT * FROM guest_get_solution_tests($1);', args);
                 })
                 .then(resultData=>{
                     result.tests = resultData;
                     if (data.scope != 'guest' && data.userId == result.userId){
-                        data.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`);
+                        data.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`).toString();
                     }
-                    callback(null, resultData);
+                    callback(null, result);
                 })
                 .catch(err=>{
                     callback(err, null);
@@ -125,6 +127,39 @@ module.exports = function(_, mainPg, fs){
                         inputData.limit || 100000
                     ];
                     return mainPg('SELECT * FROM guest_get_solutions_queue($1,$2);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        getNews: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.skip || 0,
+                        inputData.limit || 100000,
+                        inputData.lang
+                    ];
+                    return mainPg('SELECT * FROM guest_get_news_list($1,$2,$3);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        getNewsById: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.newsId,
+                        inputData.lang
+                    ];
+                    return mainPg('SELECT * FROM guest_get_news($1,$2);', args);
                 })
                 .then(resultData=>{
                     callback(null, resultData);

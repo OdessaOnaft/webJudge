@@ -9,9 +9,11 @@ module.exports = function(spawn, exec){
         var run = cmd.split(' ')[0];
         cmd = cmd.split(' ').slice(1);
         var child = spawn(run, cmd);
-        setTimeout(()=>{
-            child.kill(55);
-        }, timeLimit);
+        if (timeLimit && typeof timeLimit != 'function'){
+            setTimeout(()=>{
+                child.kill('SIGKILL');
+            }, timeLimit);
+        }
         var res = {
             stdout: '',
             stderr: ''

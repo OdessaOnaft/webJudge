@@ -11,14 +11,54 @@ module.exports = function(_, fs, async, executer, systemDB){
     }
 
     var api = {
+        generateOutFilesForProblem: (data, cb)=>{
+            var globalData = data;
+            Promise.resolve(data)
+                .then((execData)=>{
+                    return api.buildSolution({
+                        lang: globalData.lang || 'cpp',
+                        source: globalData.source
+                    });
+                })
+                .then(fileData=>{
+                    globalData.fileName = fileData.fileName;
+                    return api.generateOutputTasks({
+                        programName: `${fileData.fileName}`,
+                        tasks: globalData.tasks
+                    });
+                })
+                .then((data)=>{
+                    cb(null, data);
+                })
+                .catch(err=>{
+                    cb(err, null);
+                })
+        },
+        generateOutputTasks: (data, cb)=>{
+            return new Promise((resolve, reject)=>{
+                async.mapLimit(data.tasks, 1, (task, cb)=>{
+                    task.output = "";
+                    executer(`./${data.programName}`, new Buffer(task.input, 'base64').toString(), (err, data2)=>{
+                        task.output = new Buffer(data2.stdout).toString('base64');
+                        cb(null, task);
+                    });
+                }, (err, data3)=>{
+                    resolve(data3);
+                })
+            });
+        },
         buildSolution: (data)=>{
             return new Promise((resolve, reject)=>{
                 var filename = makeFileNameToken('cpp');
-                fs.writeFileSync(`./${filename}.cpp`, Buffer.from(data.source, 'base64'));
+                fs.writeFileSync(`./${filename}.cpp`, Buffer.from(data.source, 'base64').toString());
                 executer(`g++ ${filename}.cpp -o ${filename}`, (err, data)=>{
                     fs.unlinkSync(`./${filename}.cpp`);
                     if (err || data.code){
                         data.err = err;
+                        if (err)
+                            data.err = err;
+                        if (data.code)
+                            data.err = data.stderr;
                         reject(data);
                     } else {
                         resolve({
@@ -50,6 +90,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                 status: data.status,
                 message: data.message
             }, (err, data)=>{
+                console.log(err, data);
                 if (err)
                     cb(err, null);
                 else{
@@ -57,7 +98,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                 }
             });
         },
-        runTasks: (data, cb)=>{
+        runTasks: (data)=>{
             return new Promise((resolve, reject)=>{
                 async.mapLimit(data.tasks, 1, (task, cb)=>{
                     var cb2 = cb;
@@ -96,17 +137,17 @@ module.exports = function(_, fs, async, executer, systemDB){
                     task.output = new Buffer(task.output, 'base64').toString().replace(/\r\n/g, '\n');
                     task.output = new Buffer(task.output).toString('base64');
                     var startTime = _.now();
-                    executer(`./${data.programName}`, new Buffer(task.input, 'base64').toString(), (err, data2)=>{
+                    executer(`./${data.programName}`, new Buffer(task.input, 'base64').toString(), data.timeLimit, (err, data2)=>{
                         var execTime = _.now() - startTime;
                         var res = new Buffer(data2.stdout).toString('base64');
-                        console.log(res == task.output);
                         if (err){
                             cb(err, null);
-                        } else if (data2.code == 55) {
+                        } else if (data2.code == 1) {
                             cb({
                                 code: 5,
                                 message: 'Timeout',
                                 taskNumber: task.num,
+                                status: 'timeout',
                                 execTime: execTime
                             }, data);
                         } else if (data2.stderr.length || data2.code){
@@ -114,6 +155,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                                 code: data2.code,
                                 stderr: data2.stderr,
                                 message: data2.stderr,
+                                status: 'error',
                                 taskNumber: task.num,
                                 execTime: execTime
                             }, null);
@@ -122,6 +164,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                                 cb({
                                     code: 4,
                                     message: 'Wrong answer',
+                                    status: 'wrong_answer',
                                     taskNumber: task.num,
                                     execTime: execTime
                                 }, data);
@@ -136,12 +179,16 @@ module.exports = function(_, fs, async, executer, systemDB){
                         }
                     });
                 }, (err, data3)=>{
-                    var resData = err || data3;
                     var payload = {
-                        solutionId: data.solutionId,
-                        status: resData.status,
-                        message: resData.message
+                        solutionId: data.solutionId
                     };
+                    if (err){
+                        payload.status = err.status;
+                        payload.message = err.message;
+                    } else {
+                        payload.status = 'ok';
+                        payload.message = 'ok';
+                    }
                     api.setSolutionResult(payload, (err, data4)=>{
                         resolve(data3);
                     });
@@ -168,7 +215,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                 .then((data)=>{
                     return new Promise((resolve, reject)=>{
                         systemDB.getProblem({
-                            problemId: data.solution.problemId
+                            problemId: globalData.solution.problemId
                         }, (err, data)=>{
                             if (err)
                                 reject(err);
@@ -182,7 +229,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                 .then((execData)=>{
                     return api.buildSolution({
                         lang: globalData.solution.lang,
-                        source: globalData.problem.source
+                        source: globalData.solution.solution
                     });
                 })
                 .then(fileData=>{
@@ -190,14 +237,25 @@ module.exports = function(_, fs, async, executer, systemDB){
                     return api.runTasks({
                         solutionId: globalData.solutionId,
                         programName: `${fileData.fileName}`,
-                        tasks: globalData.problem.tasks
+                        tasks: globalData.problem.tasks,
+                        timeLimit: globalData.problem.timeLimit
                     });
                 })
                 .then((data)=>{
+                    fs.unlinkSync(`./${globalData.fileName}`);
                     cb(null, null);
                 })
                 .catch(err=>{
+                    fs.unlinkSync(`./${globalData.fileName}`);
+                    var payload = {
+                        solutionId: globalData.solutionId,
+                        status: 'error',
+                        message: err.message || err.stdout
+                    };
                     console.log(err);
+                    api.setSolutionResult(payload, (err, data4)=>{
+                        cb(null, null);
+                    });
                 })
         }
     };

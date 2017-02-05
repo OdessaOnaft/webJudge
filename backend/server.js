@@ -9,6 +9,7 @@ var _ = require('underscore'),
     bodyParser = require('body-parser'),
     request = require('request'),
     remote = require('./Common/remote.js')(_, request),
+    executeAPI = require('./Common/executeAPI.js')(_, remote(`${conf.executer.url}/call/`, conf.executer.secret)),
     database = {
         guest: require('./Common/database/guest.js')(_, remote(`${conf.database.url}/guest/`, conf.database.secret)),
         student: require('./Common/database/student.js')(_, remote(`${conf.database.url}/student/`, conf.database.secret)),
@@ -17,7 +18,7 @@ var _ = require('underscore'),
     },
 
     api = require('./api.js'),
-    API = require('./API/index.js')(_, conf, database),
+    API = require('./API/index.js')(_, conf, database, executeAPI),
     scopeAPI = api(_, API.restoreSession, API.api, API.validators);
 
 
@@ -68,6 +69,11 @@ function getHandler(currApi){
         requestDomain.run(function(){
             var methodName = req.url.split('/')[2];
             if(methodName==='login')
+                req.body.cookies.sessionId = null;
+            if (!req.body.cookies){
+                req.body.cookies = {}
+            }
+            if (!req.body.cookies.sessionId)
                 req.body.cookies.sessionId = null;
             if(!_.isObject(req.body)){
                 res.status(400).json({

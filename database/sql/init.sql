@@ -85,6 +85,8 @@ CREATE TABLE "problems" (
 	"tests" varchar NOT NULL,
 	"output_type" varchar NOT NULL DEFAULT 'file',
 	"tests_count" bigint NOT NULL,
+	"input" varchar NOT NULL,
+	"output" varchar NOT NULL,
 	CONSTRAINT problems_pk PRIMARY KEY (id),
 	CONSTRAINT problems_fk0 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -114,4 +116,13 @@ CREATE TABLE "solution_tests" (
 	"message" varchar,
 	CONSTRAINT solution_tests_pk PRIMARY KEY (id),
 	CONSTRAINT solution_tests_fk0 FOREIGN KEY (solution_id) REFERENCES solutions(id) ON DELETE CASCADE
+);
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+CREATE TABLE "news" (
+	"id" bigserial NOT NULL,
+	"user_id" bigint NOT NULL,
+	"created" bigint NOT NULL DEFAULT current_milliseconds(),
+	CONSTRAINT news_pk PRIMARY KEY (id),
+	CONSTRAINT news_fk0 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
