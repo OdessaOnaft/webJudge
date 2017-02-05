@@ -1,4 +1,4 @@
-module.exports = function(_, conf, Database){
+module.exports = function(_, conf, Database, executeAPI){
     function ok(callback){
         return function(err, data){
             if(err){
@@ -12,7 +12,18 @@ module.exports = function(_, conf, Database){
     return {
         addProblem: (session, data, callback)=>{
             data.userId = session.userId;
-            Database.addProblem(data, ok(callback));
+            if (data.outputType != 'file') {
+                executeAPI.generateOutFilesForProblem({
+                    lang: data.lang,
+                    tasks: data.tasks,
+                    source: data.outputSource
+                }, (err, data2)=> {
+                    data.tasks = data2;
+                    Database.addProblem(data, ok(callback));
+                })
+            } else {
+                Database.addProblem(data, ok(callback));
+            }
         },
         editProblem: (session, data, callback)=>{
             data.userId = session.userId;

@@ -11,6 +11,42 @@ module.exports = function(_, fs, async, executer, systemDB){
     }
 
     var api = {
+        generateOutFilesForProblem: (data, cb)=>{
+            var globalData = data;
+            Promise.resolve(data)
+                .then((execData)=>{
+                    return api.buildSolution({
+                        lang: globalData.solution.lang,
+                        source: globalData.problem.source
+                    });
+                })
+                .then(fileData=>{
+                    globalData.fileName = fileData.fileName;
+                    return api.generateOutputTasks({
+                        programName: `${fileData.fileName}`,
+                        tasks: globalData.tasks
+                    });
+                })
+                .then((data)=>{
+                    cb(null, data);
+                })
+                .catch(err=>{
+                    cb(err, null);
+                })
+        },
+        generateOutputTasks: (data, cb)=>{
+            return new Promise((resolve, reject)=>{
+                async.mapLimit(data.tasks, 1, (task, cb)=>{
+                    task.output = "";
+                    executer(`./${data.programName}`, new Buffer(task.input, 'base64').toString(), (err, data2)=>{
+                        task.output = new Buffer(data2.stdout).toString('base64');
+                        cb(null, task);
+                    });
+                }, (err, data3)=>{
+                    resolve(data3);
+                })
+            });
+        },
         buildSolution: (data)=>{
             return new Promise((resolve, reject)=>{
                 var filename = makeFileNameToken('cpp');
@@ -198,6 +234,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                 })
                 .catch(err=>{
                     console.log(err);
+                    cb(null, null);
                 })
         }
     };

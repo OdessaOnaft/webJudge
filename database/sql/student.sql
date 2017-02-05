@@ -27,7 +27,12 @@ $$ language plpgsql;
 create or replace function student_submit_profile(bigint, varchar, varchar, varchar, varchar, varchar) returns boolean as
 $$
 begin
+    IF ((SELECT s.id FROM scope s WHERE s.value = $6) <= (SELECT scope_id FROM users u WHERE u.id = $1)) THEN
+        UPDATE users SET scope_id = (SELECT s.id FROM scope s WHERE s.value = $6) WHERE id = $1;
+        $6 := null;
+    END IF;
     UPDATE users SET name = $2, birthday = $3, phone = $4, note = $5, modified_scope = $6 WHERE id = $1;
+
     RETURN FOUND;
 end;
 $$ language plpgsql
