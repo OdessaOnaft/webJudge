@@ -1,5 +1,5 @@
-var app = angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize']);
-	app.run(['$state', '$rootScope', '$location',  ($state, $rootScope, $location)=>{
+angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize'])
+	.run(['$state', '$rootScope', '$location',  ($state, $rootScope, $location)=>{
 		var path = $location.path()
     if(path[path.length-1] != '/'){
       $location.path(path+'/')
