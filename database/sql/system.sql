@@ -77,7 +77,7 @@ $$ language plpgsql;
 create or replace function system_set_solution_result(bigint, varchar, varchar) returns TABLE(result boolean) as
 $$
 begin
-    UPDATE solution_tests SET status = $3, message = $6 WHERE id = $1;
+    UPDATE solution_tests SET status = $2, message = $3 WHERE id = $1;
     RETURN QUERY SELECT FOUND;
 end;
 $$ language plpgsql;

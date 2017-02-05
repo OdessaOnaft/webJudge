@@ -86,6 +86,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                 status: data.status,
                 message: data.message
             }, (err, data)=>{
+                console.log(err, data);
                 if (err)
                     cb(err, null);
                 else{
@@ -135,7 +136,6 @@ module.exports = function(_, fs, async, executer, systemDB){
                     executer(`./${data.programName}`, new Buffer(task.input, 'base64').toString(), (err, data2)=>{
                         var execTime = _.now() - startTime;
                         var res = new Buffer(data2.stdout).toString('base64');
-                        console.log(res == task.output);
                         if (err){
                             cb(err, null);
                         } else if (data2.code == 1) {
@@ -143,6 +143,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                                 code: 5,
                                 message: 'Timeout',
                                 taskNumber: task.num,
+                                status: 'timeout',
                                 execTime: execTime
                             }, data);
                         } else if (data2.stderr.length || data2.code){
@@ -150,6 +151,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                                 code: data2.code,
                                 stderr: data2.stderr,
                                 message: data2.stderr,
+                                status: 'error',
                                 taskNumber: task.num,
                                 execTime: execTime
                             }, null);
@@ -158,6 +160,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                                 cb({
                                     code: 4,
                                     message: 'Wrong answer',
+                                    status: 'wrong_answer',
                                     taskNumber: task.num,
                                     execTime: execTime
                                 }, data);
@@ -172,12 +175,16 @@ module.exports = function(_, fs, async, executer, systemDB){
                         }
                     });
                 }, (err, data3)=>{
-                    var resData = err || data3;
                     var payload = {
-                        solutionId: data.solutionId,
-                        status: resData.status,
-                        message: resData.message
+                        solutionId: data.solutionId
                     };
+                    if (err){
+                        payload.status = err.status;
+                        payload.message = err.message;
+                    } else {
+                        payload.status = 'ok';
+                        payload.message = 'ok';
+                    }
                     api.setSolutionResult(payload, (err, data4)=>{
                         resolve(data3);
                     });
