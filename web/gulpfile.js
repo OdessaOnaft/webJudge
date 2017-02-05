@@ -15,6 +15,7 @@ var inject = require('gulp-inject');
 var angularFilesort = require('gulp-angular-filesort');
 var htmlmin = require('gulp-htmlmin');
 var clean = require('gulp-clean');
+var mainBowerFiles = require('main-bower-files');
 var templateCache = require('gulp-angular-templatecache');
 var wiredep = require('wiredep').stream;
 var cleanCSS = require('gulp-clean-css');
@@ -110,7 +111,9 @@ gulp.task('assets', function() {
 gulp.task('minify-js',['angular-template'], function(cb) {
   pump([
         gulp.src('dist/*.js'),
-        uglify(),
+        angularFilesort(),
+        concat('index.js'),
+        // uglify(),
         gulp.dest('build/scripts')
     ],
     cb()
@@ -134,11 +137,12 @@ gulp.task('clean-build', function () {
 
 gulp.task('angular-template', function (cb) {
   pump([
-    gulp.src('dist/html/**/*.html'),
+    gulp.src(['dist/**/*.html', "!index.html"]),
     templateCache('templateCacheHtml.js', {
       module: 'notifyapp',
-      // root: 'dist'
+      root: '/'
     }),
+
     gulp.dest('dist')
   ]),
   cb()
@@ -150,7 +154,27 @@ gulp.task('assets-build', function() {
 });
 
 
-gulp.task('html-build',['minify-css', 'minify-js','assets-build'], function(cb) {
+
+gulp.task('bower-build', function(cb) {
+    pump([
+      gulp.src(mainBowerFiles({
+                paths: {
+                    bowerDirectory: 'bower_components',
+                    bowerrc: '.bowerrc',
+                    bowerJson: 'bower.json'
+      }})),
+      concat("vendor.js"),
+      uglify(),
+      gulp.dest('build/scripts')
+      
+    ]),
+    cb()
+});
+
+
+
+
+gulp.task('html-build',['minify-css', 'minify-js','assets-build', 'bower-build'], function(cb) {
   pump([
     gulp.src('dist/index.html'),
     gulp.dest('build')
