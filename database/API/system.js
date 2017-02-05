@@ -27,15 +27,7 @@ module.exports = function(_, mainPg, fs){
                     ];
                     return mainPg('SELECT * FROM system_get_solution($1);', args);
                 })
-                .then(inputData=>{
-                    result = inputData[0];
-                    var args = [
-                        data.solutionId
-                    ];
-                    return mainPg('SELECT * FROM system_get_solution_tests($1);', args);
-                })
                 .then(resultData=>{
-                    result.tests = resultData;
                     result.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`);
                     callback(null, result);
                 })

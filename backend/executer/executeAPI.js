@@ -196,7 +196,6 @@ module.exports = function(_, fs, async, executer, systemDB){
                                 reject(err);
                             else{
                                 globalData.solution = data;
-
                                 resolve(data);
                             }
                         });
