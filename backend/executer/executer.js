@@ -10,7 +10,7 @@ module.exports = function(spawn, exec){
         cmd = cmd.split(' ').slice(1);
         var child = spawn(run, cmd);
         setTimeout(()=>{
-            child.kill(55);
+            child.kill('SIGKILL');
         }, timeLimit);
         var res = {
             stdout: '',

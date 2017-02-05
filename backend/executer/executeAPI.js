@@ -138,7 +138,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                         console.log(res == task.output);
                         if (err){
                             cb(err, null);
-                        } else if (data2.code == 55) {
+                        } else if (data2.code == 1) {
                             cb({
                                 code: 5,
                                 message: 'Timeout',
