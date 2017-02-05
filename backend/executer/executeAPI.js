@@ -230,9 +230,11 @@ module.exports = function(_, fs, async, executer, systemDB){
                     });
                 })
                 .then((data)=>{
+                    fs.unlinkSync(`./${globalData.fileName}`);
                     cb(null, null);
                 })
                 .catch(err=>{
+                    fs.unlinkSync(`./${globalData.fileName}`);
                     console.log(err);
                     cb(null, null);
                 })
