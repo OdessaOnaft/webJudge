@@ -133,7 +133,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                     task.output = new Buffer(task.output, 'base64').toString().replace(/\r\n/g, '\n');
                     task.output = new Buffer(task.output).toString('base64');
                     var startTime = _.now();
-                    executer(`./${data.programName}`, new Buffer(task.input, 'base64').toString(), (err, data2)=>{
+                    executer(`./${data.programName}`, new Buffer(task.input, 'base64').toString(), data.timeLimit, (err, data2)=>{
                         var execTime = _.now() - startTime;
                         var res = new Buffer(data2.stdout).toString('base64');
                         if (err){
@@ -233,7 +233,8 @@ module.exports = function(_, fs, async, executer, systemDB){
                     return api.runTasks({
                         solutionId: globalData.solutionId,
                         programName: `${fileData.fileName}`,
-                        tasks: globalData.problem.tasks
+                        tasks: globalData.problem.tasks,
+                        timeLimit: globalData.problem.timeLimit
                     });
                 })
                 .then((data)=>{
