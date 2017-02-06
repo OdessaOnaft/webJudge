@@ -65,6 +65,20 @@ module.exports = function(_, mainPg, fs){
                         if (data.scope != 'teacher' || resultData.userId == data.userId) {
                             var tasks = fs.readFileSync(`./problems/${resultData.problemId}.prb`);
                             resultData.samples = JSON.parse(tasks);
+                            resultData.samples = _.map(resultData.samples, (v)=>{
+                                v = {
+                                    input: new Buffer(v.input, 'base64').toString(),
+                                    output: new Buffer(v.output, 'base64').toString()
+                                };
+                                if (v.input.length > 256)
+                                    v.input = v.input.substr(0, 253) + '...';
+                                if (v.output.length > 256)
+                                    v.output = v.output.substr(0, 253) + '...';
+                                return {
+                                    input: new Buffer(v.input).toString('base64'),
+                                    output: new Buffer(v.output).toString('base64')
+                                };
+                            });
                             resultData.outputSource = fs.readFileSync(`./problems_prog/${data.problemId}.dat`);
                         }
                     }
