@@ -30,9 +30,7 @@ var app = express();
 app.use(compress());
 app.use(cors());
 app.use(cookieParser());
-app.use(bodyParser.json({
-    limit: '50mb'
-}));
+app.use(bodyParser.json({limit: '1gb'}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(function(err, req, res, next) {
     if(err){
