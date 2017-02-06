@@ -76,9 +76,10 @@ module.exports = function(_, mainPg, fs){
                     var args = [
                         inputData.userId,
                         inputData.skip || 0,
-                        inputData.limit || 100000
+                        inputData.limit || 100000,
+                        inputData.lang
                     ];
-                    return mainPg('SELECT * FROM student_get_my_solutions($1,$2,$3);', args);
+                    return mainPg('SELECT * FROM student_get_my_solutions($1,$2,$3,$4);', args);
                 })
                 .then(resultData=>{
                     callback(null, resultData);

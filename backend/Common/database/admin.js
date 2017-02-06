@@ -27,7 +27,8 @@ module.exports = function(_, remote){
         'acceptUserScope',
         'rejectUserScope',
         'addNews',
-        'editNews'
+        'editNews',
+        'getUsers'
     ].forEach(function(name){
         remoteAPI[name] = remote(name);
     });

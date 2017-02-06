@@ -16,11 +16,14 @@ module.exports = function(_, conf, Database){
         rejectUserScope: (session, data, callback)=>{
             Database.rejectUserScope(data, ok(callback));
         },
-        getNews: (session, data, callback)=>{
-            Database.getNews(data, ok(callback));
+        addNews: (session, data, callback)=>{
+            Database.addNews(data, ok(callback));
         },
-        getNewsById: (session, data, callback)=>{
-            Database.getNewsById(data, ok(callback));
+        editNews: (session, data, callback)=>{
+            Database.editNews(data, ok(callback));
+        },
+        getUsers: (session, data, callback)=>{
+            Database.getUsers(data, ok(callback));
         }
     }
 };

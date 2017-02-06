@@ -30,7 +30,7 @@ var http = require('http'),
 pg.defaults.poolSize = 80;
 
 var app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '1gb'}));
 app.use(cors());
 app.use(function(err, req, res, next) {
     if(err){

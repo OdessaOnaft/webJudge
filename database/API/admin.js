@@ -64,6 +64,22 @@ module.exports = function(_, mainPg){
                 .catch(err=>{
                     callback(err, null);
                 });
+        },
+        getUsers: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.skip || 0,
+                        inputData.limit || 100000
+                    ];
+                    return mainPg('SELECT * FROM admin_get_users($1,$2);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
         }
     }
 };
