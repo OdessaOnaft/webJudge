@@ -63,3 +63,23 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
+create or replace function admin_get_users(bigint, bigint) returns TABLE(user_id bigint, name varchar, scope varchar, modified_scope varchar) as
+$$
+<<fn>>
+begin
+    return query
+        SELECT
+            u.id,
+            u.name,
+            s.value,
+            u.modified_scope
+        FROM
+            users u JOIN scope s ON s.id = u.scope_id
+        ORDER BY
+            CASE WHEN u.modified_scope IS NOT NULL THEN 0 ELSE 1 END, u.created DESC
+        OFFSET $1
+        LIMIT $2;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------

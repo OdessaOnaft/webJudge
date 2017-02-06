@@ -21,6 +21,9 @@ module.exports = function(_, conf, Database){
         },
         editNews: (session, data, callback)=>{
             Database.editNews(data, ok(callback));
+        },
+        getUsers: (session, data, callback)=>{
+            Database.getUsers(data, ok(callback));
         }
     }
 };
