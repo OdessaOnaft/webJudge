@@ -9,7 +9,7 @@
       </thead>
       <tbody>
         <tr ng-repeat="test in solution.tests track by $index" ui-sref="^.solution({solutionId: solution.solutionId})">
-          <td>{{$index+1}}</td>
+          <td><span style="width: 25px;display: inline-block;">{{$index+1}}</span> <img src="assets/img/tick.png" alt="" ng-if="test.status=='ok'" width="13" height="13" ></td>
           <td>{{test.status}}</td>
           <td>{{test.execTime}} ms</td>
           <td>{{floor(test.execMemory/1024)}} kb</td>

@@ -78,6 +78,9 @@ angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize'])
 	        templateUrl: "/html/admin.html",
 	        controller: "adminController"
 		    })
+		    .state('cabinet.admin.child', {
+	        url:'{type}/'
+		    })
 		    .state('cabinet.groups', {
 	        url:'groups/',
 	        templateUrl: "/html/groups.html",

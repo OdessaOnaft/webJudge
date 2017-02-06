@@ -27,6 +27,9 @@ angular.module("notifyapp")
       })
       $state.go("main");
     }
+    $scope.prevent = $rootScope.prevent = (e)=>{
+      e.stopPropagation();
+    }
     $scope.nTimes = (n)=>{
       var a = [];
       for(var i=0;i<n;i++) {

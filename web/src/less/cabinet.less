@@ -138,6 +138,21 @@
     }
     tbody {
       tr {
+        &.green {
+          td {
+            background: #00b700;
+          }
+        }
+        &.yellow {
+          td {
+            background: #ff0;
+          }
+        }
+        &.red {
+          td {
+            background: #ff7d7d;
+          }
+        }
         td {
           cursor: pointer;
           text-align: left;
@@ -146,5 +161,22 @@
       }
     }
     
+  }
+}
+
+
+.admin {
+  ul.links {
+    li {
+      display: inline-block;
+      margin-left: 20px;
+      a {
+        font-weight: 600;
+        text-decoration: underline;
+      }
+      &:first-child {
+        margin-left: 0;
+      }
+    }
   }
 }
