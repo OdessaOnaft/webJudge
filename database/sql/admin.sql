@@ -63,7 +63,7 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function admin_get_users(bigint, bigint) returns TABLE(user_id bigint, name varchar, scope varchar, modified_scope varchar) as
+create or replace function admin_get_users(bigint, bigint) returns TABLE(user_id bigint, name varchar, scope varchar, modified_scope varchar, email varchar) as
 $$
 <<fn>>
 begin
@@ -72,7 +72,8 @@ begin
             u.id,
             u.name,
             s.value,
-            u.modified_scope
+            u.modified_scope,
+            u.email
         FROM
             users u JOIN scope s ON s.id = u.scope_id
         ORDER BY

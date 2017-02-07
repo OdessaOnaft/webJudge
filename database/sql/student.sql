@@ -73,7 +73,7 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function student_get_my_solutions(bigint, bigint, bigint, varchar) returns TABLE(solution_id bigint, problem_id bigint, created bigint, status varchar, lang varchar, problem_name varchar) as
+create or replace function student_get_my_solutions(bigint, bigint, bigint, varchar) returns TABLE(solution_id bigint, problem_id bigint, created bigint, status varchar, lang varchar, problem_name varchar, test_count bigint, test_passed bigint) as
 $$
 begin
     RETURN QUERY
@@ -83,7 +83,9 @@ begin
             s.created,
             s.status,
             s.lang,
-            COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = s.problem_id AND ls.lang = $4 AND ls.related_type = 'name'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = s.problem_id AND ls.related_type = 'name' ORDER BY id LIMIT 1))
+            COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = s.problem_id AND ls.lang = $4 AND ls.related_type = 'name'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = s.problem_id AND ls.related_type = 'name' ORDER BY id LIMIT 1)),
+            (SELECT COUNT(*) FROM solution_tests st WHERE st.solution_id = s.id),
+            (SELECT COUNT(*) FROM solution_tests st WHERE st.solution_id = s.id AND st.status = 'ok'::varchar)
         FROM solutions s
         WHERE s.user_id = $1
         ORDER BY created DESC
@@ -93,7 +95,7 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function student_get_solutions_by_problem_id(bigint, bigint, bigint, bigint, varchar) returns TABLE(solution_id bigint, problem_id bigint, created bigint, status varchar, lang varchar, problem_name varchar) as
+create or replace function student_get_solutions_by_problem_id(bigint, bigint, bigint, bigint, varchar) returns TABLE(solution_id bigint, problem_id bigint, created bigint, status varchar, lang varchar, problem_name varchar, test_count bigint, test_passed bigint) as
 $$
 begin
     RETURN QUERY
@@ -103,7 +105,9 @@ begin
             s.created,
             s.status,
             s.lang,
-            COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = s.problem_id AND ls.lang = $5 AND ls.related_type = 'name'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = s.problem_id AND ls.related_type = 'name' ORDER BY id LIMIT 1))
+            COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = s.problem_id AND ls.lang = $5 AND ls.related_type = 'name'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = s.problem_id AND ls.related_type = 'name' ORDER BY id LIMIT 1)),
+            (SELECT COUNT(*) FROM solution_tests st WHERE st.solution_id = s.id),
+            (SELECT COUNT(*) FROM solution_tests st WHERE st.solution_id = s.id AND st.status = 'ok'::varchar)
         FROM solutions s
         WHERE s.user_id = $1 AND s.problem_id = $2
         ORDER BY created DESC

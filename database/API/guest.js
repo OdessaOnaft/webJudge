@@ -125,7 +125,7 @@ module.exports = function(_, mainPg, fs){
                 .then(resultData=>{
                     result.tests = resultData;
                     if (data.scope != 'guest' && data.userId == result.userId){
-                        data.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`).toString();
+                        result.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`).toString();
                     }
                     callback(null, result);
                 })

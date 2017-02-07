@@ -120,7 +120,7 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function guest_get_solution(bigint) returns TABLE(solution_id bigint, user_id bigint, problem_id bigint, created bigint, status varchar, message varchar, lang varchar) as
+create or replace function guest_get_solution(bigint) returns TABLE(solution_id bigint, user_id bigint, problem_id bigint, created bigint, status varchar, message varchar, lang varchar, test_count bigint, test_passed bigint) as
 $$
 begin
     RETURN QUERY
@@ -131,7 +131,9 @@ begin
             s.created,
             s.status,
             s.message,
-            s.lang
+            s.lang,
+            (SELECT COUNT(*) FROM solution_tests st WHERE st.solution_id = s.id),
+            (SELECT COUNT(*) FROM solution_tests st WHERE st.solution_id = s.id AND st.status = 'ok'::varchar)
         FROM solutions s
         WHERE s.id = $1;
 end;
