@@ -161,7 +161,7 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function guest_get_solutions_queue(bigint, bigint) returns TABLE(solution_id bigint, problem_id bigint, created bigint, status varchar, lang varchar) as
+create or replace function guest_get_solutions_queue(bigint, bigint, varchar) returns TABLE(solution_id bigint, problem_id bigint, created bigint, status varchar, lang varchar, user_id bigint, user_name varchar, test_count bigint, test_passed bigint, problem_name varchar) as
 $$
 begin
     RETURN QUERY
@@ -170,8 +170,13 @@ begin
             s.problem_id,
             s.created,
             s.status,
-            s.lang
-        FROM solutions s
+            s.lang,
+            s.user_id,
+            u.name,
+            (SELECT COUNT(*) FROM solution_tests st WHERE st.solution_id = s.id),
+            (SELECT COUNT(*) FROM solution_tests st WHERE st.solution_id = s.id AND st.status = 'ok'::varchar),
+            COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = s.problem_id AND ls.lang = $3 AND ls.related_type = 'name'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = s.problem_id AND ls.related_type = 'name' ORDER BY id LIMIT 1))
+        FROM solutions s JOIN users u ON u.id = s.user_id
         ORDER BY created DESC
         OFFSET $1
         LIMIT $2;
