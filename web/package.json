@@ -20,6 +20,7 @@
     "gulp-serve": "^1.4.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^2.0.0",
+    "gulp-uglifyjs": "^0.6.2",
     "gulp-watch": "^4.3.10",
     "main-bower-files": "^2.13.1",
     "path": "^0.12.7",

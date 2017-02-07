@@ -12,6 +12,7 @@ var babel = require('gulp-babel');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var inject = require('gulp-inject');
+var uglify2 = require('gulp-uglifyjs');
 var angularFilesort = require('gulp-angular-filesort');
 var htmlmin = require('gulp-htmlmin');
 var clean = require('gulp-clean');
@@ -198,7 +199,7 @@ gulp.task('js-build', ['angular-template-build'], function(cb) {
     babel({presets: ['es2015']}),
     angularFilesort(),
     concat('index.js'),
-    // uglify(),
+    uglify({mangle: false}),
     gulp.dest('build/')
   ])
   cb();
@@ -210,6 +211,7 @@ gulp.task('css-build', function(cb) {
     gulp.src('./src/less/**/*.less'),
     less({}),
     concat('index.css'),
+    cleanCSS(),
     gulp.dest('./build/css')
   ])
   cb();
