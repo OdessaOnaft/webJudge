@@ -59,7 +59,10 @@ module.exports = function(_, fs, async, executer, systemDB){
                             data.err = err;
                         if (data.code)
                             data.err = data.stderr;
-                        reject(data);
+                        reject({
+                            status: 'build error',
+                            message: data.stderr
+                        });
                     } else {
                         resolve({
                             fileName: filename
@@ -142,7 +145,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                         var res = new Buffer(data2.stdout).toString('base64');
                         if (err){
                             cb(err, null);
-                        } else if (data2.code == 1) {
+                        } else if (data2.code == 666) {
                             cb({
                                 code: 5,
                                 message: 'Timeout',
@@ -242,7 +245,8 @@ module.exports = function(_, fs, async, executer, systemDB){
                     });
                 })
                 .then((data)=>{
-                    fs.unlinkSync(`./${globalData.fileName}`);
+                    if (fs.existsSync(`./${globalData.fileName}`))
+                        fs.unlinkSync(`./${globalData.fileName}`);
                     cb(null, null);
                 })
                 .catch(err=>{
@@ -250,7 +254,7 @@ module.exports = function(_, fs, async, executer, systemDB){
                         fs.unlinkSync(`./${globalData.fileName}`);
                     var payload = {
                         solutionId: globalData.solutionId,
-                        status: 'error',
+                        status: err.status || 'error',
                         message: err.message || err.stdout
                     };
                     console.log(err);

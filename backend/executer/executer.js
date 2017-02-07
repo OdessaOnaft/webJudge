@@ -11,7 +11,7 @@ module.exports = function(spawn, exec){
         var child = spawn(run, cmd);
         if (timeLimit && typeof timeLimit != 'function'){
             setTimeout(()=>{
-                child.kill('SIGKILL');
+                child.kill('SIGUSR1');
             }, timeLimit);
         }
         var res = {
@@ -24,8 +24,11 @@ module.exports = function(spawn, exec){
         child.stderr.on('data', (data) => {
             res.stderr+=data;
         });
-        child.on('close', (code) => {
+        child.on('close', (code, signal) => {
             res.code = code;
+            if (signal == 'SIGUSR1'){
+                res.code = 666;
+            }
             callback(null, res);
         });
         if (typeof stdin != 'function'){
