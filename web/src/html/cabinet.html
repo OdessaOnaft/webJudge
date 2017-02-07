@@ -1,11 +1,12 @@
 <div class="wrapper cabinet">
   <div class="left-menu">
     <ul>
-      <li ui-sref=".profile"><a>{{translate('myProfile')}}</a></li>
+      <li ui-sref=".profile" ng-if="!$root.isGuest"><a>{{translate('myProfile')}}</a></li>
+      <li ui-sref=".solutionsQueue"><a>{{translate('queue')}}</a></li>
       <li ui-sref=".news"><a>{{translate('news')}}</a></li>
       <li ui-sref=".problems"><a>{{translate('tasks')}}</a></li>
-      <li ui-sref=".solutions"><a>{{translate('mySolutions')}}</a></li>
-      <li ui-sref=".groups"><a>{{translate('myGroups')}}</a></li>
+      <li ui-sref=".solutions" ng-if="!$root.isGuest"><a>{{translate('mySolutions')}}</a></li>
+      <li ui-sref=".groups" ng-if="!$root.isGuest"><a>{{translate('myGroups')}}</a></li>
       <li ui-sref=".admin" ng-if="user.scope=='admin'"><a>{{translate('administration')}}</a></li>
     </ul>
   </div><!--

@@ -1,5 +1,5 @@
 angular.module("notifyapp")
-  .controller("mainController", ($scope, $rootScope, $state, $translate, $server, $formatter)=>{
+  .controller("mainController", ($scope, $rootScope, $state, $translate, $server, $formatter, $timeout)=>{
     if(!localStorage.lang) {
       localStorage.lang = "ru"
     }
@@ -14,8 +14,38 @@ angular.module("notifyapp")
     $scope.floor = $rootScope.floor = (v)=>{
       return Math.floor(v*100)/100
     }
+
+
+    $timeout(()=>{
+      $scope.checkSession2 = ()=>{
+        if(!localStorage.token) {
+          // $state.go("main")
+          $rootScope.isGuest = true
+          return;
+        }
+        $server.checkSession({}, (err,data)=>{
+
+          $scope.$apply(()=>{
+            if(!err) {
+              $scope.user = data;
+              $rootScope.isGuest = false
+              $state.go('cabinet')
+            } else {
+              delete localStorage.token;
+              // $state.go("main");
+              $rootScope.isGuest = true
+            }
+          })
+          
+        })
+      }
+      if($state.current.name.indexOf('cabinet')==-1) {
+        $scope.checkSession2()
+      }
+    }, 50)
+    
     $scope.logout = ()=>{
-      
+      $rootScope.isGuest = true
       $server.logout({}, (err, data)=>{
         $scope.$apply(()=>{
           if(!err) {

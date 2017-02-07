@@ -2,17 +2,17 @@
   <img src="assets/img/js.png" width="50" height="50" alt="js">
   <img src="assets/img/menu.svg" alt="" id="menu-img" ng-click="showMenu =! showMenu">
   <ul class="links">
-    <li ng-if="!state.includes('cabinet')"><a ui-sref="login">{{translate("logIn")}}</a></li>
-    <li ng-if="!state.includes('cabinet')"><a ui-sref="register">{{translate("register")}}</a></li>
+    <li ng-if="$root.isGuest"><a ui-sref="login">{{translate("logIn")}}</a></li>
+    <li ng-if="$root.isGuest"><a ui-sref="register">{{translate("register")}}</a></li>
     <li><a ng-click="setLang('ru')">Ru</a></li>
     <li><a ng-click="setLang('en')">En</a></li>
-    <li ng-if="state.includes('cabinet')"><a ng-click="logout()">{{translate("logout")}}</a></li>
+    <li ng-if="!$root.isGuest"><a ng-click="logout()">{{translate("logout")}}</a></li>
   </ul>
   <ul class="links-mobile" ng-show="showMenu" ng-click="showMenu = false">
-    <li ui-sref="login" ng-if="!state.includes('cabinet')"><a>{{translate("logIn")}}</a></li>
-    <li ui-sref="register" ng-if="!state.includes('cabinet')"><a>{{translate("register")}}</a></li>
+    <li ui-sref="login" ng-if="$root.isGuest"><a>{{translate("logIn")}}</a></li>
+    <li ui-sref="register" ng-if="$root.isGuest"><a>{{translate("register")}}</a></li>
     <li ng-click="setLang('ru')"><a>Ru</a></li>
     <li ng-click="setLang('en')"><a>En</a></li>
-    <li ng-click="logout()" ng-if="state.includes('cabinet')"><a>{{translate("logout")}}</a></li>
+    <li ng-click="logout()" ng-if="!$root.isGuest"><a>{{translate("logout")}}</a></li>
   </ul>
 </div>

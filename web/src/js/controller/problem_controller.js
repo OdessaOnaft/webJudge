@@ -13,8 +13,8 @@ angular.module("notifyapp")
               $interval.cancel($scope.submitInterval)
             }
             $scope.submitInterval = $interval(()=>{
-              $scope.getMySolutions()
-            }, 400)
+              $scope.getSolutionsByProblemId()
+            }, 300)
           } else {
 
           }
@@ -62,8 +62,8 @@ angular.module("notifyapp")
     $scope.$on("$destroy", ()=>{
       $interval.cancel($scope.submitInterval)
     })
-    $scope.getMySolutions = ()=>{
-      $server.getMySolutions({problemId: $state.params.id, skip: 0, limit: 4242}, (err,data)=>{
+    $scope.getSolutionsByProblemId = ()=>{
+      $server.getSolutionsByProblemId({problemId: $state.params.id, skip: 0, limit: 4242}, (err,data)=>{
         $scope.$apply(()=>{
           if(!err) {
             $scope.solutions = []
@@ -84,5 +84,5 @@ angular.module("notifyapp")
         })
       })
     }
-    $scope.getMySolutions()
+    $scope.getSolutionsByProblemId()
   })
