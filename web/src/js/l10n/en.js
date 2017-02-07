@@ -36,7 +36,20 @@ angular.module("notifyapp")
       testId: "Test #",
       status: "Status",
       execTime: "Execution time",
-      execMemory: "Execution memory"
+      execMemory: "Execution memory",
+      myProfile: "My profile",
+      news: "News",
+      tasks: "Problems",
+      mySolutions: "My Solves",
+      myGroups: "My groups",
+      administration: "Administration",
+      noSolutions: "You haven't any solution, submit some problem and you will see solutions here.",
+      solutionId: "Solution #",
+      problemId: "Problem #",
+      created: "Created",
+      lang: "Language",
+      cpp: "C++",
+      problemName: 'Problem name'
     }
     return words
 

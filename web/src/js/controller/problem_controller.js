@@ -1,5 +1,5 @@
 angular.module("notifyapp")
-  .controller("problemController", ($scope, $rootScope, $state, $server, $window)=>{
+  .controller("problemController", ($scope, $rootScope, $state, $server, $window, $interval)=>{
     $scope.solve = {problemId: $state.params.id, lang: "cpp"}
     $scope.problem = {}
     $scope.submit = ()=>{
@@ -9,7 +9,12 @@ angular.module("notifyapp")
       $server.submitSolution($scope.obj, (err,data)=>{
         $scope.$apply(()=>{
           if(!err) {
-
+            if($scope.submitInterval) {
+              $interval.cancel($scope.submitInterval)
+            }
+            $scope.submitInterval = $interval(()=>{
+              $scope.getMySolutions()
+            }, 400)
           } else {
 
           }
@@ -54,18 +59,25 @@ angular.module("notifyapp")
       })
     }
     $scope.getProblem()
-
+    $scope.$on("$destroy", ()=>{
+      $interval.cancel($scope.submitInterval)
+    })
     $scope.getMySolutions = ()=>{
       $server.getMySolutions({problemId: $state.params.id, skip: 0, limit: 4242}, (err,data)=>{
         $scope.$apply(()=>{
           if(!err) {
             $scope.solutions = []
+            var isWaiting = false
             _.each(data, (v)=>{
               if(v.problemId == $state.params.id) {
                 $scope.solutions.push(v)
-                $server.getSolution(v, (err,data)=>{})
+                if(v.status=='waiting')isWaiting = true
+                // $server.getSolution(v, (err,data)=>{})
               }
             })
+            if(!isWaiting) {
+              $interval.cancel($scope.submitInterval)
+            }
           } else {
 
           }

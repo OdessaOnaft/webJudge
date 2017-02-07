@@ -36,7 +36,20 @@ angular.module("notifyapp")
       testId: "Тест №",
       status: "Статус",
       execTime: "Время выполнения",
-      execMemory: "Затрачено памяти"
+      execMemory: "Затрачено памяти",
+      myProfile: "Мой профиль",
+      news: "Новости",
+      tasks: "Задачи",
+      mySolutions: "Мои решения",
+      myGroups: "Мои группы",
+      administration: "Администрирование",
+      noSolutions: "У вас пока нет решений, вы сможете смотреть свои решения здесь, когда они у вас будут.",
+      solutionId: "Решение №",
+      problemId: "Задача №",
+      created: "Дата отправки",
+      lang: "Язык",
+      cpp: "C++",
+      problemName: 'Название задачи'
     }
     return words
 

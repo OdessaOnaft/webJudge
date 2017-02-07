@@ -44,10 +44,10 @@
           <th>{{translate('status')}}</th>
         </thead>
         <tbody>
-          <tr ng-repeat="solution in solutions" ui-sref="^.solution({id: solution.solutionId})">
+          <tr ng-repeat="solution in solutions" ui-sref="^.solution({id: solution.solutionId})" ng-class="{'green': solution.status=='ok', 'yellow': solution.status=='waiting', 'red': (solution.status!='ok'&&solution.status!='waiting')}">
             <td>{{solution.solutionId}}</td>
             <td>{{dateFormat(solution.created)}}</td>
-            <td>{{solution.lang}}</td>
+            <td>{{translate(solution.lang)}}</td>
             <td>{{solution.status}}</td>
           </tr>
         </tbody>

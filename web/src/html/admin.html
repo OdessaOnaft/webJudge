@@ -1,1 +1,15 @@
-<div class="admin"></div>
+<div class="admin">
+  <ul class="links">
+    <li><a ui-sref="cabinet.admin.child({type:'news'})">Посмотреть новости</a></li>
+    <li><a ui-sref="cabinet.admin.child({type:'addNews'})">Добавить новость</a></li>
+    <li><a ui-sref="cabinet.admin.child({type:'users'})">Пользователи</a></li>
+  </ul>
+
+  <div class="admin-content">
+    <div class="news" ng-if="state.type=='news'"></div>
+
+    <div class="add-news" ng-if="state.type=='addNews'"></div>
+
+    <div class="users" ng-if="state.type=='users'"></div>
+  </div>
+</div>

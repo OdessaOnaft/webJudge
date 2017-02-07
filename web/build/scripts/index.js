@@ -62,6 +62,8 @@ angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize'])
 		url: 'admin/',
 		templateUrl: "/html/admin.html",
 		controller: "adminController"
+	}).state('cabinet.admin.child', {
+		url: '{type}/'
 	}).state('cabinet.groups', {
 		url: 'groups/',
 		templateUrl: "/html/groups.html",
@@ -72,7 +74,7 @@ angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize'])
 
 angular.module("notifyapp").factory('$server', function ($state) {
   var api = {};
-  var methods = ['register', 'login', 'checkSession', 'submitProfile', 'getProfile', 'logout', 'addProblem', 'getProblem', 'getProblems', 'submitSolution', 'getSolutions', 'getMySolutions', 'getSolution', 'getProblemFull'];
+  var methods = ['register', 'login', 'checkSession', 'submitProfile', 'getProfile', 'logout', 'addProblem', 'getProblem', 'getProblems', 'submitSolution', 'getSolutions', 'getMySolutions', 'getSolution', 'getProblemFull', 'acceptUserScope', 'rejectUserScope', 'getNews', 'getNewsById', 'addNews', 'editNews'];
   var addMethod = function addMethod(methodName) {
     api[methodName] = function (data, callback) {
       var domain = "localhost";
@@ -134,8 +136,10 @@ angular.module("notifyapp").factory('$formatter', function ($state) {
 });
 "use strict";
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 angular.module("notifyapp").factory('$translateRu', [function () {
-  var words = {
+  var words = _defineProperty({
     name: "Имя",
     logIn: "Войти",
     namePlaceholder: "Введите ваше имя",
@@ -171,14 +175,28 @@ angular.module("notifyapp").factory('$translateRu', [function () {
     testId: "Тест №",
     status: "Статус",
     execTime: "Время выполнения",
-    execMemory: "Затрачено памяти"
-  };
+    execMemory: "Затрачено памяти",
+    myProfile: "Мой профиль",
+    news: "Новости",
+    tasks: "Задачи",
+    mySolutions: "Мои решения",
+    myGroups: "Мои группы",
+    administration: "Администрирование",
+    noSolutions: "У вас пока нет решений, вы сможете смотреть свои решения здесь, когда они у вас будут.",
+    solutionId: "Решение №",
+    problemId: "Задача №",
+    created: "Дата отправки",
+    lang: "Язык",
+    cpp: "C++"
+  }, "problemName", 'Название задачи');
   return words;
 }]);
 "use strict";
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 angular.module("notifyapp").factory('$translateEn', [function () {
-  var words = {
+  var words = _defineProperty({
     name: "Name",
     logIn: "Login",
     namePlaceholder: "Enter your name",
@@ -214,359 +232,22 @@ angular.module("notifyapp").factory('$translateEn', [function () {
     testId: "Test #",
     status: "Status",
     execTime: "Execution time",
-    execMemory: "Execution memory"
-  };
+    execMemory: "Execution memory",
+    myProfile: "My profile",
+    news: "News",
+    tasks: "Problems",
+    mySolutions: "My Solves",
+    myGroups: "My groups",
+    administration: "Administration",
+    noSolutions: "You haven't any solution, submit some problem and you will see solutions here.",
+    solutionId: "Solution #",
+    problemId: "Problem #",
+    created: "Created",
+    lang: "Language",
+    cpp: "C++"
+  }, "problemName", 'Problem name');
   return words;
 }]);
-"use strict";
-
-angular.module("notifyapp").controller("solutionsController", function ($scope, $rootScope, $state, $server) {}).controller("solutionController", function ($scope, $rootScope, $state, $server) {
-  $scope.solution = {};
-
-  $scope.getSolution = function () {
-    $rootScope.preloader = true;
-    $server.getSolution({ solutionId: $state.params.id }, function (err, data) {
-      $rootScope.$apply(function () {
-        $rootScope.preloader = false;
-      });
-      $scope.$apply(function () {
-        if (!err) {
-          $scope.solution = data;
-        } else {}
-      });
-    });
-  };
-  $scope.getSolution();
-});
-"use strict";
-
-angular.module("notifyapp").controller("profileController", function ($scope, $rootScope, $state, $server, $timeout) {
-  $scope.user = {};
-  $rootScope.preloader = true;
-  $scope.submitProfile = function () {
-    $scope.user.isSubmitted = false;
-    $timeout(function () {
-      $scope.user.isSubmitted = true;
-    });
-  };
-  $scope.dateOptions = {
-    dateFormat: "dd.mm.yy",
-    maxDate: 0,
-    changeYear: true
-  };
-  $scope.editProfile = function () {
-    $scope.user.profileSubmitPreloader = true;
-    $server.submitProfile($scope.user, function (err, data) {
-      $scope.$apply(function () {
-        if (!err) {
-          $scope.user.profileSubmitPreloader = false;
-          $scope.getProfile();
-        } else {
-          $scope.user.profileSubmitPreloader = false;
-          $scope.user.error = "Ошибка сервера, перезагрузите страницу";
-        }
-      });
-    });
-  };
-  $scope.getProfile = function () {
-    $server.getProfile({}, function (err, data) {
-      $rootScope.$apply(function () {
-        $rootScope.preloader = false;
-      });
-      $scope.$apply(function () {
-        if (!err) {
-          $scope.user = data || $scope.user;
-          $scope.user.modifiedScopeStart = $scope.user.modifiedScope;
-        } else {
-          console.log("error", err);
-        }
-      });
-    });
-  };
-  $scope.getProfile();
-});
-"use strict";
-
-angular.module("notifyapp").controller("problemController", function ($scope, $rootScope, $state, $server, $window) {
-  $scope.solve = { problemId: $state.params.id, lang: "cpp" };
-  $scope.problem = {};
-  $scope.submit = function () {
-    $scope.obj = JSON.parse(JSON.stringify($scope.solve));
-    delete $scope.obj.sourceFile;
-    $scope.obj.source = $window.btoa($scope.obj.source);
-    $server.submitSolution($scope.obj, function (err, data) {
-      $scope.$apply(function () {
-        if (!err) {} else {}
-      });
-    });
-  };
-  $scope.$watch("solve.sourceFile.base64", function (val) {
-    if (val) {
-      $scope.solve.source = $window.atob(val);
-    }
-  });
-  $rootScope.$watch("lang", function (val) {
-    $scope.getProblem();
-  });
-  $scope.showAllSamples = function () {
-    $scope.problem.samples = $scope.problem.allSamples;
-  };
-  $scope.getProblem = function () {
-    $rootScope.preloader = true;
-    $server.getProblem({ problemId: $state.params.id, lang: $rootScope.lang }, function (err, data) {
-      $rootScope.$apply(function () {
-        $rootScope.preloader = false;
-      });
-      $scope.$apply(function () {
-        if (!err) {
-          $scope.problem = data;
-          $scope.problem.allSamples = data.samples;
-          $scope.problem.samples = [];
-          _.each($scope.problem.allSamples, function (el, i) {
-            el.input = $window.atob(el.input);
-            el.output = $window.atob(el.output);
-            if (i < 2) {
-              $scope.problem.samples.push(el);
-            }
-          });
-        } else {}
-      });
-    });
-  };
-  $scope.getProblem();
-
-  $scope.getMySolutions = function () {
-    $server.getMySolutions({ problemId: $state.params.id, skip: 0, limit: 4242 }, function (err, data) {
-      $scope.$apply(function () {
-        if (!err) {
-          $scope.solutions = [];
-          _.each(data, function (v) {
-            if (v.problemId == $state.params.id) {
-              $scope.solutions.push(v);
-              $server.getSolution(v, function (err, data) {});
-            }
-          });
-        } else {}
-      });
-    });
-  };
-  $scope.getMySolutions();
-});
-"use strict";
-
-angular.module("notifyapp").controller("problemsController", function ($scope, $rootScope, $state, $server) {
-  $scope.problems = [];
-  $scope.getProblems = function () {
-    $server.getProblems({ skip: 0, limit: 4242, lang: $rootScope.lang }, function (err, data) {
-      $scope.$apply(function () {
-        if (!err) {
-          $scope.problems = data;
-        } else {}
-      });
-    });
-  };
-  $scope.getProblems();
-});
-"use strict";
-
-angular.module("notifyapp").controller("newsController", function ($scope, $rootScope, $state, $server) {});
-"use strict";
-
-angular.module("notifyapp").controller("mainController", function ($scope, $rootScope, $state, $translate, $server, $formatter) {
-  if (!localStorage.lang) {
-    localStorage.lang = "ru";
-  }
-  $rootScope.dateFormat = $scope.dateFormat = $formatter.dateFormat;
-  $rootScope.lang = localStorage.lang;
-  $scope.state = $state;
-  $rootScope.translate = $scope.translate = $translate;
-  $scope.setLang = function (lang) {
-    $rootScope.lang = lang;
-    localStorage.lang = lang;
-  };
-  $scope.floor = $rootScope.floor = function (v) {
-    return Math.floor(v * 100) / 100;
-  };
-  $scope.logout = function () {
-
-    $server.logout({}, function (err, data) {
-      $scope.$apply(function () {
-        if (!err) {
-          delete localStorage.token;
-        } else {
-          delete localStorage.token;
-        }
-      });
-    });
-    $state.go("main");
-  };
-  $scope.nTimes = function (n) {
-    var a = [];
-    for (var i = 0; i < n; i++) {
-      a.push(i);
-    }
-    return a;
-  };
-}).controller("homeController", function ($scope, $rootScope, $state) {});
-"use strict";
-
-angular.module("notifyapp").controller("registerController", function ($scope, $rootScope, $state, $timeout, $server) {
-  delete localStorage.token;
-  $scope.user = {};
-  $scope.submitRegister = function () {
-    $scope.user.isSubmitted = false;
-    $timeout(function () {
-      $scope.user.isSubmitted = true;
-    });
-  };
-  $scope.dateOptions = {
-    dateFormat: "dd.mm.yy",
-    maxDate: 0,
-    changeYear: true
-  };
-  $scope.register = function () {
-    $server.register($scope.user, function (err, data) {
-      if (!err) {
-        $server.login($scope.user, function (err, data) {
-          $scope.$apply(function () {
-            if (!err) {
-              localStorage.token = data.token;
-              $state.go("cabinet");
-            }
-          });
-        });
-      }
-    });
-  };
-}).controller("loginController", function ($scope, $rootScope, $state, $server) {
-  delete localStorage.token;
-  $scope.user = {};
-  $scope.login = function () {
-    $scope.user.error = "";
-    $server.login($scope.user, function (err, data) {
-      $scope.$apply(function () {
-        if (!err) {
-          localStorage.token = data.token;
-          $state.go("cabinet");
-        } else {
-          $scope.user.error = "Неверный логин или пароль";
-        }
-      });
-    });
-  };
-});
-"use strict";
-
-angular.module("notifyapp").controller("groupsController", function ($scope, $rootScope, $state, $server) {});
-"use strict";
-
-angular.module("notifyapp").controller("cabinetController", function ($scope, $rootScope, $state, $server) {
-  $scope.user = {};
-  $scope.checkSession = function () {
-    if (!localStorage.token) {
-      $state.go("main");
-      return;
-    }
-    $server.checkSession({}, function (err, data) {
-
-      $scope.$apply(function () {
-        if (!err) {
-          $scope.user = data;
-        } else {
-          delete localStorage.token;
-          $state.go("main");
-        }
-      });
-    });
-  };
-  $scope.checkSession();
-});
-"use strict";
-
-angular.module("notifyapp").controller("adminController", function ($scope, $rootScope, $state, $server) {});
-"use strict";
-
-angular.module("notifyapp").controller("addProblemController", function ($scope, $rootScope, $state, $server, $window, $timeout) {
-  $window.s = $scope;
-
-  var interval = setInterval(function () {
-    localStorage.addProblem = JSON.stringify($scope.problem);
-  }, 1000);
-  $scope.$on("$destroy", function () {
-    clearInterval(interval);
-  });
-
-  $server.checkSession({}, function (err, data) {
-    $scope.$apply(function () {
-      if (!err) {
-        $scope.user = data;
-        if ($scope.user.scope != 'admin' && $scope.user.scope != 'teacher') {
-          $state.go("cabinet.problems");
-        }
-      } else {
-        delete localStorage.token;
-        $state.go("cabinet.problems");
-      }
-    });
-  });
-  if (!localStorage.addProblem) {
-    $scope.problem = {
-      name: [{ lang: 'ru' }, { lang: 'en' }],
-      description: [{ lang: 'ru' }, { lang: 'en' }],
-      outputSourceFile: {},
-      samples: []
-    };
-  } else {
-    $scope.problem = JSON.parse(localStorage.addProblem);
-  }
-  if ($state.params.id) {
-    $rootScope.preloader = true;
-    $server.getProblemFull({ problemId: $state.params.id }, function (err, data) {
-      $scope.$apply(function () {
-        if (!err) {
-          $scope.problem = data;
-        }
-      });
-    });
-  }
-  $scope.$watch("problem.outputSourceFile[0].base64", function (val) {
-    if (val) {
-      $scope.problem.outputSource = $window.atob(val);
-    }
-  });
-
-  $scope.submitAddProblem = function () {
-    $scope.problem.isSubmitted = false;
-    $timeout(function () {
-      $scope.problem.isSubmitted = true;
-    });
-  };
-  $scope.addProblem = function () {
-    $scope.obj = JSON.parse(JSON.stringify($scope.problem));
-    $scope.obj.outputSource = $window.btoa($scope.obj.outputSource);
-    $scope.obj.memoryLimit = $scope.obj.memoryLimit * 1024 * 1024;
-    delete $scope.problem.isSubmitted;
-    _.each($scope.obj.samples, function (el, i) {
-      el.input = el.base64;
-      delete el.url;
-      delete el.base64;
-    });
-    delete $scope.obj.outputSourceFile;
-    delete $scope.obj.isSubmitted;
-    $scope.obj.publicCount = 2;
-    $server.addProblem($scope.obj, function (err, data) {
-      $scope.$apply(function () {
-        if (!err) {
-          $scope.user.addProblemPreloader = false;
-          $state.go("cabinet.problem", { id: data.problemId });
-        } else {
-          $scope.user.addProblemPreloader = false;
-          $scope.user.error = "Ошибка сервера, перезагрузите страницу";
-        }
-      });
-    });
-  };
-});
 'use strict';
 
 angular.module("notifyapp").factory('$validators', function () {
@@ -717,9 +398,456 @@ angular.module("notifyapp").directive('ngFileModel', ['$parse', '$http', '$windo
         }
     };
 }]);
+"use strict";
+
+angular.module("notifyapp").controller("solutionsController", function ($scope, $rootScope, $state, $server) {
+
+  $scope.getMySolutions = function () {
+    $rootScope.preloader = true;
+    $server.getMySolutions({ problemId: $state.params.id, skip: 0, limit: 4242, lang: $rootScope.lang }, function (err, data) {
+      $rootScope.$apply(function () {
+        $rootScope.preloader = false;
+      });
+      $scope.$apply(function () {
+        if (!err) {
+          $scope.solutions = data;
+        } else {}
+      });
+    });
+  };
+  $scope.getMySolutions();
+  $rootScope.$watch("lang", function (val) {
+    $scope.getMySolutions();
+  });
+}).controller("solutionController", function ($scope, $rootScope, $state, $server) {
+  $scope.solution = {};
+
+  $scope.getSolution = function () {
+    $rootScope.preloader = true;
+    $server.getSolution({ solutionId: $state.params.id }, function (err, data) {
+      $rootScope.$apply(function () {
+        $rootScope.preloader = false;
+      });
+      $scope.$apply(function () {
+        if (!err) {
+          $scope.solution = data;
+        } else {}
+      });
+    });
+  };
+  $scope.getSolution();
+});
+"use strict";
+
+angular.module("notifyapp").controller("profileController", function ($scope, $rootScope, $state, $server, $timeout) {
+  $scope.user = {};
+  $rootScope.preloader = true;
+  $scope.submitProfile = function () {
+    $scope.user.isSubmitted = false;
+    $timeout(function () {
+      $scope.user.isSubmitted = true;
+    });
+  };
+  $scope.dateOptions = {
+    dateFormat: "dd.mm.yy",
+    maxDate: 0,
+    changeYear: true
+  };
+  $scope.editProfile = function () {
+    $scope.user.profileSubmitPreloader = true;
+    $server.submitProfile($scope.user, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {
+          $scope.user.profileSubmitPreloader = false;
+          $scope.getProfile();
+        } else {
+          $scope.user.profileSubmitPreloader = false;
+          $scope.user.error = "Ошибка сервера, перезагрузите страницу";
+        }
+      });
+    });
+  };
+  $scope.getProfile = function () {
+    $server.getProfile({}, function (err, data) {
+      $rootScope.$apply(function () {
+        $rootScope.preloader = false;
+      });
+      $scope.$apply(function () {
+        if (!err) {
+          $scope.user = data || $scope.user;
+          $scope.user.modifiedScopeStart = $scope.user.modifiedScope;
+        } else {
+          console.log("error", err);
+        }
+      });
+    });
+  };
+  $scope.getProfile();
+});
+"use strict";
+
+angular.module("notifyapp").controller("problemController", function ($scope, $rootScope, $state, $server, $window, $interval) {
+  $scope.solve = { problemId: $state.params.id, lang: "cpp" };
+  $scope.problem = {};
+  $scope.submit = function () {
+    $scope.obj = JSON.parse(JSON.stringify($scope.solve));
+    delete $scope.obj.sourceFile;
+    $scope.obj.source = $window.btoa($scope.obj.source);
+    $server.submitSolution($scope.obj, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {
+          if ($scope.submitInterval) {
+            $interval.cancel($scope.submitInterval);
+          }
+          $scope.submitInterval = $interval(function () {
+            $scope.getMySolutions();
+          }, 400);
+        } else {}
+      });
+    });
+  };
+  $scope.$watch("solve.sourceFile.base64", function (val) {
+    if (val) {
+      $scope.solve.source = $window.atob(val);
+    }
+  });
+  $rootScope.$watch("lang", function (val) {
+    $scope.getProblem();
+  });
+  $scope.showAllSamples = function () {
+    $scope.problem.samples = $scope.problem.allSamples;
+  };
+  $scope.getProblem = function () {
+    $rootScope.preloader = true;
+    $server.getProblem({ problemId: $state.params.id, lang: $rootScope.lang }, function (err, data) {
+      $rootScope.$apply(function () {
+        $rootScope.preloader = false;
+      });
+      $scope.$apply(function () {
+        if (!err) {
+          $scope.problem = data;
+          $scope.problem.allSamples = data.samples;
+          $scope.problem.samples = [];
+          _.each($scope.problem.allSamples, function (el, i) {
+            el.input = $window.atob(el.input);
+            el.output = $window.atob(el.output);
+            if (i < 2) {
+              $scope.problem.samples.push(el);
+            }
+          });
+        } else {}
+      });
+    });
+  };
+  $scope.getProblem();
+  $scope.$on("$destroy", function () {
+    $interval.cancel($scope.submitInterval);
+  });
+  $scope.getMySolutions = function () {
+    $server.getMySolutions({ problemId: $state.params.id, skip: 0, limit: 4242 }, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {
+          $scope.solutions = [];
+          var isWaiting = false;
+          _.each(data, function (v) {
+            if (v.problemId == $state.params.id) {
+              $scope.solutions.push(v);
+              if (v.status == 'waiting') isWaiting = true;
+              // $server.getSolution(v, (err,data)=>{})
+            }
+          });
+          if (!isWaiting) {
+            $interval.cancel($scope.submitInterval);
+          }
+        } else {}
+      });
+    });
+  };
+  $scope.getMySolutions();
+});
+"use strict";
+
+angular.module("notifyapp").controller("problemsController", function ($scope, $rootScope, $state, $server) {
+  $scope.problems = [];
+  $scope.getProblems = function () {
+    $server.getProblems({ skip: 0, limit: 4242, lang: $rootScope.lang }, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {
+          $scope.problems = data;
+        } else {}
+      });
+    });
+  };
+  $scope.getProblems();
+});
+"use strict";
+
+angular.module("notifyapp").controller("newsController", function ($scope, $rootScope, $state, $server) {});
+"use strict";
+
+angular.module("notifyapp").controller("mainController", function ($scope, $rootScope, $state, $translate, $server, $formatter) {
+  if (!localStorage.lang) {
+    localStorage.lang = "ru";
+  }
+  $rootScope.dateFormat = $scope.dateFormat = $formatter.dateFormat;
+  $rootScope.lang = localStorage.lang;
+  $scope.state = $state;
+  $rootScope.translate = $scope.translate = $translate;
+  $scope.setLang = function (lang) {
+    $rootScope.lang = lang;
+    localStorage.lang = lang;
+  };
+  $scope.floor = $rootScope.floor = function (v) {
+    return Math.floor(v * 100) / 100;
+  };
+  $scope.logout = function () {
+
+    $server.logout({}, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {
+          delete localStorage.token;
+        } else {
+          delete localStorage.token;
+        }
+      });
+    });
+    $state.go("main");
+  };
+  $scope.prevent = $rootScope.prevent = function (e) {
+    e.stopPropagation();
+  };
+  $scope.nTimes = function (n) {
+    var a = [];
+    for (var i = 0; i < n; i++) {
+      a.push(i);
+    }
+    return a;
+  };
+}).controller("homeController", function ($scope, $rootScope, $state) {});
+"use strict";
+
+angular.module("notifyapp").controller("registerController", function ($scope, $rootScope, $state, $timeout, $server) {
+  delete localStorage.token;
+  $scope.user = {};
+  $scope.submitRegister = function () {
+    $scope.user.isSubmitted = false;
+    $timeout(function () {
+      $scope.user.isSubmitted = true;
+    });
+  };
+  $scope.dateOptions = {
+    dateFormat: "dd.mm.yy",
+    maxDate: 0,
+    changeYear: true
+  };
+  $scope.register = function () {
+    $server.register($scope.user, function (err, data) {
+      if (!err) {
+        $server.login($scope.user, function (err, data) {
+          $scope.$apply(function () {
+            if (!err) {
+              localStorage.token = data.token;
+              $state.go("cabinet");
+            }
+          });
+        });
+      }
+    });
+  };
+}).controller("loginController", function ($scope, $rootScope, $state, $server) {
+  delete localStorage.token;
+  $scope.user = {};
+  $scope.login = function () {
+    $scope.user.error = "";
+    $server.login($scope.user, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {
+          localStorage.token = data.token;
+          $state.go("cabinet");
+        } else {
+          $scope.user.error = "Неверный логин или пароль";
+        }
+      });
+    });
+  };
+});
+"use strict";
+
+angular.module("notifyapp").controller("groupsController", function ($scope, $rootScope, $state, $server) {});
+"use strict";
+
+angular.module("notifyapp").controller("cabinetController", function ($scope, $rootScope, $state, $server) {
+  $scope.user = {};
+  $scope.checkSession = function () {
+    if (!localStorage.token) {
+      $state.go("main");
+      return;
+    }
+    $server.checkSession({}, function (err, data) {
+
+      $scope.$apply(function () {
+        if (!err) {
+          $scope.user = data;
+        } else {
+          delete localStorage.token;
+          $state.go("main");
+        }
+      });
+    });
+  };
+  $scope.checkSession();
+});
+"use strict";
+
+angular.module("notifyapp").controller("adminController", function ($scope, $rootScope, $state, $server) {
+  $scope.acceptUserScope = function () {
+    $server.acceptUserScope({}, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {}
+      });
+    });
+  };
+  $scope.rejectUserScope = function () {
+    $server.rejectUserScope({}, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {}
+      });
+    });
+  };
+  $scope.getNews = function () {
+    $server.getNews({}, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {
+          $scope.news = data;
+        }
+      });
+    });
+  };
+  $scope.getNewsById = function () {
+    $server.getNewsById({}, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {}
+      });
+    });
+  };
+  $scope.addNews = function () {
+    $server.addNews({}, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {}
+      });
+    });
+  };
+  $scope.editNews = function () {
+    $server.editNews({}, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {}
+      });
+    });
+  };
+  var events = {
+    addNews: function addNews() {},
+    news: function news() {
+      $scope.getNews();
+    },
+    users: function users() {
+      $scope.getUsers();
+    }
+  };
+  $scope.$on("$stateChangeSuccess", function () {
+    var state = $state.params.type;
+    console.log(state);
+
+    if (state) {
+      events[state]();
+    }
+  });
+});
+"use strict";
+
+angular.module("notifyapp").controller("addProblemController", function ($scope, $rootScope, $state, $server, $window, $timeout) {
+  $window.s = $scope;
+
+  var interval = setInterval(function () {
+    localStorage.addProblem = JSON.stringify($scope.problem);
+  }, 1000);
+  $scope.$on("$destroy", function () {
+    clearInterval(interval);
+  });
+
+  $server.checkSession({}, function (err, data) {
+    $scope.$apply(function () {
+      if (!err) {
+        $scope.user = data;
+        if ($scope.user.scope != 'admin' && $scope.user.scope != 'teacher') {
+          $state.go("cabinet.problems");
+        }
+      } else {
+        delete localStorage.token;
+        $state.go("cabinet.problems");
+      }
+    });
+  });
+  if (!localStorage.addProblem) {
+    $scope.problem = {
+      name: [{ lang: 'ru' }, { lang: 'en' }],
+      description: [{ lang: 'ru' }, { lang: 'en' }],
+      outputSourceFile: {},
+      samples: []
+    };
+  } else {
+    $scope.problem = JSON.parse(localStorage.addProblem);
+  }
+  if ($state.params.id) {
+    $rootScope.preloader = true;
+    $server.getProblemFull({ problemId: $state.params.id }, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {
+          $scope.problem = data;
+        }
+      });
+    });
+  }
+  $scope.$watch("problem.outputSourceFile[0].base64", function (val) {
+    if (val) {
+      $scope.problem.outputSource = $window.atob(val);
+    }
+  });
+
+  $scope.submitAddProblem = function () {
+    $scope.problem.isSubmitted = false;
+    $timeout(function () {
+      $scope.problem.isSubmitted = true;
+    });
+  };
+  $scope.addProblem = function () {
+    $scope.obj = JSON.parse(JSON.stringify($scope.problem));
+    $scope.obj.outputSource = $window.btoa($scope.obj.outputSource);
+    $scope.obj.memoryLimit = $scope.obj.memoryLimit * 1024 * 1024;
+    delete $scope.problem.isSubmitted;
+    _.each($scope.obj.samples, function (el, i) {
+      el.input = el.base64;
+      delete el.url;
+      delete el.base64;
+    });
+    delete $scope.obj.outputSourceFile;
+    delete $scope.obj.isSubmitted;
+    $scope.obj.publicCount = 2;
+    $server.addProblem($scope.obj, function (err, data) {
+      $scope.$apply(function () {
+        if (!err) {
+          $scope.user.addProblemPreloader = false;
+          $state.go("cabinet.problem", { id: data.problemId });
+        } else {
+          $scope.user.addProblemPreloader = false;
+          $scope.user.error = "Ошибка сервера, перезагрузите страницу";
+        }
+      });
+    });
+  };
+});
 //# sourceMappingURL=index.js.map
 
-angular.module('notifyapp').run(['$templateCache', function($templateCache) {$templateCache.put('/index.html','<!DOCTYPE html>\r\n<html lang="en" ng-app="notifyapp" ng-controller="mainController">\r\n<head>\r\n    <meta charset="UTF-8">\r\n    <title>notify APP</title>\r\n    <base href="/">\r\n    <link rel="stylesheet" href="assets/init.css">\r\n    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">\r\n    <!-- bower:css -->\r\n    <!-- endbower -->\r\n\r\n    <link rel="stylesheet" href="css/index.css">\r\n</head>\r\n<body>\r\n\r\n    <header class="main-header" ng-include="\'/html/header.html\'"></header>\r\n    <div class="ui-view main-container"></div>\r\n    <footer class="main-footer" ng-include="\'/html/footer.html\'"></footer>\r\n\r\n    <!-- bower:js -->\r\n    <script src="../bower_components/angular/angular.js"></script>\r\n    <script src="../bower_components/jquery/dist/jquery.js"></script>\r\n    <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>\r\n    <script src="../bower_components/underscore/underscore.js"></script>\r\n    <script src="../bower_components/moment/moment.js"></script>\r\n    <script src="../bower_components/jquery-ui/jquery-ui.js"></script>\r\n    <script src="../bower_components/angular-ui-date/dist/date.js"></script>\r\n    <script src="../bower_components/angular-animate/angular-animate.js"></script>\r\n    <script src="../bower_components/angular-sanitize/angular-sanitize.js"></script>\r\n    <!-- endbower -->\r\n    \r\n\r\n    <script src="index.js"></script>\r\n    <script src="scripts/vendor.js"></script>\r\n    <script src="scripts/index.js"></script>\r\n    \r\n    <!-- inject:js -->\r\n    <!-- endinject -->\r\n</body>\r\n</html>');
+angular.module('notifyapp').run(['$templateCache', function($templateCache) {$templateCache.put('/index.html','<!DOCTYPE html>\r\n<html lang="en" ng-app="notifyapp" ng-controller="mainController">\r\n<head>\r\n    <meta charset="UTF-8">\r\n    <title>notify APP</title>\r\n    <base href="/">\r\n    <link rel="stylesheet" href="assets/init.css">\r\n    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">\r\n    <!-- bower:css -->\r\n    <!-- endbower -->\r\n\r\n    <link rel="stylesheet" href="css/index.css">\r\n    <link rel="stylesheet" href="styles/index.css">\r\n</head>\r\n<body>\r\n\r\n    <header class="main-header" ng-include="\'/html/header.html\'"></header>\r\n    <div class="ui-view main-container"></div>\r\n    <footer class="main-footer" ng-include="\'/html/footer.html\'"></footer>\r\n\r\n    <!-- bower:js -->\r\n    <script src="../bower_components/angular/angular.js"></script>\r\n    <script src="../bower_components/jquery/dist/jquery.js"></script>\r\n    <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>\r\n    <script src="../bower_components/underscore/underscore.js"></script>\r\n    <script src="../bower_components/moment/moment.js"></script>\r\n    <script src="../bower_components/jquery-ui/jquery-ui.js"></script>\r\n    <script src="../bower_components/angular-ui-date/dist/date.js"></script>\r\n    <script src="../bower_components/angular-animate/angular-animate.js"></script>\r\n    <script src="../bower_components/angular-sanitize/angular-sanitize.js"></script>\r\n    <!-- endbower -->\r\n    \r\n\r\n    <script src="index.js"></script>\r\n    <script src="scripts/vendor.js"></script>\r\n    <script src="scripts/index.js"></script>\r\n    \r\n    <!-- inject:js -->\r\n    <!-- endinject -->\r\n</body>\r\n</html>');
 $templateCache.put('/html/404.html','<div>404</div>');
 $templateCache.put('/html/add_problem.html','<div class="add-problem"><h2 style="margin-bottom: 20px">{{translate("addProblem")}}</h2><div class="form" check-form="problem.isSubmitted" on-validation-ok="addProblem"><h2>\u0420\u0443\u0441\u0441\u043A\u0438\u0439 \u0432\u0430\u0440\u0438\u0430\u043D\u0442</h2><table><tr><td>{{translate("problemName")}}:</td><td><input type="text" ng-model="problem.name[0].value" placeholder="{{translate(\'problemNamePlaceholder\')}}"></td></tr><tr><td>{{translate("problemDescription")}}:</td><td><textarea ng-model="problem.description[0].value" placeholder="{{translate(\'problemDescriptionPlaceholder\')}}"></textarea></td></tr></table><h2>\u0410\u043D\u0433\u043B\u0438\u0439\u0441\u043A\u0438\u0439 \u0432\u0430\u0440\u0438\u0430\u043D\u0442</h2><table><tr><td>{{translate("problemName")}}:</td><td><input type="text" ng-model="problem.name[1].value" placeholder="{{translate(\'problemNamePlaceholder\')}}"></td></tr><tr><td>{{translate("problemDescription")}}:</td><td><textarea ng-model="problem.description[1].value" placeholder="{{translate(\'problemDescriptionPlaceholder\')}}"></textarea></td></tr><tr><td>{{translate("timeLimit")}}:</td><td><input type="number" ng-model="problem.timeLimit" placeholder="{{translate(\'timelimitPlaceholder\')}}"></td></tr><tr><td>{{translate("memoryLimit")}}:</td><td><input type="number" ng-model="problem.memoryLimit" placeholder="{{translate(\'memoryLimitPlaceholder\')}}"></td></tr><tr><td>{{translate("tests")}}:</td><td><input type="file" multiple="multiple" ng-file-model="problem.samples"></td></tr><tr><td>{{translate("solution")}}:</td><td><input type="file" multiple="multiple" ng-file-model="problem.outputSourceFile"><textarea ng-model="problem.outputSource"></textarea></td></tr></table><button ng-click="submitAddProblem()" class="default"><span ng-if="!user.addProblemPreloader">{{translate("save")}}</span> <span ng-if="user.addProblemPreloader" class="button-preloader"></span></button><p class="error" ng-if="user.error" style="margin-top: 10px">{{user.error}}</p></div></div>');
 $templateCache.put('/html/admin.html','<div class="admin"></div>');
