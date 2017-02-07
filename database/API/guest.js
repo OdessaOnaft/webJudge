@@ -125,7 +125,7 @@ module.exports = function(_, mainPg, fs){
                 .then(resultData=>{
                     result.tests = resultData;
                     if (data.scope != 'guest' && data.userId == result.userId){
-                        data.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`).toString();
+                        result.solution = fs.readFileSync(`./solutions/${result.solutionId}.sol`).toString();
                     }
                     callback(null, result);
                 })
@@ -138,9 +138,10 @@ module.exports = function(_, mainPg, fs){
                 .then(inputData=>{
                     var args = [
                         inputData.skip || 0,
-                        inputData.limit || 100000
+                        inputData.limit || 100000,
+                        inputData.lang
                     ];
-                    return mainPg('SELECT * FROM guest_get_solutions_queue($1,$2);', args);
+                    return mainPg('SELECT * FROM guest_get_solutions_queue($1,$2,$3);', args);
                 })
                 .then(resultData=>{
                     callback(null, resultData);

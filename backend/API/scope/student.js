@@ -28,9 +28,9 @@ module.exports = function(_, conf, Database){
             data.userId = session.userId;
             Database.getMySolutions(data, ok(callback));
         },
-        getSolutionsByProbemId: (session, data, callback)=>{
+        getSolutionsByProblemId: (session, data, callback)=>{
             data.userId = session.userId;
-            Database.getSolutionsByProbemId(data, ok(callback));
+            Database.getSolutionsByProblemId(data, ok(callback));
         }
     }
 };
