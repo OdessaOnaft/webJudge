@@ -1,7 +1,7 @@
 DELETE FROM pg_proc WHERE proname LIKE 'student\_%';
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function student_get_profile(bigint) returns TABLE (name varchar, birthday varchar,  phone varchar, email varchar, note varchar, modified_scope varchar, created bigint, modified bigint, user_id bigint, scope varchar) as
+create or replace function student_get_profile(bigint) returns TABLE (name varchar, birthday varchar,  phone varchar, email varchar, note varchar, modified_scope varchar, created bigint, modified bigint, user_id bigint, scope varchar, total_solutions_count bigint, success_solutions_count bigint) as
 $$
 begin
     return query
@@ -15,7 +15,9 @@ begin
         u.created,
         u.modified,
         u.id,
-        s.value
+        s.value,
+        (SELECT COUNT(*) FROM solutions s WHERE s.user_id = u.id),
+        (SELECT COUNT(*) FROM solutions s WHERE s.user_id = u.id AND s.status = 'ok'::varchar)
     FROM
         users u JOIN scope s ON s.id = u.scope_id
     WHERE
@@ -87,6 +89,26 @@ begin
         ORDER BY created DESC
         OFFSET $2
         LIMIT $3;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function student_get_solutions_by_problem_id(bigint, bigint, bigint, bigint, varchar) returns TABLE(solution_id bigint, problem_id bigint, created bigint, status varchar, lang varchar, problem_name varchar) as
+$$
+begin
+    RETURN QUERY
+        SELECT
+            s.id,
+            s.problem_id,
+            s.created,
+            s.status,
+            s.lang,
+            COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = s.problem_id AND ls.lang = $5 AND ls.related_type = 'name'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = s.problem_id AND ls.related_type = 'name' ORDER BY id LIMIT 1))
+        FROM solutions s
+        WHERE s.user_id = $1 AND s.problem_id = $2
+        ORDER BY created DESC
+        OFFSET $3
+        LIMIT $4;
 end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------

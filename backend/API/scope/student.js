@@ -27,6 +27,10 @@ module.exports = function(_, conf, Database){
         getMySolutions: (session, data, callback)=>{
             data.userId = session.userId;
             Database.getMySolutions(data, ok(callback));
+        },
+        getSolutionsByProbemId: (session, data, callback)=>{
+            data.userId = session.userId;
+            Database.getSolutionsByProbemId(data, ok(callback));
         }
     }
 };

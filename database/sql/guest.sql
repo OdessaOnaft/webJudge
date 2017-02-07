@@ -74,7 +74,7 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function guest_get_problem(bigint, varchar) returns TABLE (problem_id bigint, name varchar, created bigint, time_limit bigint, memory_limit bigint, description varchar, samples varchar, output_type varchar, user_id bigint, input varchar, output varchar) as
+create or replace function guest_get_problem(bigint, varchar) returns TABLE (problem_id bigint, name varchar, created bigint, time_limit bigint, memory_limit bigint, description varchar, samples varchar, output_type varchar, user_id bigint, input varchar, output varchar, total_solutions_count bigint, success_solutions_count bigint, total_user_solutions_count bigint, success_user_solutions_count bigint) as
 $$
 begin
     return query
@@ -89,10 +89,15 @@ begin
             p.output_type,
             p.user_id,
             ''::varchar,
-            ''::varchar
+            ''::varchar,
+            (SELECT COUNT(*) FROM solutions s WHERE s.problem_id = p.id),
+            (SELECT COUNT(*) FROM solutions s WHERE s.problem_id = p.id AND s.status = 'ok'::varchar),
+            (SELECT COUNT(*) FROM (SELECT DISTINCT s.user_id FROM solutions s WHERE s.problem_id = p.id) AS t1),
+            (SELECT COUNT(*) FROM (SELECT DISTINCT s.user_id FROM solutions s WHERE s.problem_id = p.id AND s.status = 'ok'::varchar) AS t2)
         FROM problems p WHERE p.id = $1;
 end;
-$$ language plpgsql;
+$$ language plpgsql
+CALLED ON NULL INPUT;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
 create or replace function guest_get_problems(bigint, bigint, varchar) returns TABLE (problem_id bigint, name varchar, created bigint, difficulty bigint, author varchar) as
@@ -103,7 +108,7 @@ begin
             p.id,
             COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = p.id AND ls.lang = $3 AND ls.related_type = 'name'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = p.id AND ls.related_type = 'name' ORDER BY id LIMIT 1)),
             p.created,
-            ((SELECT COUNT(*) FROM (SELECT DISTINCT s.user_id FROM solutions s WHERE s.problem_id = p.id) AS t1) + 1) / 100 * ((SELECT COUNT(*) FROM (SELECT DISTINCT s.user_id FROM solutions s WHERE s.problem_id = p.id AND status = 'ok') AS t1) + 1) + 1,
+            6 - ((100 / ((SELECT COUNT(*) FROM (SELECT DISTINCT s.user_id FROM solutions s WHERE s.problem_id = p.id) AS t1)::decimal + 1) * ((SELECT COUNT(*) FROM (SELECT DISTINCT s.user_id FROM solutions s WHERE s.problem_id = p.id AND status = 'ok') AS t1) + 1)) / 100 * 5)::bigint,
             u.name
         FROM
             problems p JOIN users u ON u.id = p.user_id
@@ -148,7 +153,8 @@ begin
             st.message
         FROM solution_tests st
         WHERE st.solution_id = $1
-        ORDER BY st.num ASC;
+        ORDER BY st.num ASC
+        LIMIT ((SELECT COUNT(*) FROM solution_tests st2 WHERE st2.solution_id = $1 AND st2.status = 'ok'::varchar) + 1);
 end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
@@ -180,8 +186,6 @@ begin
             COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.lang = $2 AND ls.related_type = 'title'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.related_type = 'title' ORDER BY id LIMIT 1)),
             n.created,
             COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.lang = $2 AND ls.related_type = 'body'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.related_type = 'body' ORDER BY id LIMIT 1)),
-            p.tests,
-            p.output_type,
             u.name
         FROM news n JOIN users u ON u.id = n.user_id WHERE p.id = $1;
 end;
@@ -199,8 +203,6 @@ begin
             COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.lang = $3 AND ls.related_type = 'title'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.related_type = 'title' ORDER BY id LIMIT 1)),
             n.created,
             COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.lang = $3 AND ls.related_type = 'body'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.related_type = 'body' ORDER BY id LIMIT 1)),
-            p.tests,
-            p.output_type,
             u.name
         FROM news n JOIN users u ON u.id = n.user_id
         OFFSET $1
