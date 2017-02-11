@@ -74,7 +74,10 @@ module.exports = function(_, mainPg){
                     return mainPg('SELECT * FROM admin_get_news_full($1);', args);
                 })
                 .then(resultData=>{
-                    callback(null, resultData[0]);
+                    resultData = resultData[0];
+                    resultData.title = _.map(resultData.title, (v)=>JSON.stringify(v));
+                    resultData.body = _.map(resultData.body, (v)=>JSON.stringify(v));
+                    callback(null, resultData);
                 })
                 .catch(err=>{
                     callback(err, null);
