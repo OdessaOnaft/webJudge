@@ -26,6 +26,9 @@ module.exports = function(_, conf, Database){
         },
         getUsers: (session, data, callback)=>{
             Database.getUsers(data, ok(callback));
+        },
+        getNewsByIdFull: (session, data, callback)=>{
+            Database.getNewsByIdFull(data, ok(callback));
         }
     }
 };

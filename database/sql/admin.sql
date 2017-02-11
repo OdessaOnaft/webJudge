@@ -84,3 +84,16 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
+create or replace function admin_get_news_full(bigint) returns TABLE (news_id bigint, title varchar[], created bigint, body varchar[], creator varchar) as
+$$
+begin
+    return query
+        SELECT
+            n.id,
+            (SELECT array_agg(('{"lang":"' || ls.lang || '","title":"' || ls.value || '"}')::varchar) FROM locale_strings ls WHERE ls.related_id = n.id AND ls.related_type = 'title'),
+            n.created,
+            (SELECT array_agg(('{"lang":"' || ls.lang || '","body":"' || ls.value || '"}')::varchar) FROM locale_strings ls WHERE ls.related_id = n.id AND ls.related_type = 'body'),
+            u.name
+        FROM news n JOIN users u ON u.id = n.user_id WHERE n.id = $1;
+end;
+$$ language plpgsql;

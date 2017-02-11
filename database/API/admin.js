@@ -65,6 +65,21 @@ module.exports = function(_, mainPg){
                     callback(err, null);
                 });
         },
+        getNewsByIdFull: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.newsId
+                    ];
+                    return mainPg('SELECT * FROM admin_get_news_full($1);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
         getUsers: function (data, callback) {
             Promise.resolve(data)
                 .then(inputData=>{
