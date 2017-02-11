@@ -3,7 +3,7 @@ angular.module("notifyapp")
     return {
       dateFormat: (date, type)=>{
         var v = +date || date
-        return moment(v).format("DD MMMM YYYY, HH:mm")
+        return moment(v).format("DD.MM.YY, HH:mm")
       }
     }
   })

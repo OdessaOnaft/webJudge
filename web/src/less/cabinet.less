@@ -129,50 +129,29 @@
 
 .solutions {
   margin-top: 10px;
-  table {
-    thead {
-      th {
-        text-align: left;
-        border: 1px solid #b6b6b6;
-      }
-    }
-    tbody {
-      tr {
-        &.green {
-          td {
-            background: #00b700;
-          }
-        }
-        &.yellow {
-          td {
-            background: #ff0;
-          }
-        }
-        &.red {
-          td {
-            background: #ff7d7d;
-          }
-        }
-        td {
-          cursor: pointer;
-          text-align: left;
-          border: 1px solid #b6b6b6;
-        }
-      }
-    }
-    
-  }
+  
 }
 
 
 .admin {
   ul.links {
+    margin-bottom: 10px;
     li {
       display: inline-block;
       margin-left: 20px;
+      &.active {
+        a {
+          text-decoration: underline;
+          font-weight: 600;
+        }
+      }
       a {
-        font-weight: 600;
-        text-decoration: underline;
+        font-size: 15px;
+        font-weight: 400;
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
       }
       &:first-child {
         margin-left: 0;

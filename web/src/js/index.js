@@ -68,6 +68,11 @@ angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize'])
 	        templateUrl: "/html/solutions.html",
 	        controller: "solutionsController"
 		    })
+		    .state('cabinet.solutionsQueue', {
+	        url:'queue/',
+	        templateUrl: "/html/solutions_queue.html",
+	        controller: "solutionsQueueController"
+		    })
 		    .state('cabinet.solution', {
 	        url:'solution/{id}/',
 	        templateUrl: "/html/solution.html",

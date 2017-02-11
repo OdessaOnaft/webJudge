@@ -49,7 +49,14 @@ angular.module("notifyapp")
       created: "Created",
       lang: "Language",
       cpp: "C++",
-      problemName: 'Problem name'
+      problemName: 'Problem name',
+      userId: "user ID",
+      scope: "Scope",
+      modifiedScope: "Modified scope",
+      proceedOnTest: "Run on test",
+      queue: "Queue",
+      user: "User"
+
     }
     return words
 

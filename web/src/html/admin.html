@@ -1,8 +1,8 @@
 <div class="admin">
   <ul class="links">
-    <li><a ui-sref="cabinet.admin.child({type:'news'})">Посмотреть новости</a></li>
-    <li><a ui-sref="cabinet.admin.child({type:'addNews'})">Добавить новость</a></li>
-    <li><a ui-sref="cabinet.admin.child({type:'users'})">Пользователи</a></li>
+    <li ng-class="{'active': state.type=='news'}"><a ui-sref="cabinet.admin.child({type:'news'})">Посмотреть новости</a></li>
+    <li ng-class="{'active': state.type=='addNews'}"><a ui-sref="cabinet.admin.child({type:'addNews'})">Добавить новость</a></li>
+    <li ng-class="{'active': state.type=='users'}"><a ui-sref="cabinet.admin.child({type:'users'})">Пользователи</a></li>
   </ul>
 
   <div class="admin-content">
@@ -10,6 +10,28 @@
 
     <div class="add-news" ng-if="state.type=='addNews'"></div>
 
-    <div class="users" ng-if="state.type=='users'"></div>
+    <div class="users" ng-if="state.type=='users'">
+      <table class="default">
+        <thead>
+          <th>{{translate('userId')}}</th>
+          <th>{{translate('name')}}</th>
+          <th>{{translate('scope')}}</th>
+          <th>{{translate('modifiedScope')}}</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="user in users">
+            <td>{{user.userId}}</td>
+            <td>{{user.name}} ({{user.email}})</td>
+            <td>{{translate(user.scope)}}</td>
+            <td>
+              <p ng-if="user.modifiedScope">
+                <span style="display: inline-block;margin-right: 10px;">{{translate(user.modifiedScope)}}</span>
+                <button class="default" ng-click="acceptUserScope(user.userId)">Подтвердить</button>
+                <button class="default" ng-click="acceptUserScope(user.userId)">Отклонить</button>
+              </p>
+            </td>
+          </tr>
+        </tbody>
+    </div>
   </div>
 </div>

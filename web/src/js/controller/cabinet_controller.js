@@ -3,7 +3,8 @@ angular.module("notifyapp")
     $scope.user = {}
     $scope.checkSession = ()=>{
       if(!localStorage.token) {
-        $state.go("main")
+        // $state.go("main")
+        $rootScope.isGuest = true
         return;
       }
       $server.checkSession({}, (err,data)=>{
@@ -11,9 +12,11 @@ angular.module("notifyapp")
         $scope.$apply(()=>{
           if(!err) {
             $scope.user = data;
+            $rootScope.isGuest = false
           } else {
             delete localStorage.token;
-            $state.go("main");
+            // $state.go("main");
+            $rootScope.isGuest = true
           }
         })
         

@@ -49,7 +49,13 @@ angular.module("notifyapp")
       created: "Дата отправки",
       lang: "Язык",
       cpp: "C++",
-      problemName: 'Название задачи'
+      problemName: 'Название задачи',
+      userId: "ID Пользователя",
+      scope: "Роль",
+      modifiedScope: "Роль на подтверждении",
+      proceedOnTest: "Выполняется на тесте",
+      queue: "Очередь",
+      user: "Пользователь"
     }
     return words
 

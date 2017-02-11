@@ -1,5 +1,5 @@
 angular.module("notifyapp")
-  .controller("solutionsController", ($scope, $rootScope, $state, $server)=>{
+  .controller("solutionsController", ($scope, $rootScope, $state, $server, $timeout)=>{
 
 
      $scope.getMySolutions = ()=>{
@@ -11,7 +11,16 @@ angular.module("notifyapp")
         $scope.$apply(()=>{
           if(!err) {
             $scope.solutions = data
-
+            var isWaiting = false
+            _.each(data, (v)=>{
+              if(v.status=='waiting')isWaiting = true
+                // $server.getSolution(v, (err,data)=>{})
+            })
+            if(isWaiting) {
+              $timeout(()=>{
+                $scope.getMySolutions()
+              }, 200)
+            }
            
           } else {
 

@@ -1,19 +1,19 @@
 angular.module("notifyapp")
   .controller("adminController", ($scope, $rootScope, $state, $server)=>{
-    $scope.acceptUserScope = ()=>{
-      $server.acceptUserScope({}, (err,data)=>{
+    $scope.acceptUserScope = (id)=>{
+      $server.acceptUserScope({userId: id}, (err,data)=>{
         $scope.$apply(()=>{
           if(!err){
-
+            $scope.getUsers()
           }
         })
       })
     }
-    $scope.rejectUserScope = ()=>{
-      $server.rejectUserScope({}, (err,data)=>{
+    $scope.rejectUserScope = (id)=>{
+      $server.rejectUserScope({userId: id}, (err,data)=>{
         $scope.$apply(()=>{
           if(!err){
-
+            $scope.getUsers()
           }
         })
       })
@@ -54,6 +54,16 @@ angular.module("notifyapp")
         })
       })
     }
+    $scope.getUsers = ()=>{
+      $server.getUsers({}, (err,data)=>{
+        $scope.$apply(()=>{
+          if(!err){
+            $scope.users = data
+            console.log($scope.users)
+          }
+        })
+      })
+    }
     var events = {
       addNews: ()=>{
         
@@ -65,12 +75,12 @@ angular.module("notifyapp")
         $scope.getUsers();
       }
     }
+    $scope.state = {}
     $scope.$on("$stateChangeSuccess", ()=>{
-      var state = $state.params.type
-      console.log(state)
+      $scope.state.type = $state.params.type
       
-      if(state) {
-        events[state]();
+      if($scope.state.type) {
+        events[$scope.state.type]();
       }
     })
   })

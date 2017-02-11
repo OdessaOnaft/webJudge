@@ -32,6 +32,53 @@ table {
     padding: 3px;
   }
 }
+
+
+table.default {
+  width: 100%;
+  border-collapse: collapse;
+  td, th {
+    padding: 3px;
+    position: relative;
+  }
+  thead {
+    th {
+      text-align: left;
+      border: 1px solid #b6b6b6;
+    }
+  }
+  tbody {
+    tr {
+      &.green {
+        td {
+          background: #00b700;
+        }
+      }
+      &.yellow {
+        td {
+          background: #ff0;
+        }
+      }
+      &.red {
+        td {
+          background: #ff7d7d;
+        }
+      }
+      td {
+        cursor: pointer;
+        text-align: left;
+        border: 1px solid #b6b6b6;
+        &:last-child {
+          width: 215px;
+        }
+        &:first-child {
+          width: 90px;
+        }
+      }
+    }
+  }
+}
+
 input {
 	border-style: none;
   outline: none !important;
