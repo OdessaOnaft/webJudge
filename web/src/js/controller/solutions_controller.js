@@ -33,7 +33,7 @@ angular.module("notifyapp")
       $scope.getMySolutions()
     })
   })
-  .controller("solutionController", ($scope, $rootScope, $state, $server)=>{
+  .controller("solutionController", ($scope, $rootScope, $state, $server, $window)=>{
     $scope.solution = {}
 
     $scope.getSolution = ()=>{
@@ -45,6 +45,9 @@ angular.module("notifyapp")
         $scope.$apply(()=>{
           if(!err) {
             $scope.solution = data
+            if($scope.solution.solution) {
+              $scope.solution.solution = $window.atob($scope.solution.solution)
+            }
           } else {
 
           }

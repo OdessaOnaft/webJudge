@@ -22,10 +22,10 @@
           </td>
         </tr>
       </table>
-
+  
     </div>
-    <a ng-click="showAllSamples()" class="blue show-tests">{{translate('showAllTests')}}</a>
-    <div class="solve">
+    <a ng-click="showAllSamples()" class="blue show-tests" ng-if="user.scope=='admin' && problem.samples.length<problem.allSamples.length">{{translate('showAllTests')}}</a>
+    <div class="solve" ng-if="!$root.isGuest">
       <input type="file" ng-file-model="solve.sourceFile" style="margin-bottom: 10px;">
       <textarea placeholder="Исходный код программы вставить сюда" ng-model="solve.source"></textarea>
       
@@ -34,7 +34,7 @@
           <span ng-if="!solve.profileSubmitPreloader">{{translate("submit")}}</span>
           <span ng-if="solve.profileSubmitPreloader" class="button-preloader"></span>
         </button>
-        <p class="progress">submiting....</p>
+        <p class="progress" ng-if="solve.isSubmitting">submiting....</p>
       </div>
     </div>
     <div class="solutions" ng-if="solutions.length">

@@ -1,17 +1,20 @@
-angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize'])
+angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize', 'hljs'])
 	.run(['$state', '$rootScope', '$location',  ($state, $rootScope, $location)=>{
 		var path = $location.path()
     if(path[path.length-1] != '/'){
       $location.path(path+'/')
     }
 	}])
-	.config(['$locationProvider', '$stateProvider', '$urlRouterProvider',
-	  ($locationProvider, $stateProvider, $urlRouterProvider) =>{
+	.config(['$locationProvider', '$stateProvider', '$urlRouterProvider', 'hljsServiceProvider',
+	  ($locationProvider, $stateProvider, $urlRouterProvider, hljsServiceProvider) =>{
 	    $locationProvider.html5Mode(true) 
 	    $urlRouterProvider.when('','/')
 	    $urlRouterProvider.when('/cabinet/problem/','/cabinet/problems/')
 	    
 	    $urlRouterProvider.otherwise("/404/");
+	    hljsServiceProvider.setOptions({
+		    
+		  });
 	    $stateProvider
 	      .state('404', {
           url:'/404/',
