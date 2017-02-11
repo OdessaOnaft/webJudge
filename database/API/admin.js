@@ -65,6 +65,24 @@ module.exports = function(_, mainPg){
                     callback(err, null);
                 });
         },
+        getNewsByIdFull: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.newsId
+                    ];
+                    return mainPg('SELECT * FROM admin_get_news_full($1);', args);
+                })
+                .then(resultData=>{
+                    resultData = resultData[0];
+                    resultData.title = _.map(resultData.title, (v)=>JSON.stringify(v));
+                    resultData.body = _.map(resultData.body, (v)=>JSON.stringify(v));
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
         getUsers: function (data, callback) {
             Promise.resolve(data)
                 .then(inputData=>{

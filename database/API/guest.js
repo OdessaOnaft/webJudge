@@ -177,7 +177,7 @@ module.exports = function(_, mainPg, fs){
                     return mainPg('SELECT * FROM guest_get_news($1,$2);', args);
                 })
                 .then(resultData=>{
-                    callback(null, resultData);
+                    callback(null, resultData[0]);
                 })
                 .catch(err=>{
                     callback(err, null);

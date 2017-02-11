@@ -194,7 +194,7 @@ begin
             n.created,
             COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.lang = $2 AND ls.related_type = 'body'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.related_type = 'body' ORDER BY id LIMIT 1)),
             u.name
-        FROM news n JOIN users u ON u.id = n.user_id WHERE p.id = $1;
+        FROM news n JOIN users u ON u.id = n.user_id WHERE n.id = $1;
 end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
