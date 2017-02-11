@@ -64,6 +64,43 @@ module.exports = function(_, mainPg, fs){
                 .catch(err=>{
                     callback(err, null);
                 });
+        },
+        getProblemFull: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.problemId,
+                        inputData.userId
+                    ];
+                    return mainPg('SELECT * FROM teacher_get_problem_full($1, $2);', args);
+                })
+                .then(resultData=>{
+                    resultData = resultData[0];
+                    resultData.name = _.map(resultData.name, (v)=>JSON.parse(v));
+                    resultData.description = .map(resultData.description, (v)=>JSON.parse(v));
+                    resultData.samples = JSON.parse(resultData.samples);
+                    var tasks = fs.readFileSync(`./problems/${resultData.problemId}.prb`);
+                    resultData.samples = JSON.parse(tasks);
+                    resultData.samples = _.map(resultData.samples, (v)=>{
+                        v = {
+                            input: new Buffer(v.input, 'base64').toString(),
+                            output: new Buffer(v.output, 'base64').toString()
+                        };
+                        if (v.input.length > 256)
+                            v.input = v.input.substr(0, 253) + '...';
+                        if (v.output.length > 256)
+                            v.output = v.output.substr(0, 253) + '...';
+                        return {
+                            input: new Buffer(v.input).toString('base64'),
+                            output: new Buffer(v.output).toString('base64')
+                        };
+                    });
+                    resultData.outputSource = fs.readFileSync(`./problems_prog/${data.problemId}.dat`);
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
         }
     }
 };

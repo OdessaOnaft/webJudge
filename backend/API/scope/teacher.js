@@ -40,6 +40,10 @@ module.exports = function(_, conf, Database, executeAPI){
             } else {
                 Database.editProblem(data, ok(callback));
             }
+        },
+        getProblemFull: (session, data, callback)=>{
+            data.userId = session.userId;
+            Database.getProblemFull(data, ok(callback));
         }
     }
 };

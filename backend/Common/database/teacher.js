@@ -25,7 +25,8 @@ module.exports = function(_, remote){
 
     [
         'addProblem',
-        'editProblem'
+        'editProblem',
+        'getProblemFull'
     ].forEach(function(name){
         remoteAPI[name] = remote(name);
     });
