@@ -95,7 +95,7 @@ module.exports = function(_, mainPg, fs){
                             output: new Buffer(v.output).toString('base64')
                         };
                     });
-                    resultData.outputSource = fs.readFileSync(`./problems_prog/${data.problemId}.dat`);
+                    resultData.outputSource = fs.readFileSync(`./problems_prog/${data.problemId}.dat`).toString();
                     callback(null, resultData);
                 })
                 .catch(err=>{

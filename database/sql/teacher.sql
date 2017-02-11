@@ -54,11 +54,11 @@ begin
     return query
         SELECT
             p.id,
-            (SELECT array_agg(('{"lang":"' || ls.lang || '","name":"' || ls.value || '"}')::varchar) FROM locale_strings ls WHERE ls.related_id = p.id AND ls.related_type = 'name'),
+            (SELECT array_agg(('{"lang":"' || ls.lang || '","value":"' || ls.value || '"}')::varchar) FROM locale_strings ls WHERE ls.related_id = p.id AND ls.related_type = 'name'),
             p.created,
             p.time_limit,
             p.memory_limit,
-            (SELECT array_agg(('{"lang":"' || ls.lang || '","description":"' || ls.value || '"}')::varchar) FROM locale_strings ls WHERE ls.related_id = p.id AND ls.related_type = 'description'),
+            (SELECT array_agg(('{"lang":"' || ls.lang || '","value":"' || ls.value || '"}')::varchar) FROM locale_strings ls WHERE ls.related_id = p.id AND ls.related_type = 'description'),
             p.tests,
             p.output_type,
             p.user_id,
