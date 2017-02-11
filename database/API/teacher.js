@@ -77,7 +77,7 @@ module.exports = function(_, mainPg, fs){
                 .then(resultData=>{
                     resultData = resultData[0];
                     resultData.name = _.map(resultData.name, (v)=>JSON.parse(v));
-                    resultData.description = .map(resultData.description, (v)=>JSON.parse(v));
+                    resultData.description = _.map(resultData.description, (v)=>JSON.parse(v));
                     resultData.samples = JSON.parse(resultData.samples);
                     var tasks = fs.readFileSync(`./problems/${resultData.problemId}.prb`);
                     resultData.samples = JSON.parse(tasks);
