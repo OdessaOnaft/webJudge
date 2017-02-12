@@ -8,7 +8,24 @@
   <div class="admin-content">
     <div class="news" ng-if="state.type=='news'"></div>
 
-    <div class="add-news" ng-if="state.type=='addNews'"></div>
+    <div class="add-news" ng-if="state.type=='addNews'">
+      <div class="block">
+        <p>Русский вариант</p>
+        <input type="text" placeholder="title" ng-model="addNewsContent.title[0].value">
+
+        <textarea placeholder="content" ng-model="addNewsContent.body[0].value"></textarea>
+       
+      </div>
+      <div class="block">
+        <p>Английский вариант</p>
+        <input type="text" placeholder="title" ng-model="addNewsContent.title[1].value">
+
+        <textarea placeholder="content" ng-model="addNewsContent.body[1].value"></textarea>
+      </div>
+      <button class="default" ng-click="addNews()">{{translate('save')}}</button>
+1 марта 2017 года запускается новый проект который улучшит процесс обучения для студентов и школьников - программистов!
+      
+    </div>
 
     <div class="users" ng-if="state.type=='users'">
       <table class="default">
@@ -27,7 +44,7 @@
               <p ng-if="user.modifiedScope">
                 <span style="display: inline-block;margin-right: 10px;">{{translate(user.modifiedScope)}}</span>
                 <button class="default" ng-click="acceptUserScope(user.userId)">Подтвердить</button>
-                <button class="default" ng-click="acceptUserScope(user.userId)">Отклонить</button>
+                <button class="default" ng-click="rejectUserScope(user.userId)">Отклонить</button>
               </p>
             </td>
           </tr>

@@ -29,7 +29,9 @@ angular.module("notifyapp")
             if(!err) {
               $scope.user = data;
               $rootScope.isGuest = false
-              $state.go('cabinet')
+              if(!$state.includes('cabinet')) {
+                $state.go('cabinet')
+              }
             } else {
               delete localStorage.token;
               // $state.go("main");

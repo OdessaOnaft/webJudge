@@ -1,5 +1,6 @@
 angular.module("notifyapp")
   .controller("adminController", ($scope, $rootScope, $state, $server)=>{
+    $scope.addNewsContent = {title: [{lang: 'ru'}, {lang: 'en'}], body: [{lang: 'ru'}, {lang: 'en'}]}
     $scope.acceptUserScope = (id)=>{
       $server.acceptUserScope({userId: id}, (err,data)=>{
         $scope.$apply(()=>{
@@ -37,10 +38,11 @@ angular.module("notifyapp")
       })
     }
     $scope.addNews = ()=>{
-      $server.addNews({}, (err,data)=>{
+      $server.addNews($scope.addNewsContent, (err,data)=>{
         $scope.$apply(()=>{
           if(!err){
-
+            $scope.addNewsContent = {title: [{lang: 'ru'}, {lang: 'en'}], body: [{lang: 'ru'}, {lang: 'en'}]}
+            alert("Новость успешно добавлена")
           }
         })
       })

@@ -23,25 +23,32 @@ angular.module("notifyapp")
       })
       
     })
-    if(!localStorage.addProblem) {
-      $scope.problem = {
-        name: [{lang: 'ru'}, {lang: 'en'}],
-        description: [{lang: 'ru'}, {lang: 'en'}],
-        outputSourceFile: {},
-        samples: []
-      }
-    } else {
-      $scope.problem = JSON.parse(localStorage.addProblem)
-    }
+    
+    
     if($state.params.id) {
       $rootScope.preloader = true
       $server.getProblemFull({problemId: $state.params.id}, (err,data)=>{
         $scope.$apply(()=>{
           if(!err) {
+            data.memoryLimit = +data.memoryLimit / 1024 / 1024
+            data.timeLimit = +data.timeLimit*1
             $scope.problem = data
+            data.outputSource = $window.atob(data.outputSource)
+            console.log($scope.problem.name[0])
           }
         })
       })
+    } else {
+      if(!localStorage.addProblem) {
+        $scope.problem = {
+          name: [{lang: 'ru'}, {lang: 'en'}],
+          description: [{lang: 'ru'}, {lang: 'en'}],
+          outputSourceFile: {},
+          samples: []
+        }
+      } else {
+        $scope.problem = JSON.parse(localStorage.addProblem)
+      }
     }
     $scope.$watch("problem.outputSourceFile[0].base64", (val)=>{
       if(val){
@@ -69,6 +76,21 @@ angular.module("notifyapp")
       delete $scope.obj.outputSourceFile
       delete $scope.obj.isSubmitted
       $scope.obj.publicCount = 2
+      if($state.params.id) {
+        $scope.obj.problemId = $state.params.id
+        $server.editProblem($scope.obj, (err,data)=>{
+          $scope.$apply(()=>{
+            if(!err){
+              $scope.user.addProblemPreloader = false
+              $state.go("cabinet.problem", {id: data.problemId})
+            } else {
+              $scope.user.addProblemPreloader = false
+              $scope.user.error = "Ошибка сервера, перезагрузите страницу"
+            }
+          })
+          
+        })
+      }
       $server.addProblem($scope.obj, (err,data)=>{
         $scope.$apply(()=>{
           if(!err){

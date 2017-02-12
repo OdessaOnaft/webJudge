@@ -3,11 +3,13 @@ angular.module("notifyapp")
     $scope.solve = {problemId: $state.params.id, lang: "cpp"}
     $scope.problem = {}
     $scope.submit = ()=>{
+      $scope.solve.isSubmitting = true
       $scope.obj = JSON.parse(JSON.stringify($scope.solve))
       delete $scope.obj.sourceFile
       $scope.obj.source = $window.btoa($scope.obj.source)
       $server.submitSolution($scope.obj, (err,data)=>{
         $scope.$apply(()=>{
+          $scope.solve.isSubmitting = false
           if(!err) {
             if($scope.submitInterval) {
               $interval.cancel($scope.submitInterval)

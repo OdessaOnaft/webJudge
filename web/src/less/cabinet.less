@@ -132,7 +132,20 @@
   
 }
 
+.solution {
+  .source {
+    width: 700px;
+    // padding: 20px;
+    // border: 1px solid #686868;
+    // border-radius: 4px;
+    margin-top: 10px;
+    // white-space: pre-wrap;
+    code {
+      white-space: pre-wrap;
+    }
+  }
 
+}
 .admin {
   ul.links {
     margin-bottom: 10px;
@@ -156,6 +169,24 @@
       &:first-child {
         margin-left: 0;
       }
+    }
+  }
+  .add-news {
+    .block {
+      margin-top: 10px;
+      position: relative;
+      input {
+        display: block;
+      }
+      textarea {
+        margin-top: 10px;
+        display: block;
+        width: 300px;
+        height: 200px;
+      }
+    }
+    button {
+      margin-top: 10px;
     }
   }
 }
