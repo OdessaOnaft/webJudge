@@ -95,9 +95,10 @@ module.exports = function(_, mainPg, fs){
                     var args = [
                         inputData.skip || 0,
                         inputData.limit || 100000,
-                        inputData.lang || 'en'
+                        inputData.lang || 'en',
+                        data.userId || null
                     ];
-                    return mainPg('SELECT * FROM guest_get_problems($1, $2, $3);', args);
+                    return mainPg('SELECT * FROM guest_get_problems($1, $2, $3, $4);', args);
                 })
                 .then(resultData=>{
                     callback(null, resultData);

@@ -100,7 +100,7 @@ $$ language plpgsql
 CALLED ON NULL INPUT;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function guest_get_problems(bigint, bigint, varchar) returns TABLE (problem_id bigint, name varchar, created bigint, difficulty bigint, author varchar) as
+create or replace function guest_get_problems(bigint, bigint, varchar, bigint) returns TABLE (problem_id bigint, name varchar, created bigint, difficulty bigint, author varchar, is_solved boolean) as
 $$
 begin
     return query
@@ -109,7 +109,8 @@ begin
             COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = p.id AND ls.lang = $3 AND ls.related_type = 'name'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = p.id AND ls.related_type = 'name' ORDER BY id LIMIT 1)),
             p.created,
             6 - ((100 / ((SELECT COUNT(*) FROM (SELECT DISTINCT s.user_id FROM solutions s WHERE s.problem_id = p.id) AS t1)::decimal + 1) * ((SELECT COUNT(*) FROM (SELECT DISTINCT s.user_id FROM solutions s WHERE s.problem_id = p.id AND status = 'ok') AS t1) + 1)) / 100 * 5)::bigint,
-            u.name
+            u.name,
+            EXISTS(SELECT * FROM solutions s WHERE s.user_id = $4 AND s.status = 'ok' AND s.problem_id = p.id)
         FROM
             problems p JOIN users u ON u.id = p.user_id
         ORDER BY
