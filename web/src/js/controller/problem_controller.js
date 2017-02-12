@@ -1,5 +1,5 @@
 angular.module("notifyapp")
-  .controller("problemController", ($scope, $rootScope, $state, $server, $window, $interval)=>{
+  .controller("problemController", ($scope, $rootScope, $state, $server, $window, $interval, $timeout)=>{
     $scope.solve = {problemId: $state.params.id, lang: "cpp"}
     $scope.problem = {}
     $scope.submit = ()=>{
@@ -9,7 +9,10 @@ angular.module("notifyapp")
       $scope.obj.source = $window.btoa($scope.obj.source)
       $server.submitSolution($scope.obj, (err,data)=>{
         $scope.$apply(()=>{
-          $scope.solve.isSubmitting = false
+          $timeout(()=>{
+            $scope.solve.isSubmitting = false
+          }, 1000)
+          
           if(!err) {
             if($scope.submitInterval) {
               $interval.cancel($scope.submitInterval)
