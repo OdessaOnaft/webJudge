@@ -1,5 +1,6 @@
 module.exports = function(spawn, exec){
     return function(cmd, stdin, timeLimit, callback){
+        var callbackIsAlreadyCalled = false;
         if (typeof stdin == 'function')
             callback = stdin;
         if (typeof stdin == 'number')
@@ -13,11 +14,6 @@ module.exports = function(spawn, exec){
             stderr: ''
         };
         var child = spawn(run, cmd);
-        if (timeLimit && typeof timeLimit != 'function'){
-            setTimeout(()=>{
-                child.kill('SIGUSR1');
-            }, timeLimit);
-        }
         child.stdout.on('data', (data) => {
             res.stdout+=data;
         });
@@ -26,14 +22,22 @@ module.exports = function(spawn, exec){
         });
         var start = +(new Date());
         child.on('close', (code, signal) => {
-            res.code = code;
-            if (signal == 'SIGUSR1'){
-                res.code = 666;
+            if (!callbackIsAlreadyCalled) {
+                callbackIsAlreadyCalled = true;
+                res.code = code;
+                if (signal == 'SIGUSR1'){
+                    res.code = 666;
+                }
+                var end = +(new Date());
+                res.time = end - start;
+                callback(null, res);
             }
-            var end = +(new Date());
-            res.time = end - start;
-            callback(null, res);
         });
+        if (timeLimit && typeof timeLimit != 'function'){
+            setTimeout(()=>{
+                child.kill('SIGUSR1');
+            }, timeLimit);
+        }
         if (typeof stdin != 'function'){
             child.stdin.write(stdin);
             child.stdin.end();
