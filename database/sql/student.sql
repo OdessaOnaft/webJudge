@@ -95,6 +95,18 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
+create or replace function student_count_my_solutions(bigint, bigint, bigint, varchar) returns TABLE(count bigint) as
+$$
+begin
+    RETURN QUERY
+        SELECT
+            COUNT(*)
+        FROM solutions s
+        WHERE s.user_id = $1;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
 create or replace function student_get_solutions_by_problem_id(bigint, bigint, bigint, bigint, varchar) returns TABLE(solution_id bigint, problem_id bigint, created bigint, status varchar, lang varchar, problem_name varchar, test_count bigint, test_passed bigint) as
 $$
 begin
@@ -113,6 +125,18 @@ begin
         ORDER BY created DESC
         OFFSET $3
         LIMIT $4;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function student_count_solutions_by_problem_id(bigint, bigint, bigint, bigint, varchar) returns TABLE(count bigint) as
+$$
+begin
+    RETURN QUERY
+        SELECT
+            COUNT(*)
+        FROM solutions s
+        WHERE s.user_id = $1 AND s.problem_id = $2;
 end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------

@@ -90,18 +90,27 @@ module.exports = function(_, mainPg, fs){
                 });
         },
         getProblems: function (data, callback) {
+            var result = {
+                result: [],
+                count: 0
+            }
+            var args = [
+                inputData.skip || 0,
+                inputData.limit || 100000,
+                inputData.lang || 'en',
+                data.userId || null
+            ];
             Promise.resolve(data)
                 .then(inputData=>{
-                    var args = [
-                        inputData.skip || 0,
-                        inputData.limit || 100000,
-                        inputData.lang || 'en',
-                        data.userId || null
-                    ];
+                    return mainPg('SELECT * FROM guest_get_problems($1, $2, $3, $4);', args);
+                })
+                .then(inputData=>{
+                    result.result = resultData;
                     return mainPg('SELECT * FROM guest_get_problems($1, $2, $3, $4);', args);
                 })
                 .then(resultData=>{
-                    callback(null, resultData);
+                    result.count = resultData[0].count;
+                    callback(null, result);
                 })
                 .catch(err=>{
                     callback(err, null);
@@ -135,34 +144,52 @@ module.exports = function(_, mainPg, fs){
                 });
         },
         getSolutionsQueue: function (data, callback) {
+            var result = {
+                result: [],
+                count: 0
+            }
+            var args = [
+                data.skip || 0,
+                data.limit || 100000,
+                data.lang
+            ];
             Promise.resolve(data)
                 .then(inputData=>{
-                    var args = [
-                        inputData.skip || 0,
-                        inputData.limit || 100000,
-                        inputData.lang
-                    ];
                     return mainPg('SELECT * FROM guest_get_solutions_queue($1,$2,$3);', args);
                 })
                 .then(resultData=>{
-                    callback(null, resultData);
+                    result.result = resultData;
+                    return mainPg('SELECT * FROM guest_count_solutions_queue($1,$2,$3);', args);
+                })
+                .then(resultData=>{
+                    result.count = resultData[0].count;
+                    callback(null, result);
                 })
                 .catch(err=>{
                     callback(err, null);
                 });
         },
         getNews: function (data, callback) {
+            var result = {
+                result: [],
+                count: 0
+            }
+            var args = [
+                data.skip || 0,
+                data.limit || 100000,
+                data.lang
+            ];
             Promise.resolve(data)
                 .then(inputData=>{
-                    var args = [
-                        inputData.skip || 0,
-                        inputData.limit || 100000,
-                        inputData.lang
-                    ];
                     return mainPg('SELECT * FROM guest_get_news_list($1,$2,$3);', args);
                 })
                 .then(resultData=>{
-                    callback(null, resultData);
+                    result.result = resultData;
+                    return mainPg('SELECT * FROM guest_count_news_list($1,$2,$3);', args);
+                })
+                .then(resultData=>{
+                    result.count = resultData[0].count;
+                    callback(null, result);
                 })
                 .catch(err=>{
                     callback(err, null);

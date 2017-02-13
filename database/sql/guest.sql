@@ -121,6 +121,18 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
+create or replace function guest_count_problems(bigint, bigint, varchar, bigint) returns TABLE (count bigint) as
+$$
+begin
+    return query
+        SELECT
+            COUNT(*)
+        FROM
+            problems p JOIN users u ON u.id = p.user_id;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
 create or replace function guest_get_solution(bigint) returns TABLE(solution_id bigint, user_id bigint, problem_id bigint, created bigint, status varchar, message varchar, lang varchar, test_count bigint, test_passed bigint) as
 $$
 begin
@@ -185,6 +197,17 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
+create or replace function guest_count_solutions_queue(bigint, bigint, varchar) returns TABLE(count bigint) as
+$$
+begin
+    RETURN QUERY
+        SELECT
+            COUNT(*)
+        FROM solutions s JOIN users u ON u.id = s.user_id;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
 create or replace function guest_get_news(bigint, varchar) returns TABLE (news_id bigint, title varchar, created bigint, body varchar, creator varchar) as
 $$
 begin
@@ -200,8 +223,6 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------
 create or replace function guest_get_news_list(bigint, bigint, varchar) returns TABLE (news_id bigint, title varchar, created bigint, body varchar, creator varchar) as
 $$
 begin
@@ -213,7 +234,19 @@ begin
             COALESCE((SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.lang = $3 AND ls.related_type = 'body'), (SELECT ls.value FROM locale_strings ls WHERE ls.related_id = n.id AND ls.related_type = 'body' ORDER BY id LIMIT 1)),
             u.name
         FROM news n JOIN users u ON u.id = n.user_id
+        ORDER BY n.id DESC
         OFFSET $1
         LIMIT $2;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function guest_count_news_list(bigint, bigint, varchar) returns TABLE (count bigint) as
+$$
+begin
+    return query
+        SELECT
+            COUNT(*)
+        FROM news n JOIN users u ON u.id = n.user_id;
 end;
 $$ language plpgsql;
