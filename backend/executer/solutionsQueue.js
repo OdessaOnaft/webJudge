@@ -5,7 +5,7 @@ module.exports = function(_, async, systemDB, executeApi){
         }, (err, data)=>{
             callback();
         });
-    }, 4);
+    }, 1);
 
     setInterval(()=>{
         systemDB.getSolutionsQueue({skip: solQueue.length()}, (err, data)=>{
