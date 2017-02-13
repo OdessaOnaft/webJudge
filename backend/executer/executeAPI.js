@@ -139,9 +139,8 @@ module.exports = function(_, fs, async, executer, systemDB){
 
                     task.output = new Buffer(task.output, 'base64').toString().replace(/\r\n/g, '\n');
                     task.output = new Buffer(task.output).toString('base64');
-                    var startTime = _.now();
                     executer(`./${data.programName}`, new Buffer(task.input, 'base64').toString(), data.timeLimit, (err, data2)=>{
-                        var execTime = _.now() - startTime;
+                        var execTime = data2.time;
                         var res = new Buffer(data2.stdout).toString('base64');
                         if (err){
                             cb(err, null);

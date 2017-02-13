@@ -8,27 +8,30 @@ module.exports = function(spawn, exec){
             callback = timeLimit;
         var run = cmd.split(' ')[0];
         cmd = cmd.split(' ').slice(1);
+        var res = {
+            stdout: '',
+            stderr: ''
+        };
         var child = spawn(run, cmd);
         if (timeLimit && typeof timeLimit != 'function'){
             setTimeout(()=>{
                 child.kill('SIGUSR1');
             }, timeLimit);
         }
-        var res = {
-            stdout: '',
-            stderr: ''
-        };
         child.stdout.on('data', (data) => {
             res.stdout+=data;
         });
         child.stderr.on('data', (data) => {
             res.stderr+=data;
         });
+        var start = +(new Date());
         child.on('close', (code, signal) => {
             res.code = code;
             if (signal == 'SIGUSR1'){
                 res.code = 666;
             }
+            var end = +(new Date());
+            res.time = end - start;
             callback(null, res);
         });
         if (typeof stdin != 'function'){
