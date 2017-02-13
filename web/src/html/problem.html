@@ -30,7 +30,7 @@
       <textarea placeholder="Исходный код программы вставить сюда" ng-model="solve.source"></textarea>
       
       <div class="processing">
-        <button class="default" ng-click="submit()">
+        <button class="default" ng-click="submit()" ng-disabled="solve.isSubmitting">
           <span ng-if="!solve.profileSubmitPreloader">{{translate("submit")}}</span>
           <span ng-if="solve.profileSubmitPreloader" class="button-preloader"></span>
         </button>

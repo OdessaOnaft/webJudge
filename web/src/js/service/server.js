@@ -24,7 +24,8 @@ angular.module("notifyapp")
       'editNews',
       'getSolutionsByProblemId',
       'getUsers',
-      'getSolutionsQueue'
+      'getSolutionsQueue',
+      'editProblem'
     ]
     var addMethod = (methodName)=>{
       api[methodName] = (data, callback)=>{

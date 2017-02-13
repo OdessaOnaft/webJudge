@@ -8,8 +8,8 @@
       <th>Автор</th>
     </thead>
     <tbody>
-      <tr ng-repeat="problem in problems" ui-sref="cabinet.problem({id: problem.problemId})">
-        <td>{{problem.problemId}}</td>
+      <tr ng-repeat="problem in problems" ui-sref="cabinet.problem({id: problem.problemId})" ng-class="{'solved': problem.isSolved}">
+        <td>{{problem.problemId}} <img src="assets/img/tick.png" width="13" height="13" alt="" ng-if="problem.isSolved"></td>
         <td>{{problem.name}}</td>
         <td><img src="assets/img/muscles.png" alt="" width="14" height="13" ng-repeat="el in nTimes(problem.difficulty)"></td>
         <td>{{problem.author}}</td>

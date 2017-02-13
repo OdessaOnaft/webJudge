@@ -1,14 +1,26 @@
 angular.module("notifyapp")
   .controller("addProblemController", ($scope, $rootScope, $state, $server, $window, $timeout)=>{
     $window.s = $scope
-
+    // delete localStorage.addProblem
     var interval = setInterval(()=>{
-      localStorage.addProblem = JSON.stringify($scope.problem)
+      if($scope.problem) {
+        var obj = JSON.parse(JSON.stringify($scope.problem))
+        delete obj.samples;
+
+        localStorage.addProblem = JSON.stringify(obj)
+      }
     }, 1000)
     $scope.$on("$destroy", ()=>{
       clearInterval(interval)
     })
-
+    $scope.initProblem = ()=>{
+        $scope.problem = {
+          name: [{lang: 'ru'}, {lang: 'en'}],
+          description: [{lang: 'ru'}, {lang: 'en'}],
+          outputSourceFile: {},
+          samples: []
+        }
+    }
     $server.checkSession({}, (err,data)=>{
       $scope.$apply(()=>{
         if(!err) {
@@ -35,19 +47,20 @@ angular.module("notifyapp")
             $scope.problem = data
             data.outputSource = $window.atob(data.outputSource)
             console.log($scope.problem.name[0])
+          } else {
+            $scope.initProblem()
           }
         })
       })
     } else {
       if(!localStorage.addProblem) {
-        $scope.problem = {
-          name: [{lang: 'ru'}, {lang: 'en'}],
-          description: [{lang: 'ru'}, {lang: 'en'}],
-          outputSourceFile: {},
-          samples: []
-        }
+        $scope.initProblem()
       } else {
-        $scope.problem = JSON.parse(localStorage.addProblem)
+        if(localStorage.addProblem!="undefined")
+          $scope.problem = JSON.parse(localStorage.addProblem)
+        if($scope.problem.problemId && !$state.params.id) {
+          $scope.initProblem()
+        }
       }
     }
     $scope.$watch("problem.outputSourceFile[0].base64", (val)=>{
@@ -69,16 +82,30 @@ angular.module("notifyapp")
       $scope.obj.memoryLimit = $scope.obj.memoryLimit*1024*1024
       delete $scope.problem.isSubmitted
       _.each($scope.obj.samples, (el, i)=>{
-        el.input = el.base64
+        el.input = el.base64 || el.input
         delete el.url
         delete el.base64
       })
       delete $scope.obj.outputSourceFile
       delete $scope.obj.isSubmitted
       $scope.obj.publicCount = 2
+      console.log($state.params.id)
       if($state.params.id) {
         $scope.obj.problemId = $state.params.id
         $server.editProblem($scope.obj, (err,data)=>{
+          $scope.$apply(()=>{
+            if(!err){
+              $scope.user.addProblemPreloader = false
+              $state.go("cabinet.problem", {id: $state.params.id})
+            } else {
+              $scope.user.addProblemPreloader = false
+              $scope.user.error = "Ошибка сервера, перезагрузите страницу"
+            }
+          })
+          
+        })
+      } else {
+        $server.addProblem($scope.obj, (err,data)=>{
           $scope.$apply(()=>{
             if(!err){
               $scope.user.addProblemPreloader = false
@@ -91,17 +118,5 @@ angular.module("notifyapp")
           
         })
       }
-      $server.addProblem($scope.obj, (err,data)=>{
-        $scope.$apply(()=>{
-          if(!err){
-            $scope.user.addProblemPreloader = false
-            $state.go("cabinet.problem", {id: data.problemId})
-          } else {
-            $scope.user.addProblemPreloader = false
-            $scope.user.error = "Ошибка сервера, перезагрузите страницу"
-          }
-        })
-        
-      })
     }
   })
