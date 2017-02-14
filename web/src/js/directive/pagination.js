@@ -17,7 +17,6 @@ angular.module("notifyapp")
         var f = $parse(attrs.onChange)(scope)
         var func = attrs.onChange
         var pages=Math.ceil(length/limit)
-        console.log(skipModel, skip, limitModel, limit, lengthModel,length, pages)
         var list = angular.element('<div class="pagination-list"></div>');
         element.html('')
         if(pages<6) {
@@ -26,24 +25,33 @@ angular.module("notifyapp")
             list.append(item)
           }
         } else {
+          var curPage=skip/limit
+          if(curPage>0){
+            var item = angular.element(`<div class="pagination-item" ng-click="${skipModel}=${curPage-1}*${limitModel};${func}()">‹</div>`)
+            list.append(item)
+          }
           for(var i=0;i<3;i++){
             var item = angular.element(`<div class="pagination-item" ng-class="{'active': ${skipModel}==${i}*${limitModel} }" ng-click="${skipModel}=${i}*${limitModel};${func}()">${(i+1)}</div>`)
             list.append(item)
           }
-          var curPage=skip/limit
-          console.log(curPage)
+          if(curPage>4) { 
+            list.append(angular.element(`<div class="pagination-item dead">...</div>`))
+          }
           for(var i=curPage-1;i<=curPage+2;i++){
-            console.log(i)
             if(i<3 || i>pages-4)continue;
 
             var item = angular.element(`<div class="pagination-item" ng-class="{'active': ${skipModel}==${i}*${limitModel} }" ng-click="${skipModel}=${i}*${limitModel};${func}()">${(i+1)}</div>`)
             list.append(item)
           }
-          if(curPage<pages-4) { 
+          if(curPage<pages-6) { 
             list.append(angular.element(`<div class="pagination-item dead">...</div>`))
           }
           for(var i=pages-3;i<pages;i++){
-            var item = angular.element(`<div class="pagination-item" ng-click="${skipModel}=${i}*${limitModel};${func}()">${(i+1)}</div>`)
+            var item = angular.element(`<div class="pagination-item" ng-class="{'active': ${skipModel}==${i}*${limitModel} }" ng-click="${skipModel}=${i}*${limitModel};${func}()">${(i+1)}</div>`)
+            list.append(item)
+          }
+          if(curPage<pages-1){
+            var item = angular.element(`<div class="pagination-item" ng-click="${skipModel}=${curPage+1}*${limitModel};${func}()">›</div>`)
             list.append(item)
           }
         }

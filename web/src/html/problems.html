@@ -1,4 +1,4 @@
-<div class="problems">
+<div class="problems" ng-show="!$root.preloader">
   <button class="default" ui-sref="^.addProblem" ng-if="user.scope=='admin' || user.scope=='teacher'">Добавить задачу</button>
   <table class="problems-table">
     <thead>
@@ -16,4 +16,5 @@
       </tr>
     </tbody>
   </table>
+  <div class="pagination" pagination length="pag.length" limit="pag.limit" skip="pag.skip" on-change="getSolutionsByProblemId" ng-if="problems.length && false"></div>
 </div>

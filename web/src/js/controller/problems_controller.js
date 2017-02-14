@@ -6,7 +6,11 @@ angular.module("notifyapp")
       limit: 10
     }
     $scope.getProblems = ()=>{
+      $rootScope.preloader = true
       $server.getProblems({skip: $scope.pag.skip, limit: $scope.pag.limit, lang: $rootScope.lang}, (err,data)=>{
+        $rootScope.$apply(()=>{
+          $rootScope.preloader = false
+        })
         $scope.$apply(()=>{
           if(!err) {
             $scope.problems = data.result

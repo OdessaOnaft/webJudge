@@ -1,4 +1,4 @@
-<div class="solutions" ng-show="!$root.preloader || true">
+<div class="solutions" ng-show="!$root.preloader">
   <table ng-if="solutions.length" class="default">
     <thead>
       <th>{{translate('solutionId')}}</th>
@@ -25,6 +25,6 @@
       </tr>
     </tbody>
   </table>
-
+  <div class="pagination" pagination length="pag.length" limit="pag.limit" skip="pag.skip" on-change="getMySolutions" ng-if="solutions.length"></div>
   <p ng-if="!solutions.length && !$root.preloader">{{translate('noSolutions')}} <a ui-sref="^.problems" class="blue">Перейти к списку задач</a></p>
 </div>
