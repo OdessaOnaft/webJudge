@@ -2,7 +2,7 @@
   <table ng-if="solutions.length" class="default">
     <thead>
       <th>{{translate('solutionId')}}</th>
-      <th>{{translate('problemId')}}</th>
+      <!-- <th>{{translate('userName')}}</th> -->
       <th>{{translate('problemName')}}</th>
       <th>{{translate('created')}}</th>
       <th>{{translate('lang')}}</th>
@@ -11,7 +11,7 @@
     <tbody>
       <tr ng-repeat="solution in solutions" ui-sref="^.solution({id: solution.solutionId})" ng-class="{'green': solution.status=='ok', 'yellow': solution.status=='waiting', 'red': (solution.status!='ok'&&solution.status!='waiting')}">
         <td>{{solution.solutionId}}</td>
-        <td ng-click="prevent($event);" ui-sref="cabinet.problem({id: solution.problemId})">{{solution.problemId}}</td>
+        <!-- <td ng-click="prevent($event);" ui-sref="cabinet.problem({id: solution.problemId})">{{solution.userName}}</td> -->
         <td ng-click="prevent($event);" ui-sref="cabinet.problem({id: solution.problemId})">{{solution.problemName}}</td>
         <td>{{dateFormat(solution.created)}}</td>
         <td>{{translate(solution.lang)}}</td>

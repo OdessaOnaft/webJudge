@@ -31,8 +31,8 @@
       
       <div class="processing">
         <button class="default" ng-click="submit()" ng-disabled="solve.isSubmitting">
-          <span ng-if="!solve.profileSubmitPreloader">{{translate("submit")}}</span>
-          <span ng-if="solve.profileSubmitPreloader" class="button-preloader"></span>
+          <span ng-if="!solve.isSubmitting">{{translate("submit")}}</span>
+          <span ng-if="solve.isSubmitting" class="button-preloader"></span>
         </button>
         <p class="progress" ng-if="solve.isSubmitting">submiting....</p>
       </div>
@@ -60,6 +60,7 @@
           </tr>
         </tbody>
       </table>
+      <div class="pagination" pagination length="pag.length" limit="pag.limit" skip="pag.skip" on-change="getSolutionsByProblemId" ng-if="solutions.length"></div>
     </div>
   </div>
 </div>

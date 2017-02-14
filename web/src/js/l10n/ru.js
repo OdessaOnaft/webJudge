@@ -55,7 +55,8 @@ angular.module("notifyapp")
       modifiedScope: "Роль на подтверждении",
       proceedOnTest: "Выполняется на тесте",
       queue: "Очередь",
-      user: "Пользователь"
+      user: "Пользователь",
+      back: "Назад"
     }
     return words
 

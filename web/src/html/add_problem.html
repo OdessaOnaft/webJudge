@@ -60,9 +60,9 @@
     </table>
 
 
-    <button ng-click="submitAddProblem()" class="default">
-      <span ng-if="!user.addProblemPreloader">{{translate("save")}}</span>
-      <span ng-if="user.addProblemPreloader" class="button-preloader"></span>
+    <button ng-click="submitAddProblem()" class="default" ng-disabled="problem.preloader">
+      <span ng-if="!problem.preloader">{{translate("save")}}</span>
+      <span ng-if="problem.preloader" class="button-preloader"></span>
     </button>
     <p class="error" ng-if="user.error" style="margin-top: 10px;">{{user.error}}</p>
   </div>

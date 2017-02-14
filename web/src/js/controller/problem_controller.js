@@ -2,6 +2,10 @@ angular.module("notifyapp")
   .controller("problemController", ($scope, $rootScope, $state, $server, $window, $interval, $timeout)=>{
     $scope.solve = {problemId: $state.params.id, lang: "cpp"}
     $scope.problem = {}
+    $scope.pag = {
+      skip: 0,
+      limit: 10
+    }
     $scope.submit = ()=>{
       $scope.solve.isSubmitting = true
       $scope.obj = JSON.parse(JSON.stringify($scope.solve))
@@ -68,17 +72,19 @@ angular.module("notifyapp")
       $interval.cancel($scope.submitInterval)
     })
     $scope.getSolutionsByProblemId = ()=>{
-      $server.getSolutionsByProblemId({problemId: $state.params.id, skip: 0, limit: 4242}, (err,data)=>{
+      $server.getSolutionsByProblemId({problemId: $state.params.id, skip: $scope.pag.skip, limit: $scope.pag.limit}, (err,data)=>{
         $scope.$apply(()=>{
           if(!err) {
-            $scope.solutions = []
+
+            $scope.solutions = data.result
             var isWaiting = false
-            _.each(data, (v)=>{
-              if(v.problemId == $state.params.id) {
-                $scope.solutions.push(v)
-                if(v.status=='waiting')isWaiting = true
-                // $server.getSolution(v, (err,data)=>{})
+            $scope.pag.length = +data.count
+            _.each($scope.solutions, (v)=>{
+
+              if(v.status=='waiting') {
+                isWaiting = true
               }
+              
             })
             if(!isWaiting) {
               $interval.cancel($scope.submitInterval)
@@ -89,5 +95,6 @@ angular.module("notifyapp")
         })
       })
     }
+    $window.s = $scope
     $scope.getSolutionsByProblemId()
   })

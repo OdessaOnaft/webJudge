@@ -6,7 +6,11 @@
   </ul>
 
   <div class="admin-content">
-    <div class="news" ng-if="state.type=='news'"></div>
+    <div class="news" ng-if="state.type=='news'">
+      <div class="news-wrapper">
+        
+      </div>
+    </div>
 
     <div class="add-news" ng-if="state.type=='addNews'">
       <div class="block">
@@ -23,7 +27,6 @@
         <textarea placeholder="content" ng-model="addNewsContent.body[1].value"></textarea>
       </div>
       <button class="default" ng-click="addNews()">{{translate('save')}}</button>
-1 марта 2017 года запускается новый проект который улучшит процесс обучения для студентов и школьников - программистов!
       
     </div>
 

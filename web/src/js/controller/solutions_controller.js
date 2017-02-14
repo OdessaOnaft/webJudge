@@ -1,18 +1,22 @@
 angular.module("notifyapp")
   .controller("solutionsController", ($scope, $rootScope, $state, $server, $timeout)=>{
 
-
-     $scope.getMySolutions = ()=>{
+    $scope.pag = {
+      skip: 0,
+      limit: 10
+    }
+    $scope.getMySolutions = ()=>{
       $rootScope.preloader = true
-      $server.getMySolutions({problemId: $state.params.id, skip: 0, limit: 4242, lang: $rootScope.lang}, (err,data)=>{
+      $server.getMySolutions({problemId: $state.params.id, skip: $scope.pag.skip, limit: $scope.pag.limit, lang: $rootScope.lang}, (err,data)=>{
         $rootScope.$apply(()=>{
           $rootScope.preloader = false
         })
         $scope.$apply(()=>{
           if(!err) {
-            $scope.solutions = data
+            $scope.solutions = data.result
+            $scope.pag.length = +data.count
             var isWaiting = false
-            _.each(data, (v)=>{
+            _.each($scope.solutions, (v)=>{
               if(v.status=='waiting')isWaiting = true
                 // $server.getSolution(v, (err,data)=>{})
             })
