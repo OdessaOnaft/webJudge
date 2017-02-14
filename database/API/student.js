@@ -76,21 +76,21 @@ module.exports = function(_, mainPg, fs){
                 count: 0
             }
             var args = [
-                inputData.userId,
-                inputData.skip || 0,
-                inputData.limit || 100000,
-                inputData.lang
+                data.userId,
+                data.skip || 0,
+                data.limit || 100000,
+                data.lang
             ];
             Promise.resolve(data)
                 .then(inputData=>{
                     return mainPg('SELECT * FROM student_get_my_solutions($1,$2,$3,$4);', args);
                 })
-                .then(inputData=>{
-                    result.result = inputData;
+                .then(resultData=>{
+                    result.result = resultData;
                     return mainPg('SELECT * FROM student_count_my_solutions($1,$2,$3,$4);', args);
                 })
                 .then(resultData=>{
-                    result.count = inputData[0].count;
+                    result.count = resultData[0].count;
                     callback(null, result);
                 })
                 .catch(err=>{
@@ -104,22 +104,22 @@ module.exports = function(_, mainPg, fs){
                 count: 0
             }
             var args = [
-                inputData.userId,
-                inputData.problemId,
-                inputData.skip || 0,
-                inputData.limit || 100000,
-                inputData.lang
+                data.userId,
+                data.problemId,
+                data.skip || 0,
+                data.limit || 100000,
+                data.lang
             ];
             Promise.resolve(data)
                 .then(inputData=>{
                     return mainPg('SELECT * FROM student_get_solutions_by_problem_id($1,$2,$3,$4,$5);', args);
                 })
-                .then(inputData=>{
-                    result.result = inputData;
+                .then(resultData=>{
+                    result.result = resultData;
                     return mainPg('SELECT * FROM student_count_solutions_by_problem_id($1,$2,$3,$4,$5);', args);
                 })
                 .then(resultData=>{
-                    result.count = inputData[0].count;
+                    result.count = resultData[0].count;
                     callback(null, result);
                 })
                 .catch(err=>{
