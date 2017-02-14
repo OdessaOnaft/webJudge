@@ -95,16 +95,16 @@ module.exports = function(_, mainPg, fs){
                 count: 0
             }
             var args = [
-                inputData.skip || 0,
-                inputData.limit || 100000,
-                inputData.lang || 'en',
+                data.skip || 0,
+                data.limit || 100000,
+                data.lang || 'en',
                 data.userId || null
             ];
             Promise.resolve(data)
                 .then(inputData=>{
                     return mainPg('SELECT * FROM guest_get_problems($1, $2, $3, $4);', args);
                 })
-                .then(inputData=>{
+                .then(resultData=>{
                     result.result = resultData;
                     return mainPg('SELECT * FROM guest_get_problems($1, $2, $3, $4);', args);
                 })
