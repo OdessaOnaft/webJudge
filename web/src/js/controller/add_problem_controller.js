@@ -77,6 +77,7 @@ angular.module("notifyapp")
       })
     }
     $scope.addProblem = ()=>{
+      $scope.problem.preloader = true
       $scope.obj = JSON.parse(JSON.stringify($scope.problem))
       $scope.obj.outputSource = $window.btoa($scope.obj.outputSource);
       $scope.obj.memoryLimit = $scope.obj.memoryLimit*1024*1024
@@ -94,6 +95,7 @@ angular.module("notifyapp")
         $scope.obj.problemId = $state.params.id
         $server.editProblem($scope.obj, (err,data)=>{
           $scope.$apply(()=>{
+            $scope.problem.preloader = false
             if(!err){
               $scope.user.addProblemPreloader = false
               $state.go("cabinet.problem", {id: $state.params.id})
@@ -107,6 +109,7 @@ angular.module("notifyapp")
       } else {
         $server.addProblem($scope.obj, (err,data)=>{
           $scope.$apply(()=>{
+            $scope.problem.preloader = false
             if(!err){
               $scope.user.addProblemPreloader = false
               $state.go("cabinet.problem", {id: data.problemId})

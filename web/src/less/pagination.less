@@ -1,0 +1,22 @@
+.pagination-list {
+  .pagination-item {
+    display: inline-block;
+    font-size: 15px;
+    margin-right: 5px;
+    cursor: pointer;
+    &:last-child {
+      margin-right: 0;
+    }
+    &:hover {
+      color: #55c;
+    }
+    &.active {
+      color: #55c;
+    }
+    &.dead {
+      &:hover {
+        color: inherit;
+      }
+    }
+  }
+}

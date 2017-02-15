@@ -55,7 +55,8 @@ angular.module("notifyapp")
       modifiedScope: "Modified scope",
       proceedOnTest: "Run on test",
       queue: "Queue",
-      user: "User"
+      user: "User",
+      back: "Back"
 
     }
     return words

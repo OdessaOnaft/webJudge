@@ -10,5 +10,8 @@
       <li ui-sref=".admin" ng-if="user.scope=='admin'"><a>{{translate('administration')}}</a></li>
     </ul>
   </div><!--
-  --><div class="cabinet-inner" ui-view></div>
+  --><div class="cabinet-inner" >
+        <div ui-view></div>
+        <div class="preloader" ng-if="$root.preloader"></div>
+      </div>
 </div>

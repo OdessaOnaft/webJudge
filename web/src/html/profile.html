@@ -1,4 +1,4 @@
-<div class="profile">
+<div class="profile" ng-show="!$root.preloader">
   <h2>{{translate("profile")}}</h2>
   <div class="form"  check-form="user.isSubmitted" on-validation-ok='editProfile' >
     <table>

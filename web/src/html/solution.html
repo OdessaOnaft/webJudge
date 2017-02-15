@@ -1,4 +1,5 @@
 <div class="solution" ng-show="!$root.preloader">
+  <a ui-sref="^.problem({id: solution.problemId})" class="blue">{{translate('back')}}</a>
   <div class="source" hljs ng-if="solution.solution" language="cpp" source="solution.solution"></div>
   <div class="form">
     <table class="border default">
