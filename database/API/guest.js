@@ -106,7 +106,7 @@ module.exports = function(_, mainPg, fs){
                 })
                 .then(resultData=>{
                     result.result = resultData;
-                    return mainPg('SELECT * FROM guest_get_problems($1, $2, $3, $4);', args);
+                    return mainPg('SELECT * FROM guest_count_problems($1, $2, $3, $4);', args);
                 })
                 .then(resultData=>{
                     result.count = resultData[0].count;
