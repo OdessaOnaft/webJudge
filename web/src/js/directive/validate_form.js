@@ -13,15 +13,6 @@ angular.module("notifyapp")
       phoneNumber: (value)=> {
         return value.match(/380[0-9]{9}/)
       },
-      adr: (value)=> {
-        return _.isNumber(value) && value>0 && value<10
-      },
-      temperature: (value)=> {
-        return _.isNumber(value) && value>-274
-      },
-      cargoWeight: (value)=> {
-        return _.isNumber(value) && value>0 && value<41
-      },
       percent: (value)=> {
         return _.isNumber(value) && value>0 && value<101
       },

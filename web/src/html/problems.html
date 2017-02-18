@@ -1,5 +1,5 @@
 <div class="problems" ng-show="!$root.preloader">
-  <button class="default" ui-sref="^.addProblem" ng-if="user.scope=='admin' || user.scope=='teacher'">Добавить задачу</button>
+  <button class="default" ui-sref="^.addProblem" ng-if="user.scope=='admin' || user.scope=='teacher'">{{translate('addProblem')}}</button>
   <table class="problems-table">
     <thead>
       <th>ID</th>

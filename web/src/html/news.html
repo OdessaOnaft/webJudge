@@ -1,1 +1,10 @@
-<div class="news"></div>
+ <div class="news" ng-show="!$root.preloader">
+  <h1>{{translate("news")}}</h1>
+  <div class="news-wrapper" >
+    <div class="item" ng-repeat="item in news" ng-if="item.body">
+      <h2 ng-bind-html="item.title"></h2>
+      <h4 ng-bind-html="item.body"></h4>
+      <p class="author">{{item.creator}}, {{dateFormat(item.created, 'date')}}</p>
+    </div>
+  </div>
+</div>

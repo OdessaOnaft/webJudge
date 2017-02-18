@@ -40,6 +40,9 @@ angular.module("notifyapp")
     if($state.params.id) {
       $rootScope.preloader = true
       $server.getProblemFull({problemId: $state.params.id}, (err,data)=>{
+        $rootScope.$apply(()=>{
+          $rootScope.preloader = false
+        })
         $scope.$apply(()=>{
           if(!err) {
             data.memoryLimit = +data.memoryLimit / 1024 / 1024
@@ -61,6 +64,8 @@ angular.module("notifyapp")
         if($scope.problem.problemId && !$state.params.id) {
           $scope.initProblem()
         }
+        $scope.problem.error = undefined
+        $scope.problem.isSubmitted = false
       }
     }
     $scope.$watch("problem.outputSourceFile[0].base64", (val)=>{
@@ -77,6 +82,10 @@ angular.module("notifyapp")
       })
     }
     $scope.addProblem = ()=>{
+      if(!$scope.problem.samples || $scope.problem.samples.length<3){
+        $scope.problem.error = "Добавьте тесты к задаче, их должно быть как минимум 3"
+        return;
+      }
       $scope.problem.preloader = true
       $scope.obj = JSON.parse(JSON.stringify($scope.problem))
       $scope.obj.outputSource = $window.btoa($scope.obj.outputSource);
@@ -90,18 +99,17 @@ angular.module("notifyapp")
       delete $scope.obj.outputSourceFile
       delete $scope.obj.isSubmitted
       $scope.obj.publicCount = 2
-      console.log($state.params.id)
       if($state.params.id) {
         $scope.obj.problemId = $state.params.id
         $server.editProblem($scope.obj, (err,data)=>{
           $scope.$apply(()=>{
             $scope.problem.preloader = false
             if(!err){
-              $scope.user.addProblemPreloader = false
+              $scope.problem.preloader = false
               $state.go("cabinet.problem", {id: $state.params.id})
             } else {
-              $scope.user.addProblemPreloader = false
-              $scope.user.error = "Ошибка сервера, перезагрузите страницу"
+              $scope.problem.preloader = false
+              $scope.problem.error = "Ошибка сервера, перезагрузите страницу"
             }
           })
           
@@ -111,11 +119,11 @@ angular.module("notifyapp")
           $scope.$apply(()=>{
             $scope.problem.preloader = false
             if(!err){
-              $scope.user.addProblemPreloader = false
+              $scope.problem.preloader = false
               $state.go("cabinet.problem", {id: data.problemId})
             } else {
-              $scope.user.addProblemPreloader = false
-              $scope.user.error = "Ошибка сервера, перезагрузите страницу"
+              $scope.problem.preloader = false
+              $scope.problem.error = "Ошибка сервера, перезагрузите страницу"
             }
           })
           
