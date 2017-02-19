@@ -56,7 +56,8 @@ angular.module("notifyapp")
       proceedOnTest: "Run on test",
       queue: "Queue",
       user: "User",
-      back: "Back"
+      back: "Back",
+      addTestsHint: "Choose multiple input files from file system (recommended at least 10), first two tests will be samples for this problem."
 
     }
     return words

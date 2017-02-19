@@ -1,7 +1,8 @@
 angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize', 'hljs'])
 	.run(['$state', '$rootScope', '$location',  ($state, $rootScope, $location)=>{
-		var path = $location.path()
-    if(path[path.length-1] != '/'){
+		var path = $location.url()
+    if(path[path.length-1] != '/' && path.indexOf("?")==-1){
+    	console.log(path.indexOf("?"), path, $location)
       $location.path(path+'/')
     }
 	}])
@@ -10,6 +11,9 @@ angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize', 
 	    $locationProvider.html5Mode(true) 
 	    $urlRouterProvider.when('','/')
 	    $urlRouterProvider.when('/cabinet/problem/','/cabinet/problems/')
+	    $urlRouterProvider.when('/cabinet/admin/',($state)=>{
+	    	$state.go("cabinet.admin.child", {type: "users"})
+	    })
 	    
 	    $urlRouterProvider.otherwise("/404/");
 	    hljsServiceProvider.setOptions({
@@ -87,7 +91,7 @@ angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize', 
 	        controller: "adminController"
 		    })
 		    .state('cabinet.admin.child', {
-	        url:'{type}/'
+	        url:'q?{type, id}/'
 		    })
 		    .state('cabinet.groups', {
 	        url:'groups/',

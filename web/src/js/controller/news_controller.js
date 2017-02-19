@@ -1,7 +1,12 @@
 angular.module("notifyapp")
   .controller("newsController", ($scope, $rootScope, $state, $server)=>{
+
     $scope.getNews = ()=>{
-      $server.getNews({}, (err,data)=>{
+      $rootScope.preloader = true
+      $server.getNews({lang: $rootScope.lang}, (err,data)=>{
+        $rootScope.$apply(()=>{
+          $rootScope.preloader = false
+        })
         $scope.$apply(()=>{
           if(!err){
             $scope.news = data.result
@@ -9,5 +14,8 @@ angular.module("notifyapp")
         })
       })
     }
+    $rootScope.$watch("lang", ()=>{
+      $scope.getNews()
+    })
     $scope.getNews()
   })

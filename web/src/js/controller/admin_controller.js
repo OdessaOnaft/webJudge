@@ -20,16 +20,16 @@ angular.module("notifyapp")
       })
     }
     $scope.getNews = ()=>{
-      $server.getNews({}, (err,data)=>{
+      $server.getNews({lang: $rootScope.lang}, (err,data)=>{
         $scope.$apply(()=>{
           if(!err){
-            $scope.news = data
+            $scope.news = data.result
           }
         })
       })
     }
     $scope.getNewsById = ()=>{
-      $server.getNewsById({}, (err,data)=>{
+      $server.getNewsById({id: $state.params.id}, (err,data)=>{
         $scope.$apply(()=>{
           if(!err){
 
@@ -43,12 +43,14 @@ angular.module("notifyapp")
           if(!err){
             $scope.addNewsContent = {title: [{lang: 'ru'}, {lang: 'en'}], body: [{lang: 'ru'}, {lang: 'en'}]}
             alert("Новость успешно добавлена")
+            $state.go("cabinet.admin.child", {type: "news"})
           }
         })
       })
     }
     $scope.editNews = ()=>{
-      $server.editNews({}, (err,data)=>{
+      $scope.addNewsContent.newsId = $state.params.id
+      $server.editNews($scope.addNewsContent, (err,data)=>{
         $scope.$apply(()=>{
           if(!err){
 
@@ -61,14 +63,27 @@ angular.module("notifyapp")
         $scope.$apply(()=>{
           if(!err){
             $scope.users = data
-            console.log($scope.users)
           }
         })
       })
     }
     var events = {
+
       addNews: ()=>{
-        
+        $scope.addNewsContent = {title: [{lang: 'ru'}, {lang: 'en'}], body: [{lang: 'ru'}, {lang: 'en'}]}
+        if($state.params.id) {
+          _.each(['ru','en'], (lang, i)=>{
+            $server.getNewsById({newsId: $state.params.id, lang}, (err,data)=>{
+              $scope.$apply(()=>{
+                if(!err){
+                  $scope.addNewsContent.title[i].value = data.title
+                  $scope.addNewsContent.body[i].value = data.body
+                  
+                }
+              })
+            })
+          })
+        }
       },
       news: ()=>{
         $scope.getNews();
@@ -79,8 +94,7 @@ angular.module("notifyapp")
     }
     $scope.state = {}
     $scope.$on("$stateChangeSuccess", ()=>{
-      $scope.state.type = $state.params.type
-      
+      $scope.state = $state.params
       if($scope.state.type) {
         events[$scope.state.type]();
       }

@@ -7,8 +7,13 @@
 
   <div class="admin-content">
     <div class="news" ng-if="state.type=='news'">
-      <div class="news-wrapper">
-        
+      <div class="news-wrapper" >
+        <div class="item" ng-repeat="item in news" ng-if="item.body">
+          <button ui-sref="cabinet.admin.child({type:'addNews', id: item.newsId})" style="float: right;">{{'edit'}}</button>
+          <h2 ng-bind-html="item.title"></h2>
+          <h4 ng-bind-html="item.body"></h4>
+          <p class="author">{{item.creator}}, {{dateFormat(item.created, 'date')}}</p>
+        </div>
       </div>
     </div>
 
@@ -26,7 +31,7 @@
 
         <textarea placeholder="content" ng-model="addNewsContent.body[1].value"></textarea>
       </div>
-      <button class="default" ng-click="addNews()">{{translate('save')}}</button>
+      <button class="default" ng-click="state.id?editNews():addNews()">{{translate('save')}}</button>
       
     </div>
 
