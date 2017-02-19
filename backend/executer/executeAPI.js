@@ -115,7 +115,7 @@ module.exports = function(_, fs, async, executer, systemDB, spawn){
                 var child = spawn('./executer.exe');
                 child.stdout.on('data', (data) => {
                     currentTask++;
-                    var testResult = data.split(' ');
+                    var testResult = data.toString().split(' ');
                     var testNumber = +testResult[0];
                     var execTime = +testResult[1];
                     var totalMem = +testResult[2];
@@ -130,7 +130,6 @@ module.exports = function(_, fs, async, executer, systemDB, spawn){
                         execMemory: totalMem
                     };
                     api.setTestResult(payload, (err3, data3)=>{});
-                    currentTask++;
                     if (payload.status != 'ok'){
                         api.setSolutionResult(payload, (err, data4)=>{
                             if (!callbackIsAlreadyCalled) {
