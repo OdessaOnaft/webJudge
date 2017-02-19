@@ -170,7 +170,7 @@ begin
         SELECT
             t1.user_id,
             u.name,
-            (SELECT row_to_json(row) FROM (SELECT pm.message, pm.created, (pm.from_user_id = $1) AS "isMyMessage" FROM private_messages pm WHERE (pm.from_user_id = t1.user_id OR pm.to_user_id = t1.user_id) AND (pm.from_user_id = $1 OR pm.to_user_id = $1) ORDER BY pm.created LIMIT 1) AS row LIMIT 1)::varchar
+            (SELECT row_to_json(row) FROM (SELECT pm.message, pm.created, (pm.from_user_id = $1) AS "isMyMessage", pm.is_seen FROM private_messages pm WHERE (pm.from_user_id = t1.user_id OR pm.to_user_id = t1.user_id) AND (pm.from_user_id = $1 OR pm.to_user_id = $1) ORDER BY pm.created LIMIT 1) AS row LIMIT 1)::varchar
         FROM
             (SELECT DISTINCT
                 CASE WHEN pm.from_user_id = $1 THEN pm.to_user_id ELSE pm.from_user_id END AS user_id
@@ -184,7 +184,23 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function student_get_chat(bigint, bigint, bigint, bigint) returns TABLE(user_id bigint, user_name varchar, message varchar, created bigint) as
+create or replace function student_count_chats(bigint, bigint, bigint) returns TABLE(count bigint) as
+$$
+begin
+    RETURN QUERY
+        SELECT
+            COUNT(*)
+        FROM
+            (SELECT DISTINCT
+                CASE WHEN pm.from_user_id = $1 THEN pm.to_user_id ELSE pm.from_user_id END AS user_id
+            FROM private_messages pm
+            WHERE pm.from_user_id = $1 OR pm.to_user_id = $1) AS t1
+            JOIN users u ON u.id = t1.user_id;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function student_get_chat(bigint, bigint, bigint, bigint) returns TABLE(user_id bigint, user_name varchar, message varchar, created bigint, is_seen boolean) as
 $$
 begin
     RETURN QUERY
@@ -192,12 +208,36 @@ begin
             pm.from_user_id,
             u.name,
             pm.message,
-            pm.created
+            pm.created,
+            pm.is_seen
         FROM private_messages pm JOIN users u ON u.id = pm.from_user_id
         WHERE (pm.from_user_id = $2 OR pm.to_user_id = $2) AND (pm.from_user_id = $1 OR pm.to_user_id = $1)
         ORDER BY pm.created DESC
         OFFSET $3
         LIMIT $4;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function student_count_chat(bigint, bigint, bigint, bigint) returns TABLE(count bigint) as
+$$
+begin
+    RETURN QUERY
+        SELECT
+            COUNT(*)
+        FROM private_messages pm JOIN users u ON u.id = pm.from_user_id
+        WHERE (pm.from_user_id = $2 OR pm.to_user_id = $2) AND (pm.from_user_id = $1 OR pm.to_user_id = $1);
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function student_seen_chat(bigint, bigint) returns TABLE(result boolean) as
+$$
+begin
+    UPDATE private_messages SET is_seen = true WHERE pm.from_user_id = $1 AND pm.to_user_id = $2;
+    RETURN QUERY
+        SELECT
+            true;
 end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------

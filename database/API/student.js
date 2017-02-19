@@ -164,41 +164,73 @@ module.exports = function(_, mainPg, fs){
 
         },
         getChatsList: function (data, callback) {
+            var result = {
+                result: [],
+                count: 0
+            };
+            var args = [
+                data.userId,
+                data.skip || 0,
+                data.limit || 100000
+            ];
             Promise.resolve(data)
                 .then(inputData=>{
-                    var args = [
-                        inputData.userId,
-                        inputData.skip || 0,
-                        inputData.limit || 100000
-                    ];
                     return mainPg('SELECT * FROM student_get_chats($1,$2,$3);', args);
                 })
                 .then(resultData=>{
-                    callback(null, resultData);
+                    result.result = resultData;
+                    return mainPg('SELECT * FROM student_count_chats($1,$2,$3);', args);
+                })
+                .then(resultData=>{
+                    result.count = resultData[0].count;
+                    callback(null, result);
                 })
                 .catch(err=>{
                     callback(err, null);
                 });
-
         },
         getChat: function (data, callback) {
+            var result = {
+                result: [],
+                count: 0
+            };
+            var args = [
+                data.myUserId,
+                data.userId,
+                data.skip || 0,
+                data.limit || 100000
+            ];
             Promise.resolve(data)
                 .then(inputData=>{
-                    var args = [
-                        inputData.myUserId,
-                        inputData.userId,
-                        inputData.skip || 0,
-                        inputData.limit || 100000
-                    ];
                     return mainPg('SELECT * FROM student_get_chat($1,$2,$3,$4);', args);
                 })
                 .then(resultData=>{
-                    callback(null, resultData);
+                    result.result = resultData;
+                    return mainPg('SELECT * FROM student_count_chat($1,$2,$3,$4);', args);
+                })
+                .then(resultData=>{
+                    result.count = resultData[0].count;
+                    callback(null, result);
                 })
                 .catch(err=>{
                     callback(err, null);
                 });
-
+        },
+        seenChat: function (data, callback) {
+            var args = [
+                data.myUserId,
+                data.userId
+            ];
+            Promise.resolve(data)
+                .then(inputData=>{
+                    return mainPg('SELECT * FROM student_seen_chat($1,$2);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
         }
     }
 };

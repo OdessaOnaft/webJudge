@@ -146,6 +146,7 @@ CREATE TABLE "private_messages" (
 	"to_user_id" bigint NOT NULL,
 	"created" bigint NOT NULL DEFAULT current_milliseconds(),
 	"message" varchar,
+	"is_seen" boolean NOT NULL DEFAULT false,
 	CONSTRAINT private_messages_pk PRIMARY KEY (id),
     CONSTRAINT private_messages_fk0 FOREIGN KEY (from_user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT private_messages_fk1 FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE

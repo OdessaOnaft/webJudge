@@ -33,7 +33,8 @@ module.exports = function(_, remote){
         'addProblemComment',
         'sendPrivateMessage',
         'getChatsList',
-        'getChat'
+        'getChat',
+        'seenChat'
     ].forEach(function(name){
         remoteAPI[name] = remote(name);
     });

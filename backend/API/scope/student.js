@@ -47,6 +47,10 @@ module.exports = function(_, conf, Database){
         getChat: (session, data, callback)=>{
             data.myUserId = session.userId;
             Database.getChat(data, ok(callback));
+        },
+        seenChat: (session, data, callback)=>{
+            data.myUserId = session.userId;
+            Database.seenChat(data, ok(callback));
         }
     }
 };
