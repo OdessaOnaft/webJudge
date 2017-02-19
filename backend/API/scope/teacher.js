@@ -43,6 +43,14 @@ module.exports = function(_, conf, Database, executeAPI){
         getProblemFull: (session, data, callback)=>{
             data.userId = session.userId;
             Database.getProblemFull(data, ok(callback));
+        },
+        makeGroup: (session, data, callback)=>{
+            data.userId = session.userId;
+            Database.makeGroup(data, ok(callback));
+        },
+        editGroup: (session, data, callback)=>{
+            data.userId = session.userId;
+            Database.editGroup(data, ok(callback));
         }
     }
 };

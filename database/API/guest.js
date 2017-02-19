@@ -218,6 +218,43 @@ module.exports = function(_, mainPg, fs){
                 .catch(err=>{
                     callback(err, null);
                 });
+        },
+        getGroups: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.skip || 0,
+                        inputData.limit || 100000
+                    ];
+                    return mainPg('SELECT * FROM guest_get_groups($1,$2);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        getGroupById: function (data, callback) {
+            var result;
+            var args = [
+                data.groupId
+            ];
+            Promise.resolve(data)
+                .then(inputData=>{
+                    return mainPg('SELECT * FROM guest_get_group($1);', args);
+                })
+                .then(resultData=>{
+                    result = resultData[0];
+                    return mainPg('SELECT * FROM guest_get_group_users($1);', args);
+                })
+                .then(resultData=>{
+                    result.users = resultData;
+                    callback(null, result);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
         }
     }
 };

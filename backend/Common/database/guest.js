@@ -31,7 +31,9 @@ module.exports = function(_, remote){
         'getSolution',
         'getSolutionsQueue',
         'getNews',
-        'getNewsById'
+        'getNewsById',
+        'getGroups',
+        'getGroupById'
     ].forEach(function(name){
         remoteAPI[name] = remote(name);
     });

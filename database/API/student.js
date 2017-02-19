@@ -205,7 +205,10 @@ module.exports = function(_, mainPg, fs){
                     return mainPg('SELECT * FROM student_get_chat($1,$2,$3,$4);', args);
                 })
                 .then(resultData=>{
-                    result.result = resultData;
+                    result.result = _.map(resultData, (v)=>{
+                        v.lastMessage = JSON.parse(v.lastMessage);
+                        return v;
+                    });
                     return mainPg('SELECT * FROM student_count_chat($1,$2,$3,$4);', args);
                 })
                 .then(resultData=>{

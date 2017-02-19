@@ -267,3 +267,53 @@ begin
         FROM news n JOIN users u ON u.id = n.user_id;
 end;
 $$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function guest_get_groups(bigint, bigint) returns TABLE (group_id bigint, name varchar, created bigint, creator varchar, users_count bigint) as
+$$
+begin
+    return query
+        SELECT
+            g.id,
+            g.name,
+            g.created,
+            u.name,
+            (SELECT COUNT(*) FROM groups_users gu WHERE gu.group_id = g.id)
+        FROM groups g JOIN users u ON u.id = g.user_id
+        ORDER BY g.created
+        OFFSET $1
+        LIMIT $2;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function guest_get_group(bigint) returns TABLE (group_id bigint, name varchar, description varchar, created bigint, creator varchar, users_count bigint) as
+$$
+begin
+    return query
+        SELECT
+            g.id,
+            g.name,
+            g.description,
+            g.created,
+            u.name,
+            (SELECT COUNT(*) FROM groups_users gu WHERE gu.group_id = g.id)
+        FROM groups g JOIN users u ON u.id = g.user_id
+        WHERE g.id = $1;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function guest_get_group_users(bigint) returns TABLE (user_id bigint, name varchar, created bigint) as
+$$
+begin
+    return query
+        SELECT
+            gu.user_id,
+            u.name,
+            gu.created
+        FROM groups_users gu JOIN users u ON u.id = gu.user_id
+        WHERE g.group_id = $1
+        ORDER BY gu.created;
+end;
+$$ language plpgsql;

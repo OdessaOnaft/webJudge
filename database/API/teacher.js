@@ -101,6 +101,43 @@ module.exports = function(_, mainPg, fs){
                 .catch(err=>{
                     callback(err, null);
                 });
+        },
+        makeGroup: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.userId,
+                        inputData.name,
+                        inputData.description
+                    ];
+                    return mainPg('SELECT * FROM teacher_make_group($1, $2, $3);', args);
+                })
+                .then(resultData=>{
+                    resultData = resultData[0];
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        editGroup: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.groupId,
+                        inputData.userId,
+                        inputData.name,
+                        inputData.description
+                    ];
+                    return mainPg('SELECT * FROM teacher_edit_group($1, $2, $3, $4);', args);
+                })
+                .then(resultData=>{
+                    resultData = resultData[0];
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
         }
     }
 };

@@ -151,3 +151,24 @@ CREATE TABLE "private_messages" (
     CONSTRAINT private_messages_fk0 FOREIGN KEY (from_user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT private_messages_fk1 FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+CREATE TABLE "groups" (
+	"id" bigserial NOT NULL,
+	"user_id" bigint NOT NULL,
+	"created" bigint NOT NULL DEFAULT current_milliseconds(),
+	"name" varchar,
+	"description" varchar,
+	CONSTRAINT groups_pk PRIMARY KEY (id),
+    CONSTRAINT groups_fk0 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+CREATE TABLE "groups_users" (
+	"user_id" bigint NOT NULL,
+	"group_id" bigint NOT NULL,
+	"created" bigint NOT NULL DEFAULT current_milliseconds(),
+	CONSTRAINT groups_users_pk PRIMARY KEY (user_id, group_id),
+    CONSTRAINT groups_users_fk0 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT groups_users_fk1 FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
+);

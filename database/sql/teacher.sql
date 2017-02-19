@@ -75,3 +75,30 @@ begin
 end;
 $$ language plpgsql
 CALLED ON NULL INPUT;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function teacher_make_group(bigint, varchar, varchar) returns TABLE (group_id bigint) as
+$$
+<<fn>>
+declare
+    group_id bigint;
+begin
+    INSERT INTO groups (user_id, name, description) VALUES ($1, $2, $3);
+    SELECT lastval() INTO fn.group_id;
+    INSERT INTO groups_users (user_id, group_id) VALUES ($1, fn.group_id);
+    return query SELECT fn.group_id;
+end;
+$$ language plpgsql
+CALLED ON NULL INPUT;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function teacher_edit_group(bigint, bigint, varchar, varchar) returns TABLE (result boolean) as
+$$
+begin
+    UPDATE groups SET name = $3, description = $4 WHERE user_id = $2 AND id = $1;
+    return query
+        SELECT
+           FOUND;
+end;
+$$ language plpgsql
+CALLED ON NULL INPUT;
