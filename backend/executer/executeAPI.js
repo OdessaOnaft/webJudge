@@ -123,7 +123,7 @@ module.exports = function(_, fs, async, executer, systemDB, spawn){
                     var message = new Buffer(testResult[4], 'base64').toString();
                     var payload = {
                         solutionId: startData.solutionId,
-                        taskNumber: testNumber,
+                        testNumber: testNumber,
                         status: status,
                         message: message,
                         execTime: execTime,
