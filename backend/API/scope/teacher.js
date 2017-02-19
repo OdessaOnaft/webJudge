@@ -53,11 +53,11 @@ module.exports = function(_, conf, Database, executeAPI){
             Database.editGroup(data, ok(callback));
         },
         addGroupUser: (session, data, callback)=>{
-            data.userId = session.userId;
+            data.myUserId = session.userId;
             Database.addGroupUser(data, ok(callback));
         },
         removeGroupUser: (session, data, callback)=>{
-            data.userId = session.userId;
+            data.myUserId = session.userId;
             Database.removeGroupUser(data, ok(callback));
         }
     }
