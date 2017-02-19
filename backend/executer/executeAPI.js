@@ -102,99 +102,68 @@ module.exports = function(_, fs, async, executer, systemDB){
             });
         },
         runTasks: (data)=>{
+            var startData = data;
             return new Promise((resolve, reject)=>{
-                async.mapLimit(data.tasks, 1, (task, cb)=>{
-                    var cb2 = cb;
-                    cb = function(err, data2){
-                        var payload = {
-                            solutionId: data.solutionId
-                        };
-                        if (err){
-                            var statuses = {
-                                4: 'wrong_answer',
-                                5: 'timeout'
-                            };
-                            var status = statuses[err.code] || 'error';
-                            err.status = status;
-                            payload = _.extend(payload, {
-                                testNumber: err.taskNumber,
-                                status: status,
-                                execTime: err.execTime,
-                                execMemory: 1024 + Math.floor(Math.random() * 5000),
-                                message: err.message
-                            })
-                        } else {
-                            payload = _.extend(payload, {
-                                testNumber: data2.taskNumber,
-                                status: data2.status,
-                                execTime: data2.execTime,
-                                execMemory: 1024 + Math.floor(Math.random() * 5000),
-                                message: data2.message
-                            })
-                        }
-                        api.setTestResult(payload, (err3, data3)=>{
-                            cb2(err, data2);
-                        });
-                    };
-
-                    task.output = new Buffer(task.output, 'base64').toString().replace(/\r\n/g, '\n');
-                    task.output = new Buffer(task.output).toString('base64');
-                    executer(`./${data.programName}`, new Buffer(task.input, 'base64').toString(), data.timeLimit, (err, data2)=>{
-                        var execTime = data2.time;
-                        var res = new Buffer(data2.stdout).toString('base64');
-                        if (err){
-                            cb(err, null);
-                        } else if (data2.code == 666) {
-                            cb({
-                                code: 5,
-                                message: 'Timeout',
-                                taskNumber: task.num,
-                                status: 'timeout',
-                                execTime: execTime
-                            }, data);
-                        } else if (data2.stderr.length || data2.code){
-                            cb({
-                                code: data2.code,
-                                stderr: data2.stderr,
-                                message: data2.stderr,
-                                status: 'error',
-                                taskNumber: task.num,
-                                execTime: execTime
-                            }, null);
-                        } else {
-                            if (res != task.output){
-                                cb({
-                                    code: 4,
-                                    message: 'Wrong answer',
-                                    status: 'wrong_answer',
-                                    taskNumber: task.num,
-                                    execTime: execTime
-                                }, data);
-                            } else {
-                                cb(null, {
-                                    taskNumber: task.num,
-                                    status: 'ok',
-                                    message: 'ok',
-                                    execTime: execTime
-                                })
-                            }
-                        }
-                    });
-                }, (err, data3)=>{
+                var tasksCount = data.tasks.length;
+                var currentTask = 1;
+                data.tasks = _.map(data.tasks, (v)=>{
+                    v.output = new Buffer(v.output, 'base64').toString().replace(/\r\n/g, '\n');
+                    v.output = new Buffer(v.output).toString('base64');
+                    return v;
+                });
+                var callbackIsAlreadyCalled = false;
+                var child = spawn('./executer.exe', '');
+                child.stdout.on('data', (data) => {
+                    currentTask++;
+                    var testResult = data.split(' ');
+                    var testNumber = +testResult[0];
+                    var execTime = +testResult[1];
+                    var totalMem = +testResult[2];
+                    var status = testResult[3];
+                    var message = new Buffer(testResult[4], 'base64').toString();
                     var payload = {
-                        solutionId: data.solutionId
+                        solutionId: startData.solutionId,
+                        taskNumber: testNumber,
+                        status: status,
+                        message: message,
+                        execTime: execTime,
+                        execMemory: totalMem
                     };
-                    if (err){
-                        payload.status = err.status;
-                        payload.message = err.message;
-                    } else {
-                        payload.status = 'ok';
-                        payload.message = 'ok';
+                    api.setTestResult(payload, (err3, data3)=>{});
+                    currentTask++;
+                    if (payload.status != 'ok'){
+                        api.setSolutionResult(payload, (err, data4)=>{
+                            if (!callbackIsAlreadyCalled) {
+                                callbackIsAlreadyCalled = true;
+                                resolve(startData);
+                            }
+                        });
+                        return;
                     }
-                    api.setSolutionResult(payload, (err, data4)=>{
-                        resolve(data3);
-                    });
-                })
+                    if (currentTask == tasksCount){
+                        api.setSolutionResult(payload, (err, data4)=>{
+                            if (!callbackIsAlreadyCalled) {
+                                callbackIsAlreadyCalled = true;
+                                resolve(startData);
+                            }
+                        });
+                    }
+                });
+                child.on('close', (code, signal) => {
+                    if (!callbackIsAlreadyCalled) {
+                        callbackIsAlreadyCalled = true;
+                        resolve(startData);
+                    }
+                });
+                child.stdin.write(startData.programName + "\n");
+                child.stdin.write(startData.timeLimit + "\n");
+                child.stdin.write(startData.memoryLimit + "\n");
+                child.stdin.write(tasksCount + "\n");
+                _.each(startData.tasks, (v)=>{
+                    child.stdin.write(v.input + "\n");
+                    child.stdin.write(v.output + "\n");
+                });
+                child.stdin.end();
             });
         },
         solveProblem: (data, cb)=>{
@@ -238,9 +207,10 @@ module.exports = function(_, fs, async, executer, systemDB){
                     globalData.fileName = fileData.fileName;
                     return api.runTasks({
                         solutionId: globalData.solutionId,
-                        programName: `${fileData.fileName}`,
+                        programName: fileData.fileName,
                         tasks: globalData.problem.tasks,
-                        timeLimit: globalData.problem.timeLimit
+                        timeLimit: globalData.problem.timeLimit,
+                        memoryLimit: globalData.problem.memoryLimit
                     });
                 })
                 .then((data)=>{
