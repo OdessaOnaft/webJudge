@@ -44,6 +44,7 @@ module.exports = function(_, conf, Database){
             Database.getNewsById(data, ok(callback));
         },
         getGroups: (session, data, callback)=>{
+            data.userId = session.userId;
             Database.getGroups(data, ok(callback));
         },
         getGroupById: (session, data, callback)=>{

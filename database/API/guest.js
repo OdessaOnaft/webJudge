@@ -101,7 +101,7 @@ module.exports = function(_, mainPg, fs){
             var result = {
                 result: [],
                 count: 0
-            }
+            };
             var args = [
                 data.skip || 0,
                 data.limit || 100000,
@@ -155,7 +155,7 @@ module.exports = function(_, mainPg, fs){
             var result = {
                 result: [],
                 count: 0
-            }
+            };
             var args = [
                 data.skip || 0,
                 data.limit || 100000,
@@ -220,16 +220,27 @@ module.exports = function(_, mainPg, fs){
                 });
         },
         getGroups: function (data, callback) {
+            var result = {
+                result: [],
+                count: 0
+            };
+            var args = [
+                data.skip || 0,
+                data.limit || 100000,
+                data.userId || null,
+                data.type || 'all'
+            ];
             Promise.resolve(data)
                 .then(inputData=>{
-                    var args = [
-                        inputData.skip || 0,
-                        inputData.limit || 100000
-                    ];
-                    return mainPg('SELECT * FROM guest_get_groups($1,$2);', args);
+                    return mainPg('SELECT * FROM guest_get_groups($1,$2,$3,$4);', args);
                 })
                 .then(resultData=>{
-                    callback(null, resultData);
+                    result.result = resultData;
+                    return mainPg('SELECT * FROM guest_get_groups($1,$2,$3,$4);', args);
+                })
+                .then(resultData=>{
+                    result.count = resultData[0].count;
+                    callback(null, result);
                 })
                 .catch(err=>{
                     callback(err, null);

@@ -269,7 +269,7 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function guest_get_groups(bigint, bigint) returns TABLE (group_id bigint, name varchar, created bigint, creator varchar, users_count bigint) as
+create or replace function guest_get_groups(bigint, bigint, bigint, varchar) returns TABLE (group_id bigint, name varchar, created bigint, creator varchar, users_count bigint) as
 $$
 begin
     return query
@@ -280,9 +280,42 @@ begin
             u.name,
             (SELECT COUNT(*) FROM groups_users gu WHERE gu.group_id = g.id)
         FROM groups g JOIN users u ON u.id = g.user_id
+        WHERE
+            CASE
+                WHEN $3 = 'my' THEN
+                    EXISTS(SELECT * FROM groups_users gu WHERE gu.user_id = $3 AND gu.group_id = g.id)
+                WHEN $3 = 'created' THEN
+                    g.user_id = $3
+                WHEN $3 = 'all' THEN
+                    true
+                ELSE
+                    true
+            END
         ORDER BY g.created
         OFFSET $1
         LIMIT $2;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function guest_count_groups(bigint, bigint, bigint, varchar) returns TABLE (count bigint) as
+$$
+begin
+    return query
+        SELECT
+            COUNT(*)
+        FROM groups g JOIN users u ON u.id = g.user_id
+        WHERE
+            CASE
+                WHEN $3 = 'my' THEN
+                    EXISTS(SELECT * FROM groups_users gu WHERE gu.user_id = $3 AND gu.group_id = g.id)
+                WHEN $3 = 'created' THEN
+                    g.user_id = $3
+                WHEN $3 = 'all' THEN
+                    true
+                ELSE
+                    true
+            END;
 end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
