@@ -51,6 +51,14 @@ module.exports = function(_, conf, Database, executeAPI){
         editGroup: (session, data, callback)=>{
             data.userId = session.userId;
             Database.editGroup(data, ok(callback));
+        },
+        addGroupUser: (session, data, callback)=>{
+            data.userId = session.userId;
+            Database.addGroupUser(data, ok(callback));
+        },
+        removeGroupUser: (session, data, callback)=>{
+            data.userId = session.userId;
+            Database.removeGroupUser(data, ok(callback));
         }
     }
 };

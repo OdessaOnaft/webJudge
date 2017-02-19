@@ -138,6 +138,42 @@ module.exports = function(_, mainPg, fs){
                 .catch(err=>{
                     callback(err, null);
                 });
+        },
+        addGroupUser: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.myUserId,
+                        inputData.groupId,
+                        inputData.userId
+                    ];
+                    return mainPg('SELECT * FROM teacher_add_group_user($1, $2, $3);', args);
+                })
+                .then(resultData=>{
+                    resultData = resultData[0];
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
+        removeGroupUser: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.myUserId,
+                        inputData.groupId,
+                        inputData.userId
+                    ];
+                    return mainPg('SELECT * FROM teacher_remove_group_user($1, $2, $3);', args);
+                })
+                .then(resultData=>{
+                    resultData = resultData[0];
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
         }
     }
 };

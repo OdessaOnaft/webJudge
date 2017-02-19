@@ -28,7 +28,9 @@ module.exports = function(_, remote){
         'editProblem',
         'getProblemFull',
         'makeGroup',
-        'editGroup'
+        'editGroup',
+        'addGroupUser',
+        'removeGroupUser'
     ].forEach(function(name){
         remoteAPI[name] = remote(name);
     });

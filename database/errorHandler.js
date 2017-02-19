@@ -5,7 +5,8 @@
             'User with this email already exists': 2,
             'Incorrect login or/and password': 3,
             'Wrong answer': 4,
-            'Timeout': 5
+            'Timeout': 5,
+            'Access denied': 6
         };
         if (_.isUndefined(errors[err.message])){
             return {

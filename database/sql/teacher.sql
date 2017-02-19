@@ -102,3 +102,33 @@ begin
 end;
 $$ language plpgsql
 CALLED ON NULL INPUT;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function teacher_add_group_user(bigint, bigint, bigint) returns TABLE (result boolean) as
+$$
+begin
+    IF NOT EXISTS(SELECT * FROM groups g WHERE g.user_id = $1 AND g.id = $2) THEN
+        raise exception 'Access denied';
+    END IF;
+    INSERT INTO groups_users (group_id, user_id) VALUES ($2, $3);
+    return query
+        SELECT
+           true;
+end;
+$$ language plpgsql
+CALLED ON NULL INPUT;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function teacher_remove_group_user(bigint, bigint, bigint) returns TABLE (result boolean) as
+$$
+begin
+    IF NOT EXISTS(SELECT * FROM groups g WHERE g.user_id = $1 AND g.id = $2) THEN
+        raise exception 'Access denied';
+    END IF;
+    DELETE FROM groups_users WHERE group_id = $2 AND user_id = $3;
+    return query
+        SELECT
+           found;
+end;
+$$ language plpgsql
+CALLED ON NULL INPUT;
