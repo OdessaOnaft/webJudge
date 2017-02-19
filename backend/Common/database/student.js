@@ -29,7 +29,11 @@ module.exports = function(_, remote){
         'logout',
         'submitSolution',
         'getMySolutions',
-        'getSolutionsByProblemId'
+        'getSolutionsByProblemId',
+        'addProblemComment',
+        'sendPrivateMessage',
+        'getChatsList',
+        'getChat'
     ].forEach(function(name){
         remoteAPI[name] = remote(name);
     });

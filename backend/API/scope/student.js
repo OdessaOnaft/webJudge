@@ -31,6 +31,22 @@ module.exports = function(_, conf, Database){
         getSolutionsByProblemId: (session, data, callback)=>{
             data.userId = session.userId;
             Database.getSolutionsByProblemId(data, ok(callback));
+        },
+        addProblemComment: (session, data, callback)=>{
+            data.userId = session.userId;
+            Database.addProblemComment(data, ok(callback));
+        },
+        sendPrivateMessage: (session, data, callback)=>{
+            data.myUserId = session.userId;
+            Database.sendPrivateMessage(data, ok(callback));
+        },
+        getChatsList: (session, data, callback)=>{
+            data.userId = session.userId;
+            Database.getChatsList(data, ok(callback));
+        },
+        getChat: (session, data, callback)=>{
+            data.myUserId = session.userId;
+            Database.getChat(data, ok(callback));
         }
     }
 };

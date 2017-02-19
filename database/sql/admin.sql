@@ -50,15 +50,14 @@ declare
 begin
     DELETE FROM locale_strings WHERE related_id = $2;
     FOREACH fn.a_row IN ARRAY $3 LOOP
-        INSERT INTO locale_strings (lang, value, related_id, related_type) VALUES ((fn.a_row::json)->>'lang', (fn.a_row::json)->>'value', fn.news_id, 'title');
+        INSERT INTO locale_strings (lang, value, related_id, related_type) VALUES ((fn.a_row::json)->>'lang', (fn.a_row::json)->>'value', $2, 'title');
     END LOOP;
     FOREACH fn.a_row IN ARRAY $4 LOOP
-        INSERT INTO locale_strings (lang, value, related_id, related_type) VALUES ((fn.a_row::json)->>'lang', (fn.a_row::json)->>'value', fn.news_id, 'body');
+        INSERT INTO locale_strings (lang, value, related_id, related_type) VALUES ((fn.a_row::json)->>'lang', (fn.a_row::json)->>'value', $2, 'body');
     END LOOP;
     return query
         SELECT
-            fn.news_id;
-
+            $2;
 end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------

@@ -50,6 +50,7 @@ module.exports = function(_, mainPg, fs){
                 });
         },
         getProblem: function (data, callback) {
+            var result;
             Promise.resolve(data)
                 .then(inputData=>{
                     var args = [
@@ -59,13 +60,20 @@ module.exports = function(_, mainPg, fs){
                     return mainPg('SELECT * FROM guest_get_problem($1, $2);', args);
                 })
                 .then(resultData=>{
-                    resultData = resultData[0];
-                    resultData.samples = JSON.parse(resultData.samples);
+                    result = resultData[0];
+                    var args = [
+                        data.problemId
+                    ];
+                    return mainPg('SELECT * FROM guest_get_problem_comments($1, $2);', args);
+                })
+                .then(resultData=>{
+                    result.comments = resultData;
+                    result.samples = JSON.parse(result.samples);
                     if (data.scope != 'student' && data.scope != 'guest'){
                         if (data.scope != 'teacher' || resultData.userId == data.userId) {
-                            var tasks = fs.readFileSync(`./problems/${resultData.problemId}.prb`);
-                            resultData.samples = JSON.parse(tasks);
-                            resultData.samples = _.map(resultData.samples, (v)=>{
+                            var tasks = fs.readFileSync(`./problems/${result.problemId}.prb`);
+                            result.samples = JSON.parse(tasks);
+                            result.samples = _.map(result.samples, (v)=>{
                                 v = {
                                     input: new Buffer(v.input, 'base64').toString(),
                                     output: new Buffer(v.output, 'base64').toString()
@@ -79,11 +87,11 @@ module.exports = function(_, mainPg, fs){
                                     output: new Buffer(v.output).toString('base64')
                                 };
                             });
-                            resultData.outputSource = fs.readFileSync(`./problems_prog/${data.problemId}.dat`).toString();
+                            result.outputSource = fs.readFileSync(`./problems_prog/${data.problemId}.dat`).toString();
                         }
                     }
-                    delete resultData.userId;
-                    callback(null, resultData);
+                    delete result.userId;
+                    callback(null, result);
                 })
                 .catch(err=>{
                     callback(err, null);

@@ -141,3 +141,64 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
+create or replace function student_add_problem_comment(bigint, bigint, varchar) returns TABLE(result boolean) as
+$$
+begin
+    INSERT INTO problem_comments (problem_id, user_id, message) VALUES ($1, $2, $3);
+    RETURN QUERY
+        SELECT
+            true;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function student_send_private_message(bigint, bigint, varchar) returns TABLE(result boolean) as
+$$
+begin
+    INSERT INTO private_messages (from_user_id, to_user_id, message) VALUES ($1, $2, $3);
+    RETURN QUERY
+        SELECT
+            true;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function student_get_chats(bigint, bigint, bigint) returns TABLE(user_id bigint, user_name varchar, last_message varchar) as
+$$
+begin
+    RETURN QUERY
+        SELECT
+            t1.user_id,
+            u.name,
+            (SELECT row_to_json(row) FROM (SELECT pm.message, pm.created, (pm.from_user_id = $1) AS "isMyMessage" FROM private_messages pm WHERE (pm.from_user_id = t1.user_id OR pm.to_user_id = t1.user_id) AND (pm.from_user_id = $1 OR pm.to_user_id = $1) ORDER BY pm.created LIMIT 1) AS row LIMIT 1)::varchar
+        FROM
+            (SELECT DISTINCT
+                CASE WHEN pm.from_user_id = $1 THEN pm.to_user_id ELSE pm.from_user_id END AS user_id
+            FROM private_messages pm
+            WHERE pm.from_user_id = $1 OR pm.to_user_id = $1) AS t1
+            JOIN users u ON u.id = t1.user_id
+        ORDER BY (SELECT pm.created FROM private_messages pm WHERE (pm.from_user_id = t1.user_id OR pm.to_user_id = t1.user_id) AND (pm.from_user_id = $1 OR pm.to_user_id = $1) ORDER BY pm.created LIMIT 1) DESC
+        OFFSET $2
+        LIMIT $3;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function student_get_chat(bigint, bigint, bigint, bigint) returns TABLE(user_id bigint, user_name varchar, message varchar, created bigint) as
+$$
+begin
+    RETURN QUERY
+        SELECT
+            pm.from_user_id,
+            u.name,
+            pm.message,
+            pm.created
+        FROM private_messages pm JOIN users u ON u.id = pm.from_user_id
+        WHERE (pm.from_user_id = $2 OR pm.to_user_id = $2) AND (pm.from_user_id = $1 OR pm.to_user_id = $1)
+        ORDER BY pm.created DESC
+        OFFSET $3
+        LIMIT $4;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------

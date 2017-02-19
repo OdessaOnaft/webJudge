@@ -100,6 +100,23 @@ $$ language plpgsql
 CALLED ON NULL INPUT;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
+create or replace function guest_get_problem_comment(bigint) returns TABLE (comment_id bigint, user_id bigint, user_name varchar, created bigint, message varchar) as
+$$
+begin
+    return query
+        SELECT
+            pc.id,
+            pc.user_id,
+            u.name,
+            pc.created,
+            pc.message
+        FROM problem_comments pc JOIN users u ON u.id = pc.user_id
+        WHERE pc.problem_id = $1;
+end;
+$$ language plpgsql
+CALLED ON NULL INPUT;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
 create or replace function guest_get_problems(bigint, bigint, varchar, bigint) returns TABLE (problem_id bigint, name varchar, created bigint, difficulty bigint, author varchar, is_solved boolean) as
 $$
 begin

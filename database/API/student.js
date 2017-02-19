@@ -126,6 +126,79 @@ module.exports = function(_, mainPg, fs){
                     callback(err, null);
                 });
 
+        },
+        addProblemComment: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.problemId,
+                        inputData.userId,
+                        inputData.message
+                    ];
+                    return mainPg('SELECT * FROM student_add_problem_comment($1,$2,$3);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+
+        },
+        sendPrivateMessage: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.myUserId,
+                        inputData.userId,
+                        inputData.message
+                    ];
+                    return mainPg('SELECT * FROM student_send_private_message($1,$2,$3);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+
+        },
+        getChatsList: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.userId,
+                        inputData.skip || 0,
+                        inputData.limit || 100000
+                    ];
+                    return mainPg('SELECT * FROM student_get_chats($1,$2,$3);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+
+        },
+        getChat: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.myUserId,
+                        inputData.userId,
+                        inputData.skip || 0,
+                        inputData.limit || 100000
+                    ];
+                    return mainPg('SELECT * FROM student_get_chat($1,$2,$3,$4);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+
         }
     }
 };

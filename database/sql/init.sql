@@ -126,3 +126,27 @@ CREATE TABLE "news" (
 	CONSTRAINT news_pk PRIMARY KEY (id),
 	CONSTRAINT news_fk0 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+CREATE TABLE "problem_comments" (
+	"id" bigserial NOT NULL,
+	"user_id" bigint NOT NULL,
+	"problem_id" bigint NOT NULL,
+	"created" bigint NOT NULL DEFAULT current_milliseconds(),
+	"message" varchar,
+	CONSTRAINT problem_comments_pk PRIMARY KEY (id),
+    CONSTRAINT problem_comments_fk0 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT problem_comments_fk1 FOREIGN KEY (problem_id) REFERENCES problems(id) ON DELETE CASCADE
+);
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+CREATE TABLE "private_messages" (
+	"id" bigserial NOT NULL,
+	"from_user_id" bigint NOT NULL,
+	"to_user_id" bigint NOT NULL,
+	"created" bigint NOT NULL DEFAULT current_milliseconds(),
+	"message" varchar,
+	CONSTRAINT private_messages_pk PRIMARY KEY (id),
+    CONSTRAINT private_messages_fk0 FOREIGN KEY (from_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT private_messages_fk1 FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE
+);
