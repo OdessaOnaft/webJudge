@@ -112,7 +112,7 @@ module.exports = function(_, fs, async, executer, systemDB, spawn){
                     return v;
                 });
                 var callbackIsAlreadyCalled = false;
-                var child = spawn('./executer.exe', '');
+                var child = spawn('./executer.exe');
                 child.stdout.on('data', (data) => {
                     currentTask++;
                     var testResult = data.split(' ');
