@@ -21,7 +21,7 @@ var _ = require('underscore'),
     async = require('async'),
     fs = require('fs'),
     executer = require('./executer.js')(spawn, exec),
-    API = require('./executeAPI.js')(_, fs, async, executer, database.system),
+    API = require('./executeAPI.js')(_, fs, async, executer, database.system, spawn),
     solutionsQueue = require('./solutionsQueue.js')(_, async, database.system, API);
 
 

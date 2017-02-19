@@ -1,4 +1,4 @@
-module.exports = function(_, fs, async, executer, systemDB){
+module.exports = function(_, fs, async, executer, systemDB, spawn){
     function makeFileNameToken(ext)
     {
         var text = "";
