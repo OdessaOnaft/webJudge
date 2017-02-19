@@ -75,8 +75,8 @@ module.exports = function(_, mainPg){
                 })
                 .then(resultData=>{
                     resultData = resultData[0];
-                    resultData.title = _.map(resultData.title, (v)=>JSON.stringify(v));
-                    resultData.body = _.map(resultData.body, (v)=>JSON.stringify(v));
+                    resultData.title = _.map(resultData.title, (v)=>JSON.stringify(v.split('\n').join('\\n')));
+                    resultData.body = _.map(resultData.body, (v)=>JSON.stringify(v.split('\n').join('\\n')));
                     callback(null, resultData);
                 })
                 .catch(err=>{
