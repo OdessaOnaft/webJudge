@@ -100,7 +100,7 @@ $$ language plpgsql
 CALLED ON NULL INPUT;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function guest_get_problem_comment(bigint) returns TABLE (comment_id bigint, user_id bigint, user_name varchar, created bigint, message varchar) as
+create or replace function guest_get_problem_comments(bigint) returns TABLE (comment_id bigint, user_id bigint, user_name varchar, created bigint, message varchar) as
 $$
 begin
     return query

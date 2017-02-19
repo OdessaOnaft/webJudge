@@ -64,7 +64,7 @@ module.exports = function(_, mainPg, fs){
                     var args = [
                         data.problemId
                     ];
-                    return mainPg('SELECT * FROM guest_get_problem_comments($1, $2);', args);
+                    return mainPg('SELECT * FROM guest_get_problem_comments($1);', args);
                 })
                 .then(resultData=>{
                     result.comments = resultData;
