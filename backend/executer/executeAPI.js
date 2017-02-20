@@ -162,6 +162,7 @@ module.exports = function(_, fs, async, executer, systemDB, spawn){
                     child.stdin.write(v.input + "\n");
                     child.stdin.write(v.output + "\n");
                 });
+                child.stdin.write("\n");
                 child.stdin.end();
             });
         },
