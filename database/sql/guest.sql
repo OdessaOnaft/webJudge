@@ -282,11 +282,11 @@ begin
         FROM groups g JOIN users u ON u.id = g.user_id
         WHERE
             CASE
-                WHEN $3 = 'my' THEN
+                WHEN $4 = 'my' THEN
                     EXISTS(SELECT * FROM groups_users gu WHERE gu.user_id = $3 AND gu.group_id = g.id)
-                WHEN $3 = 'created' THEN
+                WHEN $4 = 'created' THEN
                     g.user_id = $3
-                WHEN $3 = 'all' THEN
+                WHEN $4 = 'all' THEN
                     true
                 ELSE
                     true
@@ -307,11 +307,11 @@ begin
         FROM groups g JOIN users u ON u.id = g.user_id
         WHERE
             CASE
-                WHEN $3 = 'my' THEN
+                WHEN $4 = 'my' THEN
                     EXISTS(SELECT * FROM groups_users gu WHERE gu.user_id = $3 AND gu.group_id = g.id)
-                WHEN $3 = 'created' THEN
+                WHEN $4 = 'created' THEN
                     g.user_id = $3
-                WHEN $3 = 'all' THEN
+                WHEN $4 = 'all' THEN
                     true
                 ELSE
                     true
