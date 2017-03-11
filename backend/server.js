@@ -8,6 +8,7 @@ var _ = require('underscore'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
     request = require('request'),
+    fs =  require('fs'),
     remote = require('./Common/remote.js')(_, request),
     executeAPI = require('./Common/executeAPI.js')(_, remote(`${conf.executer.url}/call/`, conf.executer.secret)),
     database = {
@@ -18,7 +19,7 @@ var _ = require('underscore'),
     },
 
     api = require('./api.js'),
-    API = require('./API/index.js')(_, conf, database, executeAPI),
+    API = require('./API/index.js')(_, conf, database, executeAPI, fs),
     scopeAPI = api(_, API.restoreSession, API.api, API.validators);
 
 
@@ -94,7 +95,23 @@ function getHandler(currApi){
     }
 }
 
+function photoHandler(req, res){
+    var file = req.url.split('/')[2];
+    if (fs.existsSync(`Storage/${file}`)){
+        var f = fs.createReadStream(`Storage/${file}`);
+        f.pipe(res);
+    } else {
+        res.status(404).json({
+            err: {
+                message: 'Not Found'
+            }
+        });
+    }
+}
+
 app.post('/call/*', cors(), getHandler(scopeAPI));
+
+app.all('/photo/*', photoHandler);
 
 http.createServer(app).listen(80);
 

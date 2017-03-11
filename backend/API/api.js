@@ -1,4 +1,4 @@
-module.exports = function(_, conf, database, executeAPI){
+module.exports = function(_, conf, database, executeAPI, fs){
     function ok(callback){
         return function(err, data){
             if(err){
@@ -9,8 +9,8 @@ module.exports = function(_, conf, database, executeAPI){
         }
     }
     
-    var guest = require('./scope/guest.js')(_, conf, database.guest);
-    var student = require('./scope/student.js')(_, conf, database.student);
+    var guest = require('./scope/guest.js')(_, conf, database.guest, fs);
+    var student = require('./scope/student.js')(_, conf, database.student, fs);
     var teacher = require('./scope/teacher.js')(_, conf, database.teacher, executeAPI);
     var admin = require('./scope/admin.js')(_, conf, database.admin);
 
