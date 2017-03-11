@@ -17,6 +17,21 @@ module.exports = function(_, mainPg, fs){
                     callback(err, null);
                 });
         },
+        getUserById: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.userId
+                    ];
+                    return mainPg('SELECT * FROM guest_get_user_by_id($1);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
         register: function (data, callback) {
             Promise.resolve(data)
                 .then(inputData=>{

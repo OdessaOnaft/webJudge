@@ -50,6 +50,9 @@ module.exports = function(_, conf, Database){
         getGroupById: (session, data, callback)=>{
             data.userId = session.userId;
             Database.getGroupById(data, ok(callback));
+        },
+        getUserById: (session, data, callback)=>{
+            Database.getUserById(data, ok(callback));
         }
     }
 };

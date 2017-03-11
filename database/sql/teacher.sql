@@ -113,7 +113,10 @@ begin
         raise exception 'Access denied';
     END IF;
     SELECT u.id INTO uid FROM users u WHERE u.email = $3;
-    IF (NOT EXISTS(SELECT * FROM groups_users gu WHERE gu.user_id = uid AND g.group_id = $2)) THEN
+    IF (uid IS NULL) THEN
+        raise exception 'Access denied';
+    END IF;
+    IF (NOT EXISTS(SELECT * FROM groups_users gu WHERE gu.user_id = uid AND gu.group_id = $2)) THEN
         INSERT INTO groups_users (group_id, user_id) VALUES ($2, uid);
     END IF;
     return query
