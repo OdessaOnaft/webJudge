@@ -48,6 +48,7 @@ module.exports = function(_, conf, Database){
             Database.getGroups(data, ok(callback));
         },
         getGroupById: (session, data, callback)=>{
+            data.userId = session.userId;
             Database.getGroupById(data, ok(callback));
         }
     }

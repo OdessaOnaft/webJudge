@@ -320,7 +320,7 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function guest_get_group(bigint) returns TABLE (group_id bigint, name varchar, description varchar, created bigint, creator varchar, users_count bigint) as
+create or replace function guest_get_group(bigint, bigint) returns TABLE (group_id bigint, name varchar, description varchar, created bigint, creator varchar, users_count bigint, group_owner_id bigint, is_admin boolean) as
 $$
 begin
     return query
@@ -330,7 +330,9 @@ begin
             g.description,
             g.created,
             u.name,
-            (SELECT COUNT(*) FROM groups_users gu WHERE gu.group_id = g.id)
+            (SELECT COUNT(*) FROM groups_users gu WHERE gu.group_id = g.id),
+            g.user_id,
+            g.user_id = $2
         FROM groups g JOIN users u ON u.id = g.user_id
         WHERE g.id = $1;
 end;
@@ -346,7 +348,7 @@ begin
             u.name,
             gu.created
         FROM groups_users gu JOIN users u ON u.id = gu.user_id
-        WHERE g.group_id = $1
+        WHERE gu.group_id = $1
         ORDER BY gu.created;
 end;
 $$ language plpgsql;

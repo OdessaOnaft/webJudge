@@ -248,16 +248,18 @@ module.exports = function(_, mainPg, fs){
         },
         getGroupById: function (data, callback) {
             var result;
-            var args = [
-                data.groupId
-            ];
             Promise.resolve(data)
                 .then(inputData=>{
-                    return mainPg('SELECT * FROM guest_get_group($1);', args);
+                    return mainPg('SELECT * FROM guest_get_group($1, $2);', [
+                        data.groupId,
+                        data.userId
+                    ]);
                 })
                 .then(resultData=>{
                     result = resultData[0];
-                    return mainPg('SELECT * FROM guest_get_group_users($1);', args);
+                    return mainPg('SELECT * FROM guest_get_group_users($1);', [
+                        data.groupId
+                    ]);
                 })
                 .then(resultData=>{
                     result.users = resultData;
