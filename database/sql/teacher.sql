@@ -104,13 +104,21 @@ $$ language plpgsql
 CALLED ON NULL INPUT;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function teacher_add_group_user(bigint, bigint, bigint) returns TABLE (result boolean) as
+create or replace function teacher_add_group_user(bigint, bigint, varchar) returns TABLE (result boolean) as
 $$
+declare
+    uid bigint;
 begin
     IF NOT EXISTS(SELECT * FROM groups g WHERE g.user_id = $1 AND g.id = $2) THEN
         raise exception 'Access denied';
     END IF;
-    INSERT INTO groups_users (group_id, user_id) VALUES ($2, $3);
+    SELECT u.id INTO uid FROM users u WHERE u.email = $3;
+    IF (uid IS NULL) THEN
+        raise exception 'Access denied';
+    END IF;
+    IF (NOT EXISTS(SELECT * FROM groups_users gu WHERE gu.user_id = uid AND gu.group_id = $2)) THEN
+        INSERT INTO groups_users (group_id, user_id) VALUES ($2, uid);
+    END IF;
     return query
         SELECT
            true;

@@ -33,7 +33,8 @@ module.exports = function(_, remote){
         'getNews',
         'getNewsById',
         'getGroups',
-        'getGroupById'
+        'getGroupById',
+        'getUserById'
     ].forEach(function(name){
         remoteAPI[name] = remote(name);
     });

@@ -1,4 +1,4 @@
-module.exports = function(_, conf, Database){
+module.exports = function(_, conf, Database, fs){
     function ok(callback){
         return function(err, data){
             if(err){
@@ -48,7 +48,25 @@ module.exports = function(_, conf, Database){
             Database.getGroups(data, ok(callback));
         },
         getGroupById: (session, data, callback)=>{
+            data.userId = session.userId;
             Database.getGroupById(data, ok(callback));
+        },
+        getUserById: (session, data, callback)=>{
+            Database.getUserById(data, (err, resData)=>{
+                if (err){
+                    callback(err, null);
+                } else {
+                    var dir = `Storage/`;
+                    var start = `user${data.userId}.`;
+                    var files = fs.readdirSync(dir);
+                    _.each(files, (f)=>{
+                        if (f.startsWith(start)){
+                            resData.photo = f;
+                        }
+                    });
+                    callback(null, resData);
+                }
+            });
         }
     }
 };

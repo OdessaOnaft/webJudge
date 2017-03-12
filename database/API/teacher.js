@@ -145,7 +145,7 @@ module.exports = function(_, mainPg, fs){
                     var args = [
                         inputData.myUserId,
                         inputData.groupId,
-                        inputData.userId
+                        inputData.userEmail
                     ];
                     return mainPg('SELECT * FROM teacher_add_group_user($1, $2, $3);', args);
                 })

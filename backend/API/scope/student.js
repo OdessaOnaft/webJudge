@@ -1,4 +1,4 @@
-module.exports = function(_, conf, Database){
+module.exports = function(_, conf, Database, fs){
     function ok(callback){
         return function(err, data){
             if(err){
@@ -11,11 +11,36 @@ module.exports = function(_, conf, Database){
 
     return {
         getProfile: (session, data, callback)=>{
-            Database.getProfile(_.pick(session, ['userId']), ok(callback));
+            Database.getProfile(_.pick(session, ['userId']), (err, data)=>{
+                if (err){
+                    callback(err, null);
+                } else {
+                    var dir = `Storage/`;
+                    var start = `user${session.userId}.`;
+                    var files = fs.readdirSync(dir);
+                    _.each(files, (f)=>{
+                        if (f.startsWith(start)){
+                            data.photo = f;
+                        }
+                    });
+                    callback(null, data);
+                }
+            });
         },
         submitProfile: (session, data, callback)=>{
             data.userId = session.userId;
-            Database.submitProfile(data, ok(callback));
+            Database.submitProfile(data, (err, resData)=>{
+                if (err){
+                    callback(err, null);
+                } else {
+                    var ext = data.base64.substring(data.base64.indexOf('/')+1, data.base64.indexOf(';'));
+                    var file = data.base64.split(';base64,')[1];
+                    file = new Buffer(file, 'base64');
+                    fs.writeFileSync(`Storage/user${session.userId}.${ext}`, file);
+                    resData.base64 = data.base64;
+                    callback(null, resData);
+                }
+            });
         },
         logout: (session, data, callback)=>{
             Database.logout(_.pick(session, ['userId']), ok(callback));

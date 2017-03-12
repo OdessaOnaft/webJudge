@@ -177,8 +177,14 @@ module.exports = function(_, fs, async, executer, systemDB, spawn){
                             if (err)
                                 reject(err);
                             else{
-                                globalData.solution = data;
-                                resolve(data);
+                                if (data.status != 'ok'){
+                                    reject({
+                                        break: true
+                                    });
+                                } else {
+                                    globalData.solution = data;
+                                    resolve(data);
+                                }
                             }
                         });
                     });
@@ -221,15 +227,19 @@ module.exports = function(_, fs, async, executer, systemDB, spawn){
                 .catch(err=>{
                     if (fs.existsSync(`./${globalData.fileName}`))
                         fs.unlinkSync(`./${globalData.fileName}`);
-                    var payload = {
-                        solutionId: globalData.solutionId,
-                        status: err.status || 'error',
-                        message: err.message || err.stdout
-                    };
-                    console.log(err);
-                    api.setSolutionResult(payload, (err, data4)=>{
+                    if (err.break){
                         cb(null, null);
-                    });
+                    } else {
+                        var payload = {
+                            solutionId: globalData.solutionId,
+                            status: err.status || 'error',
+                            message: err.message || err.stdout
+                        };
+                        console.log(err);
+                        api.setSolutionResult(payload, (err, data4)=>{
+                            cb(null, null);
+                        });
+                    }
                 })
         }
     };

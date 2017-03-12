@@ -269,7 +269,7 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function guest_get_groups(bigint, bigint, bigint, varchar) returns TABLE (group_id bigint, name varchar, created bigint, creator varchar, users_count bigint) as
+create or replace function guest_get_groups(bigint, bigint, bigint, varchar) returns TABLE (group_id bigint, name varchar, created bigint, creator varchar, users_count bigint, description varchar) as
 $$
 begin
     return query
@@ -278,15 +278,16 @@ begin
             g.name,
             g.created,
             u.name,
-            (SELECT COUNT(*) FROM groups_users gu WHERE gu.group_id = g.id)
+            (SELECT COUNT(*) FROM groups_users gu WHERE gu.group_id = g.id),
+            g.description
         FROM groups g JOIN users u ON u.id = g.user_id
         WHERE
             CASE
-                WHEN $3 = 'my' THEN
+                WHEN $4 = 'my' THEN
                     EXISTS(SELECT * FROM groups_users gu WHERE gu.user_id = $3 AND gu.group_id = g.id)
-                WHEN $3 = 'created' THEN
+                WHEN $4 = 'created' THEN
                     g.user_id = $3
-                WHEN $3 = 'all' THEN
+                WHEN $4 = 'all' THEN
                     true
                 ELSE
                     true
@@ -307,11 +308,11 @@ begin
         FROM groups g JOIN users u ON u.id = g.user_id
         WHERE
             CASE
-                WHEN $3 = 'my' THEN
+                WHEN $4 = 'my' THEN
                     EXISTS(SELECT * FROM groups_users gu WHERE gu.user_id = $3 AND gu.group_id = g.id)
-                WHEN $3 = 'created' THEN
+                WHEN $4 = 'created' THEN
                     g.user_id = $3
-                WHEN $3 = 'all' THEN
+                WHEN $4 = 'all' THEN
                     true
                 ELSE
                     true
@@ -320,7 +321,7 @@ end;
 $$ language plpgsql;
 ---------------------------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
-create or replace function guest_get_group(bigint) returns TABLE (group_id bigint, name varchar, description varchar, created bigint, creator varchar, users_count bigint) as
+create or replace function guest_get_group(bigint, bigint) returns TABLE (group_id bigint, name varchar, description varchar, created bigint, creator varchar, users_count bigint, group_owner_id bigint, is_admin boolean) as
 $$
 begin
     return query
@@ -330,7 +331,9 @@ begin
             g.description,
             g.created,
             u.name,
-            (SELECT COUNT(*) FROM groups_users gu WHERE gu.group_id = g.id)
+            (SELECT COUNT(*) FROM groups_users gu WHERE gu.group_id = g.id),
+            g.user_id,
+            g.user_id = $2
         FROM groups g JOIN users u ON u.id = g.user_id
         WHERE g.id = $1;
 end;
@@ -346,7 +349,32 @@ begin
             u.name,
             gu.created
         FROM groups_users gu JOIN users u ON u.id = gu.user_id
-        WHERE g.group_id = $1
+        WHERE gu.group_id = $1
         ORDER BY gu.created;
+end;
+$$ language plpgsql;
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+create or replace function guest_get_user_by_id(bigint) returns TABLE (name varchar, birthday varchar,  phone varchar, email varchar, note varchar, created bigint, user_id bigint, scope varchar, total_solutions_count bigint, success_solutions_count bigint, total_unique_solutions_count bigint, success_unique_solutions_count bigint) as
+$$
+begin
+    return query
+    SELECT
+        u.name,
+        u.birthday,
+        u.phone,
+        u.email,
+        u.note,
+        u.created,
+        u.id,
+        s.value,
+        (SELECT COUNT(*) FROM solutions s WHERE s.user_id = u.id),
+        (SELECT COUNT(*) FROM solutions s WHERE s.user_id = u.id AND s.status = 'ok'::varchar),
+        (SELECT COUNT(*) FROM (SELECT DISTINCT s.problem_id FROM solutions s WHERE s.user_id = u.id) AS t1),
+        (SELECT COUNT(*) FROM (SELECT DISTINCT s.problem_id FROM solutions s WHERE s.user_id = u.id AND s.status = 'ok'::varchar) AS t1)
+    FROM
+        users u JOIN scope s ON s.id = u.scope_id
+    WHERE
+        u.id = $1;
 end;
 $$ language plpgsql;

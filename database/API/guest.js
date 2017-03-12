@@ -17,6 +17,21 @@ module.exports = function(_, mainPg, fs){
                     callback(err, null);
                 });
         },
+        getUserById: function (data, callback) {
+            Promise.resolve(data)
+                .then(inputData=>{
+                    var args = [
+                        inputData.userId
+                    ];
+                    return mainPg('SELECT * FROM guest_get_user_by_id($1);', args);
+                })
+                .then(resultData=>{
+                    callback(null, resultData[0]);
+                })
+                .catch(err=>{
+                    callback(err, null);
+                });
+        },
         register: function (data, callback) {
             Promise.resolve(data)
                 .then(inputData=>{
@@ -248,16 +263,18 @@ module.exports = function(_, mainPg, fs){
         },
         getGroupById: function (data, callback) {
             var result;
-            var args = [
-                data.groupId
-            ];
             Promise.resolve(data)
                 .then(inputData=>{
-                    return mainPg('SELECT * FROM guest_get_group($1);', args);
+                    return mainPg('SELECT * FROM guest_get_group($1, $2);', [
+                        data.groupId,
+                        data.userId
+                    ]);
                 })
                 .then(resultData=>{
                     result = resultData[0];
-                    return mainPg('SELECT * FROM guest_get_group_users($1);', args);
+                    return mainPg('SELECT * FROM guest_get_group_users($1);', [
+                        data.groupId
+                    ]);
                 })
                 .then(resultData=>{
                     result.users = resultData;
