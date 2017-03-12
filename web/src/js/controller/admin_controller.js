@@ -48,12 +48,22 @@ angular.module("notifyapp")
         })
       })
     }
+    $scope.deleteNews = ()=>{
+      $scope.addNewsContent.newsId = $state.params.id
+      $server.deleteNews($scope.addNewsContent, (err,data)=>{
+        $scope.$apply(()=>{
+          if(!err){
+            $scope.getNews()
+          }
+        })
+      })
+    }
     $scope.editNews = ()=>{
       $scope.addNewsContent.newsId = $state.params.id
       $server.editNews($scope.addNewsContent, (err,data)=>{
         $scope.$apply(()=>{
           if(!err){
-
+            $state.go("cabinet.admin.child", {type: "news"})
           }
         })
       })

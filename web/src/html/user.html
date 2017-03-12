@@ -1,0 +1,48 @@
+<div class="user" ng-if="!$root.preloader">
+  <h2>{{userInfo.name}} ({{userInfo.email}})</h2>
+  <div class="photo-wrapper">
+    <i class="fa fa-user-o" id="user"></i>
+    <img ng-src="http://{{$root.api}}/photo/{{userInfo.photo}}" alt="" ng-if="userInfo.photo" width="100%" height="100%">
+  </div>
+  <table>
+    <tr ng-if="userInfo.birthday">
+      <td>Дата рождения</td>
+      <td >{{dateFormat(userInfo.birthday, 'date')}}</td>
+    </tr>
+
+    <tr ng-if="userInfo.created">
+      <td>Зарегистрирован</td>
+      <td >{{dateFormat(userInfo.created, 'date')}}</td>
+    </tr>
+    
+    <tr ng-if="userInfo.phone">
+      <td>Номер телефона</td>
+      <td >{{userInfo.phone}}</td>
+    </tr>
+
+    
+    
+    <tr ng-if="userInfo.totalSolutionsCount">
+      <td>Всего отправок</td>
+      <td >{{userInfo.totalSolutionsCount}}</td>
+    </tr>
+
+    <tr ng-if="userInfo.successSolutionsCount">
+      <td>Успешных отправок</td>
+      <td >{{userInfo.successSolutionsCount}}</td>
+    </tr>
+
+    
+
+    <tr ng-if="userInfo.successUniqueSolutionsCount">
+      <td>Решено задач</td>
+      <td >{{userInfo.successUniqueSolutionsCount}}</td>
+    </tr>
+
+
+    <tr ng-if="userInfo.note">
+      <td>Дополнительная информация</td>
+      <td >{{userInfo.note}}</td>
+    </tr>
+  </table>
+</div>

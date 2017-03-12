@@ -1,6 +1,16 @@
 <div class="profile" ng-show="!$root.preloader">
   <h2>{{translate("profile")}}</h2>
   <div class="form"  check-form="user.isSubmitted" on-validation-ok='editProfile' >
+    <input type="file" ng-file-model="user.base64" id="photo" ng-show="false" is-photo>
+    <div class="upload-photo" dragndrop-photo="user.base64" trigger-click="photo">
+      <div class="drop-on-me">
+        +
+      </div>
+      <p>Нажмите или перетащите фото</p>
+      <img ng-src="http://{{$root.api}}/photo/{{user.photo}}" alt="" ng-if="user.photo" width="100%" height="100%">
+      <img src="{{user.base64}}" alt="" ng-if="user.base64" width="100%" height="100%">
+
+    </div>
     <table>
       <tr>
         <td>{{translate("name")}}:</td>

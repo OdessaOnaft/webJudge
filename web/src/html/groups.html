@@ -1,1 +1,42 @@
-<div class="groups"></div>
+<div class="groups" ng-if="!$root.preloader">
+  <button class="default" ng-click="obj.showAddGroup = !obj.showAddGroup">{{obj.showAddGroup?"Отменить создание группы":"Создать группу"}}</button>
+  <div class="form"  check-form="obj.isSubmitted" on-validation-ok='makeGroup' ng-if="obj.showAddGroup">
+    <table>
+        <tr>
+          <td>{{translate("groupName")}}:</td>
+          <td>
+            <input type="text" ng-model="obj.name" placeholder="{{translate('groupNamePlaceholder')}}" validator is-required>
+          </td>
+        </tr>
+        <tr>
+          <td>{{translate("groupDescription")}}:</td>
+          <td>
+            <textarea ng-model="obj.description" placeholder="{{translate('groupDescriptionPlaceholder')}}" validator is-required></textarea>
+          </td>
+        </tr>
+      </table>
+      <button class="default" ng-click="makeGroupSubmit()" ng-disabled="!obj.description || !obj.name">
+        
+        <span ng-if="!obj.preloader">Создать группу</span>
+        <span ng-if="obj.preloader" class="button-preloader"></span>
+      </button>
+    </div>
+    <div class="groups-wrapper">
+      <table class="default">
+        <thead>
+          <th>ID</th>
+          <th>Название</th>
+          <th>Описание</th>
+          <th>Участников</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="group in groups" ui-sref="cabinet.group({id: group.groupId})">
+            <td>{{group.groupId}}</td>
+            <td>{{group.name}}</td>
+            <td>{{group.description}}</td>
+            <td>{{group.usersCount}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</div>

@@ -42,8 +42,108 @@
     min-height: calc(~"100vh - 200px");
   }
 }
-
-
+.profile {
+  .upload-photo {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 150px;
+    height: 200px;
+    border: 1px solid #9a9a9a;
+    border-radius: 3px;
+    background: #ffeadf;
+    cursor: pointer;
+    position: relative;
+    .drop-on-me {
+      text-align: center;
+      font-size: 35px;
+      width: 80px;
+      height: 80px;
+      line-height: 80px;
+      color: #afafaf;
+      margin: 0 auto;
+      margin-top: 40px;
+      background: #ebebeb;
+      border: 2px dashed #afafaf;
+    }
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+    }
+    p {
+      margin-top: 10px;
+      padding: 0 20px;
+      line-height: 14px;
+      text-align: center;
+    }
+  }
+}
+.groups {
+  .groups-wrapper {
+    margin-top: 10px;
+  }
+}
+.group {
+  table {
+    margin-top: 10px;
+  }
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+  }
+  h4 {
+    font-size: 16px;
+    font-weight: 400;
+    width: 400px;
+  }
+  .action {
+    margin-top: 10px;
+    input {
+      margin-bottom: 10px;
+      height: 36px;
+      margin-right: 2px;
+    }
+  }
+  button#edit {
+    width: auto;
+    margin-top: 20px;
+  }
+}
+.user {
+  table {
+    width: 300px;
+    margin-top: 30px;
+    tr {
+      td {
+        &:first-child {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+  .photo-wrapper {
+    width: 140px;
+    height: 150px;
+    background: #eaeaea;
+    margin-top: 20px;
+    border: 1px solid #cecece;
+    text-align: center;
+    line-height: 180px;
+    position: relative;
+    img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #fff;
+    }
+    i#user {
+      font-size: 80px;
+    }
+  }
+}
 .problems {
   table.problems-table {
     thead {

@@ -32,7 +32,7 @@
         <textarea placeholder="content" ng-model="addNewsContent.body[1].value"></textarea>
       </div>
       <button class="default" ng-click="state.id?editNews():addNews()">{{translate('save')}}</button>
-      
+      <!-- <button class="default" ng-click="deleteNews()" ng-if="state.id">{{translate('delete')}}</button> -->
     </div>
 
     <div class="users" ng-if="state.type=='users'">
@@ -46,7 +46,7 @@
         <tbody>
           <tr ng-repeat="user in users">
             <td>{{user.userId}}</td>
-            <td>{{user.name}} ({{user.email}})</td>
+            <td ui-sref="cabinet.user({id: user.userId})" ng-click="prevent($event)">{{user.name}} ({{user.email}})</td>
             <td>{{translate(user.scope)}}</td>
             <td>
               <p ng-if="user.modifiedScope">

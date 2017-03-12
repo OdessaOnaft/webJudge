@@ -1,5 +1,5 @@
 angular.module("notifyapp")
-  .factory('$server', ($state)=>{
+  .factory('$server', ($state, $rootScope)=>{
     var api = {}
     var methods = [
       'register',
@@ -25,12 +25,20 @@ angular.module("notifyapp")
       'getSolutionsByProblemId',
       'getUsers',
       'getSolutionsQueue',
-      'editProblem'
+      'editProblem',
+      'deleteNews',
+      "makeGroup",
+      "editGroup",
+      "addGroupUser",
+      "removeGroupUser",
+      "getGroups",
+      "getGroupById",
+      'getUserById'
     ]
     var addMethod = (methodName)=>{
       api[methodName] = (data, callback)=>{
         var domain = "localhost"
-        domain = "webjudgeapi.westcentralus.cloudapp.azure.com"
+        $rootScope.api = domain = "webjudgeapi.westcentralus.cloudapp.azure.com"
         
         data.cookies = {
           sessionId: localStorage.token

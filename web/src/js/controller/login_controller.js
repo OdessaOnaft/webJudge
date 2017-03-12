@@ -11,7 +11,8 @@ angular.module("notifyapp")
     $scope.dateOptions = {
       dateFormat: "dd.mm.yy",
       maxDate: 0,
-      changeYear: true
+      changeYear: true,
+      yearRange: "1950:2009"
     }
     $scope.register = ()=>{
       $server.register($scope.user, (err,data)=>{
