@@ -33,11 +33,13 @@ module.exports = function(_, conf, Database, fs){
                 if (err){
                     callback(err, null);
                 } else {
-                    var ext = data.base64.substring(data.base64.indexOf('/')+1, data.base64.indexOf(';'));
-                    var file = data.base64.split(';base64,')[1];
-                    file = new Buffer(file, 'base64');
-                    fs.writeFileSync(`Storage/user${session.userId}.${ext}`, file);
-                    resData.base64 = data.base64;
+                    if (data.base64){
+                        var ext = data.base64.substring(data.base64.indexOf('/')+1, data.base64.indexOf(';'));
+                        var file = data.base64.split(';base64,')[1];
+                        file = new Buffer(file, 'base64');
+                        fs.writeFileSync(`Storage/user${session.userId}.${ext}`, file);
+                        resData.base64 = data.base64;
+                    }
                     callback(null, resData);
                 }
             });
