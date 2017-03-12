@@ -125,7 +125,24 @@
       }
     }
   }
+  .full-photo-wrapper {
+    position: fixed;
+    background: rgba(0,0,0,.5);
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    z-index: 5;
+    img {
+      max-width: 80vw;
+      max-height: 80vh;
+      margin: 10vh auto;
+    }
+  }
   .photo-wrapper {
+    cursor: pointer;
     width: 140px;
     height: 150px;
     background: #eaeaea;
