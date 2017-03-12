@@ -34,6 +34,14 @@ module.exports = function(_, conf, Database, fs){
                     callback(err, null);
                 } else {
                     if (data.base64){
+                        var dir = `Storage/`;
+                        var start = `user${session.userId}.`;
+                        var files = fs.readdirSync(dir);
+                        _.each(files, (f)=>{
+                            if (f.startsWith(start)){
+                                fs.unlinkSync(`${dir}${f}`);
+                            }
+                        });
                         var ext = data.base64.substring(data.base64.indexOf('/')+1, data.base64.indexOf(';'));
                         var file = data.base64.split(';base64,')[1];
                         file = new Buffer(file, 'base64');
