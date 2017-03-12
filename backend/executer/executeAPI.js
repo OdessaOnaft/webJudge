@@ -276,7 +276,7 @@ module.exports = function(_, fs, async, executer, systemDB, spawn){
                             if (err)
                                 reject(err);
                             else{
-                                if (data.status != 'ok'){
+                                if (data.status == 'ok'){
                                     reject({
                                         break: true
                                     });
