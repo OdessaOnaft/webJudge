@@ -1,6 +1,7 @@
 angular.module("notifyapp")
   .controller("profileController", ($scope, $rootScope, $state, $server, $timeout)=>{
     $scope.user = {}
+    window.s = $scope
     $rootScope.preloader = true;
     $scope.submitProfile = ()=>{
       $scope.user.isSubmitted = false;
@@ -11,7 +12,8 @@ angular.module("notifyapp")
     $scope.dateOptions = {
       dateFormat: "dd.mm.yy",
       maxDate: 0,
-      changeYear: true
+      changeYear: true,
+      yearRange: "1950:2009"
     }
     $scope.editProfile = ()=>{
       $scope.user.profileSubmitPreloader = true

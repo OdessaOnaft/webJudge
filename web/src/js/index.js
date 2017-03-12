@@ -10,6 +10,7 @@ angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize', 
 	  ($locationProvider, $stateProvider, $urlRouterProvider, hljsServiceProvider) =>{
 	    $locationProvider.html5Mode(true) 
 	    $urlRouterProvider.when('','/')
+	    $urlRouterProvider.when('/cabinet/','/cabinet/problems/')
 	    $urlRouterProvider.when('/cabinet/problem/','/cabinet/problems/')
 	    $urlRouterProvider.when('/cabinet/admin/',($state)=>{
 	    	$state.go("cabinet.admin.child", {type: "users"})
@@ -85,6 +86,11 @@ angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize', 
 	        templateUrl: "/html/solution.html",
 	        controller: "solutionController"
 		    })
+		    .state('cabinet.user', {
+	        url:'user-{id}/',
+	        templateUrl: "/html/user.html",
+	        controller: "userController"
+		    })
 		    .state('cabinet.admin', {
 	        url:'admin/',
 	        templateUrl: "/html/admin.html",
@@ -97,6 +103,11 @@ angular.module("notifyapp", ['ui.router', 'ui.date', 'ngAnimate', 'ngSanitize', 
 	        url:'groups/',
 	        templateUrl: "/html/groups.html",
 	        controller: "groupsController"
+		    })
+		    .state('cabinet.group', {
+	        url:'group-{id}/',
+	        templateUrl: "/html/group.html",
+	        controller: "groupController"
 		    });
 	  }
 	])
