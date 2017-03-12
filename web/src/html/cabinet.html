@@ -1,13 +1,13 @@
 <div class="wrapper cabinet">
   <div class="left-menu">
     <ul>
-      <li ui-sref=".profile" ng-if="!$root.isGuest"><a>{{translate('myProfile')}}</a></li>
-      <li ui-sref=".solutionsQueue"><a>{{translate('queue')}}</a></li>
-      <li ui-sref=".news"><a>{{translate('news')}}</a></li>
-      <li ui-sref=".problems"><a>{{translate('tasks')}}</a></li>
-      <li ui-sref=".solutions" ng-if="!$root.isGuest"><a>{{translate('mySolutions')}}</a></li>
-      <li ui-sref=".groups" ng-if="!$root.isGuest"><a>{{translate('myGroups')}}</a></li>
-      <li ui-sref=".admin" ng-if="user.scope=='admin'"><a>{{translate('administration')}}</a></li>
+      <li ui-sref=".profile" ng-if="!$root.isGuest" ng-class="{'active': state.includes('cabinet.profile')}"><a>{{translate('myProfile')}}</a></li>
+      <li ui-sref=".solutionsQueue" ng-class="{'active': state.includes('cabinet.solutionsQueue')}"><a>{{translate('queue')}}</a></li>
+      <li ui-sref=".news" ng-class="{'active': state.includes('cabinet.news')}"><a>{{translate('news')}}</a></li>
+      <li ui-sref=".problems" ng-class="{'active': state.includes('cabinet.problems')}"><a>{{translate('tasks')}}</a></li>
+      <li ui-sref=".solutions" ng-if="!$root.isGuest" ng-class="{'active': state.includes('cabinet.solutions')}"><a>{{translate('mySolutions')}}</a></li>
+      <li ui-sref=".groups" ng-if="!$root.isGuest" ng-class="{'active': state.includes('cabinet.groups')}"><a>{{translate('myGroups')}}</a></li>
+      <li ui-sref=".admin" ng-if="user.scope=='admin'" ng-class="{'active': state.includes('cabinet.admin')}"><a>{{translate('administration')}}</a></li>
     </ul>
   </div><!--
   --><div class="cabinet-inner" >

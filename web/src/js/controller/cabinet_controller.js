@@ -1,6 +1,7 @@
 angular.module("notifyapp")
   .controller("cabinetController", ($scope, $rootScope, $state, $server)=>{
     $scope.user = {}
+    $scope.state = $state
     $scope.checkSession = ()=>{
       if(!localStorage.token) {
         // $state.go("main")

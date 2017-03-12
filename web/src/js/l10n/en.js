@@ -57,7 +57,17 @@ angular.module("notifyapp")
       queue: "Queue",
       user: "User",
       back: "Back",
-      addTestsHint: "Choose multiple input files from file system (recommended at least 10), first two tests will be samples for this problem."
+      addTestsHint: "Choose multiple input files from file system (recommended at least 10), first two tests will be samples for this problem.",
+      "build error": "Compilation error",
+      memory_limit: "Memory limit exceed",
+      ok: "OK",
+      error: "Runtime error",
+      wrong_answer: "Wrong answer",
+      timeout: "Time limit exceed",
+      groupName: "Group name",
+      groupNamePlaceholder: "Enter group name",
+      groupDescription: "Group description",
+      groupDescriptionPlaceholder: "Enter group description"
 
     }
     return words

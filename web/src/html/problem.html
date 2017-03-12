@@ -1,8 +1,13 @@
 <div class="problem" ng-show="!$root.preloader">
   
   <button class="default" ui-sref="^.addProblem({id: solve.problemId})" ng-if="user.scope=='admin'">{{translate('editProblem')}}</button>
-
+  <div class="limits">
+    <p class="limit">Лимит времени: <span class="bold">{{problem.timeLimit/1000}} s.</span></p>
+    <p class="limit">Лимит памяти: <span class="bold">{{floor(problem.memoryLimit/1024/1024)}} Mb.</span></p>
+  </div>
   <h1>{{problem.name}}</h1>
+
+
   <div ng-bind-html="problem.description"></div>
 
 
@@ -51,10 +56,10 @@
             <td>{{dateFormat(solution.created)}}</td>
             <td>{{translate(solution.lang)}}</td>
             <td>
-              <span ng-if="solution.status!='waiting'">{{solution.status}}</span>
+              <span ng-if="solution.status!='waiting'">{{translate(solution.status)}}</span>
               <span ng-if="solution.status=='waiting'">
                 <span ng-if="+solution.testPassed">{{translate('proceedOnTest') + " " + solution.testPassed+"/"+solution.testCount}}</span>
-                <span ng-if="!+solution.testPassed">{{solution.status}}</span>
+                <span ng-if="!+solution.testPassed">{{translate(solution.status)}}</span>
               </span>
             </td>
           </tr>

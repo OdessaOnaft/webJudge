@@ -1,13 +1,17 @@
 angular.module("notifyapp")
   .controller("solutionsQueueController", ($scope, $rootScope, $state, $server, $timeout)=>{
-
     $scope.pag = {
       skip: 0,
       limit: 10
     }
      $scope.getSolutionsQueue = ()=>{
       $rootScope.preloader = true
-      $server.getSolutionsQueue({problemId: $state.params.id, skip: $scope.pag.skip, limit: $scope.pag.limit, lang: $rootScope.lang}, (err,data)=>{
+      $server.getSolutionsQueue({
+        problemId: $state.params.id,
+        skip: $scope.pag.skip,
+        limit: $scope.pag.limit,
+        lang: $rootScope.lang
+      }, (err,data)=>{
         $rootScope.$apply(()=>{
           $rootScope.preloader = false
         })
@@ -24,11 +28,8 @@ angular.module("notifyapp")
               $timeout(()=>{
                 $scope.getSolutionsQueue()
               }, 200)
-              
             }
-           
           } else {
-
           }
         })
       })

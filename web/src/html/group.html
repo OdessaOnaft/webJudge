@@ -44,7 +44,7 @@
             <td>{{user.name}}</td>
             <td>{{dateFormat(user.created)}}</td>
             <td ng-click="prevent($event);" style="width: 40px;text-align: center;;">
-              <i class="fa fa-times" ng-click="removeGroupUser(user.userId)" style="color: #f00;font-size: 20px;" ng-if="!group.preloader[user.userId]"></i>
+              <i class="fa fa-times" ng-click="removeGroupUser(user.userId)" style="color: #f00;font-size: 20px;" ng-if="!group.preloader[user.userId] && user.userId!=group.groupOwnerId"></i>
               <span ng-if="group.preloader[user.userId]" class="button-preloader"></span>
             </td>
           </tr>

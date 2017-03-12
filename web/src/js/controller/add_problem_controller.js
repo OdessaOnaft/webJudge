@@ -38,6 +38,7 @@ angular.module("notifyapp")
     
     
     if($state.params.id) {
+      $scope.problem = {description: [{},{}], name: [{},{}]}
       $rootScope.preloader = true
       $server.getProblemFull({problemId: $state.params.id}, (err,data)=>{
         $rootScope.$apply(()=>{
@@ -96,6 +97,10 @@ angular.module("notifyapp")
         delete el.url
         delete el.base64
       })
+      $scope.obj.description[0].lang="ru"
+      $scope.obj.description[1].lang="en"
+      $scope.obj.name[0].lang="ru"
+      $scope.obj.name[1].lang="en"
       delete $scope.obj.outputSourceFile
       delete $scope.obj.isSubmitted
       $scope.obj.publicCount = 2

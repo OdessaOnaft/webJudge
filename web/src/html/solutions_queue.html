@@ -16,10 +16,10 @@
         <td>{{dateFormat(solution.created)}}</td>
         <td>{{translate(solution.lang)}}</td>
         <td>
-          <span ng-if="solution.status!='waiting'">{{solution.status}}</span>
+          <span ng-if="solution.status!='waiting'">{{translate(solution.status)}}</span>
           <span ng-if="solution.status=='waiting'">
             <span ng-if="+solution.testPassed">{{translate('proceedOnTest') + " " + solution.testPassed+"/"+solution.testCount}}</span>
-            <span ng-if="!+solution.testPassed">{{solution.status}}</span>
+            <span ng-if="!+solution.testPassed">{{translate(solution.status)}}</span>
           </span>
         </td>
       </tr>

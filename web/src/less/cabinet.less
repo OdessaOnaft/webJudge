@@ -13,6 +13,9 @@
         width: 100%;
         padding: 5px 10px;
         // border-bottom: 1px solid #000;
+        &.active {
+          background: #ffda86;
+        }
         a {
           &:hover {
             text-decoration: none;
@@ -174,6 +177,18 @@
   }
 }
 .problem {
+  .limits {
+    margin: 20px 0;
+    p.limit {
+      font-size: 20px;
+      font-weight: 400;
+
+      span {
+        font-weight: 600;
+        font-size: 20px;
+      }
+    }
+  }
   p.title {
     font-size: 18px;
     font-weight: 600;
